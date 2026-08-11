@@ -1,0 +1,8 @@
+.git
+.github
+.wrangler
+.venv
+*.md
+requirements.txt
+build.sh
+wrangler.jsonc
