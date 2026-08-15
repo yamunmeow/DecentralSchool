@@ -40,6 +40,18 @@ const isActive = (href: string) => pathname === href || pathname.startsWith(href
     z-index: 40;
     background: var(--bg-inset);
     border-bottom: 3px solid var(--border);
+    transform: translateY(0);
+    transition: transform 0.2s ease;
+  }
+
+  .site-nav.nav-hidden {
+    transform: translateY(-100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-nav {
+      transition: none;
+    }
   }
 
   .nav-inner {
@@ -124,3 +136,34 @@ const isActive = (href: string) => pathname === href || pathname.startsWith(href
     }
   }
 </style>
+
+<script>
+  const nav = document.querySelector<HTMLElement>(".site-nav");
+  if (nav) {
+    let lastY = window.scrollY;
+    let ticking = false;
+    const hideAfter = 80; // px scrolled before the bar is allowed to hide
+
+    const update = () => {
+      const y = window.scrollY;
+      if (y > lastY && y > hideAfter) {
+        nav.classList.add("nav-hidden");
+      } else {
+        nav.classList.remove("nav-hidden");
+      }
+      lastY = y;
+      ticking = false;
+    };
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
+  }
+</script>

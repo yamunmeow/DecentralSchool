@@ -45,7 +45,7 @@ const categories = [
   <section class="hero">
     <div class="wrap hero-inner">
       <h1 class="title">
-        DECENTRAL<span class="title-accent">SCHOOL</span>
+        DECENTRAL<wbr /><span class="title-accent">SCHOOL</span>
       </h1>
       <p class="tagline">
         This site has short games for high-school-level programming skills: logic,
@@ -97,9 +97,10 @@ const categories = [
   }
 
   .title {
-    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    font-size: clamp(1.3rem, 8vw, 2.6rem);
     letter-spacing: -0.01em;
     margin-bottom: 0.6em;
+    overflow-wrap: break-word;
   }
 
   .title-accent {

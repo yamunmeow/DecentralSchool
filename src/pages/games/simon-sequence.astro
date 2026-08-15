@@ -47,11 +47,34 @@ import Layout from "../../layouts/Layout.astro";
 
   :global(.sq-bar) {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
+    gap: 8px;
     font-family: var(--font-display);
     font-size: 0.65rem;
     margin-bottom: 16px;
     color: var(--muted);
+  }
+
+  :global(.sq-mute) {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    cursor: pointer;
+  }
+
+  :global(.sq-mute:hover) {
+    color: var(--pac-yellow);
+    border-color: var(--pac-yellow);
+  }
+
+  :global(.sq-mute[aria-pressed="true"]) {
+    color: var(--ghost-red);
+    border-color: var(--ghost-red);
   }
 
   :global(.sq-board) {
@@ -65,13 +88,23 @@ import Layout from "../../layouts/Layout.astro";
     aspect-ratio: 1;
     background: var(--tile-color);
     opacity: 0.45;
+    filter: none;
     border: none;
     cursor: pointer;
-    transition: opacity 0.1s;
+    transition: opacity 0.15s, filter 0.15s;
   }
 
+  /* Can't click right now because the computer is showing the pattern, or
+     a round just finished -- still looks like a normal tile, just inert. */
   :global(.sq-tile:disabled) {
-    cursor: default;
+    cursor: not-allowed;
+  }
+
+  /* The game has actually ended -- nothing on the board works until you
+     press Restart, so it should look clearly switched off. */
+  :global(.sq-tile.sq-ended) {
+    opacity: 0.18;
+    filter: grayscale(70%);
   }
 
   :global(.sq-tile.sq-lit) {
