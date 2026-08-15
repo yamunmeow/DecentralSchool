@@ -1,0 +1,95 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const timeline = [
+  { year: "1843", title: "The first algorithm", text: "Ada Lovelace writes a set of instructions for Charles Babbage's Analytical Engine. The Analytical Engine was a mechanical computer. It was designed but never built. Historians call Lovelace's instructions the first published computer program. This happened more than 100 years before the first electronic computer ran." },
+  { year: "1936", title: "A definition of computing", text: "Alan Turing describes the \"Turing machine.\" This is a mathematical model of a machine. The machine reads and writes symbols on a tape, following rules. This model defines what any computer can compute and what any computer cannot compute." },
+  { year: "1945", title: "The first recorded bug", text: "Engineers working on the Harvard Mark II computer find a moth inside a relay. The moth causes the computer to malfunction. The engineers tape the moth into their logbook. They label it \"first actual case of bug being found.\" People still use the word \"bug\" today." },
+  { year: "1957", title: "FORTRAN", text: "FORTRAN is one of the first widely-used high-level languages. This means programmers could write math formulas instead of raw machine instructions. Scientists still use FORTRAN today for scientific computing." },
+  { year: "1969", title: "ARPANET", text: "ARPANET connects its first two computers, at UCLA and at Stanford. ARPANET later becomes the internet. The first message was meant to be the word \"LOGIN.\" The system crashed after 2 letters, \"LO.\"" },
+  { year: "1972", title: "C", text: "Dennis Ritchie creates the C language at Bell Labs. C runs fast. C gives programmers direct control over computer memory. Python, JavaScript, and most operating systems are built partly using C or languages based on C." },
+  { year: "1991", title: "Python & the World Wide Web", text: "Guido van Rossum releases Python. In the same year, Tim Berners-Lee publishes the first website. He built it at CERN to help physicists share documents." },
+  { year: "1995", title: "JavaScript", text: "Brendan Eich writes the first version of JavaScript at Netscape in 10 days. He built it to make web pages interactive. Today, more computers run JavaScript than any other programming language." },
+  { year: "2004–08", title: "The social web & the app store", text: "Facebook, GitHub, and the iPhone App Store all launch within a few years of each other. After this, one person writing code could build a product used by many people." },
+  { year: "2012–present", title: "Machine learning becomes common", text: "Better neural network methods, cheaper computing power, and large datasets make AI common. Before this, AI was mostly a research topic. Now, phones run AI directly. Most AI code today is written in Python." },
+];
+---
+
+<Layout title="History" description="Events in the history of programming, from 1843 to now.">
+  <section class="wrap header">
+    <a href="/explore" class="back-link">← Explore</a>
+    <h1>History</h1>
+    <p>
+      Programming is a young field. All of programming history happens in less than 200
+      years. Most tools programmers use today were built in the last 50 years. This page
+      lists 10 important events.
+    </p>
+  </section>
+
+  <section class="wrap timeline">
+    {timeline.map((t) => (
+      <div class="entry">
+        <div class="year">{t.year}</div>
+        <div class="entry-body">
+          <h2>{t.title}</h2>
+          <p>{t.text}</p>
+        </div>
+      </div>
+    ))}
+  </section>
+</Layout>
+
+<style>
+  .header {
+    padding: 56px 24px 8px;
+  }
+  .back-link {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link:hover {
+    color: var(--pac-yellow);
+  }
+  .header p {
+    color: var(--muted);
+    max-width: 68ch;
+  }
+  .timeline {
+    padding: 24px 24px 60px;
+    border-left: 3px solid var(--border);
+    margin-left: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+  .entry {
+    position: relative;
+    padding-left: 28px;
+  }
+  .entry::before {
+    content: "";
+    position: absolute;
+    left: -33px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--pac-yellow);
+  }
+  .year {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    color: var(--pac-yellow);
+    margin-bottom: 0.5em;
+  }
+  .entry-body h2 {
+    font-size: 1rem;
+    margin-bottom: 0.3em;
+  }
+  .entry-body p {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+</style>

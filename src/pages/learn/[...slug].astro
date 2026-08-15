@@ -1,0 +1,67 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("learn");
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<"learn">;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const dateFmt = post.data.date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<Layout title={post.data.title} description={post.data.description}>
+  <article class="wrap post">
+    <a href="/learn" class="back-link">← Learn</a>
+    <p class="date">{dateFmt}</p>
+    <h1>{post.data.title}</h1>
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .post {
+    padding: 56px 24px 80px;
+    max-width: 70ch;
+  }
+  .back-link {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link:hover {
+    color: var(--pac-yellow);
+  }
+  .date {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 1em;
+  }
+  .prose :global(h2) {
+    color: var(--pac-yellow);
+    margin-top: 1.6em;
+  }
+  .prose :global(p) {
+    max-width: none;
+  }
+  .prose :global(a) {
+    color: var(--ghost-cyan);
+  }
+</style>

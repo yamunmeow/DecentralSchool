@@ -1,0 +1,80 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import GameCard from "../../components/GameCard.astro";
+import { categories, gamesByCategory } from "../../games/registry";
+---
+
+<Layout title="Games" description="Logic, memory, algorithms, and tinkering games for learning to program.">
+  <section class="wrap header">
+    <h1>Games</h1>
+    <p>
+      Every game trains one skill you use when you program. All games on this page work now.
+    </p>
+  </section>
+
+  {Object.entries(categories).map(([key, meta]) => {
+    const list = gamesByCategory(key as keyof typeof categories);
+    return (
+      <section id={key} class="wrap category-section" style={`--cat-color:${meta.color}`}>
+        <div class="category-heading">
+          <span class="ghost-dot" style={`background:${meta.color}`}></span>
+          <h2 style={`color:${meta.color}`}>{meta.label}</h2>
+          <span class="ghost-name">{meta.ghost}</span>
+        </div>
+        <ul class="game-grid">
+          {list.map((game) => <GameCard game={game} />)}
+        </ul>
+      </section>
+    );
+  })}
+</Layout>
+
+<style>
+  .header {
+    padding-top: 56px;
+    padding-bottom: 8px;
+  }
+
+  .header p {
+    color: var(--muted);
+  }
+
+  .category-section {
+    padding: 40px 24px;
+    scroll-margin-top: 90px;
+  }
+
+  .category-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .category-heading h2 {
+    margin: 0;
+  }
+
+  .ghost-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ghost-name {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+</style>

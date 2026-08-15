@@ -1,0 +1,81 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PixelPanel from "../../components/PixelPanel.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("learn")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const dateFmt = (d: Date) =>
+  d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+---
+
+<Layout title="Learn" description="Articles that connect the games on this site to programming skills.">
+  <section class="wrap header">
+    <h1>Learn</h1>
+    <p>This page lists articles. Each article connects one game on this site to a programming skill.</p>
+  </section>
+
+  <section class="wrap post-list">
+    {posts.map((post) => (
+      <a href={`/learn/${post.id}`} class="post-link">
+        <PixelPanel>
+          <p class="date">{dateFmt(post.data.date)}</p>
+          <h2>{post.data.title}</h2>
+          <p class="desc">{post.data.description}</p>
+          <ul class="tags">
+            {post.data.tags.map((t: string) => <li>{t}</li>)}
+          </ul>
+        </PixelPanel>
+      </a>
+    ))}
+  </section>
+</Layout>
+
+<style>
+  .header {
+    padding: 56px 24px 8px;
+  }
+  .header p {
+    color: var(--muted);
+    max-width: 60ch;
+  }
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px 24px 60px;
+  }
+  .post-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  .date {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 0.6em;
+  }
+  .post-link h2 {
+    color: var(--pac-yellow);
+    margin-bottom: 0.3em;
+  }
+  .desc {
+    color: var(--ink);
+    font-size: 0.9rem;
+  }
+  .tags {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 1em 0 0;
+  }
+  .tags li {
+    font-size: 0.65rem;
+    font-family: var(--font-display);
+    color: var(--ghost-cyan);
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+  }
+</style>

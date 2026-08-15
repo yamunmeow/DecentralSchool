@@ -1,0 +1,64 @@
+---
+import PixelPanel from "./PixelPanel.astro";
+import type { GameMeta } from "../games/registry";
+import { categories } from "../games/registry";
+
+interface Props {
+  game: GameMeta;
+}
+const { game }: Props = Astro.props;
+const color = categories[game.category].color;
+const isPlayable = game.status === "play";
+---
+
+<PixelPanel as="li" accent={color} class="game-card">
+  <span class="status-tag" style={isPlayable ? `color:${color}` : undefined}>
+    {isPlayable ? "● Ready to play" : "○ Coming soon"}
+  </span>
+  <h3>{game.title}</h3>
+  <p>{game.blurb}</p>
+  {
+    isPlayable ? (
+      <a href={`/games/${game.slug}`} class="pixel-btn card-cta">
+        Play →
+      </a>
+    ) : (
+      <a href={`/games/${game.slug}`} class="pixel-btn secondary card-cta">
+        Preview →
+      </a>
+    )
+  }
+</PixelPanel>
+
+<style>
+  .game-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .game-card :global(.pixel-panel-inner) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .status-tag {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 0.8em;
+  }
+
+  .game-card p {
+    flex-grow: 1;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .card-cta {
+    align-self: flex-start;
+    margin-top: 1em;
+    font-size: 0.6rem;
+    padding: 10px 16px;
+  }
+</style>

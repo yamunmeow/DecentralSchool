@@ -1,0 +1,99 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PixelPanel from "../../components/PixelPanel.astro";
+---
+
+<Layout title="Tech & Society" description="STS: how the people who write code affect other people.">
+  <section class="wrap header">
+    <a href="/explore" class="back-link">← Explore</a>
+    <h1>Tech &amp; Society</h1>
+    <p>
+      STS means Science, Technology, and Society. STS studies how society affects
+      science and technology. STS also studies how science and technology affect
+      society. For programmers, this means: <strong>code is not only math.</strong> A
+      person makes every decision in a program. These decisions include the
+      assumptions and the priorities of the person who wrote the code. A person can
+      miss things they did not think about.
+    </p>
+  </section>
+
+  <section class="wrap article">
+    <h2>A person decides, not the algorithm</h2>
+    <p>
+      A sorting algorithm does not choose what to sort by. A person chooses what to sort
+      by. If a hiring system ranks candidates by "years of continuous experience," this
+      gives a lower rank to anyone who took time off work, for a family member, an
+      illness, or military service. The math in the algorithm does not have bias. The
+      person's choice of what to measure can have bias.
+    </p>
+
+    <h2>Training data can contain old bias</h2>
+    <p>
+      Machine learning systems learn from historical data. If that data contains bias
+      in who got approved for loans, who got stopped by police, or who got interviewed
+      for a job, the system repeats that bias. The system's output can still look
+      objective, because the system only uses numbers. Programmers need to recognize
+      this. This is a required skill, not an optional skill.
+    </p>
+
+    <h2>Open source software depends on people</h2>
+    <p>
+      Volunteers maintain much of the software used around the world, including the
+      tools used to build this site. Volunteers write this software in public, for free.
+      This system works because people who do not know each other trust each other. It
+      also works because of shared rules for contributing, and because people give
+      credit to the correct person. Reading other people's code, writing clear commit
+      messages, and explaining your reasoning are skills. These skills matter as much as
+      writing code.
+    </p>
+
+    <h2>The team that builds a product changes the product</h2>
+    <p>
+      A product often works best for the people who built it. A team with no one who
+      uses a screen reader may release a product that a blind person cannot use. This
+      does not require anyone to intend harm. No one on the team thought about it. The
+      people who write software affect what gets built. The people who write software
+      affect who the product works for.
+    </p>
+
+    <PixelPanel accent="var(--tinkering)">
+      <h2>A question to ask</h2>
+      <p>
+        When you use an app, ask two questions. Who benefits if the app works correctly?
+        Who could be harmed if the app fails, or if the app works exactly as designed?
+        Programmers should ask these questions. Programmers should also ask if the code
+        runs correctly.
+      </p>
+    </PixelPanel>
+  </section>
+</Layout>
+
+<style>
+  .header {
+    padding: 56px 24px 8px;
+  }
+  .back-link {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link:hover {
+    color: var(--pac-yellow);
+  }
+  .header p {
+    color: var(--muted);
+    max-width: 68ch;
+  }
+  .article {
+    padding: 24px 24px 60px;
+    max-width: 68ch;
+  }
+  .article h2 {
+    margin-top: 1.6em;
+    color: var(--pac-yellow);
+  }
+  .article p {
+    color: var(--ink);
+  }
+</style>

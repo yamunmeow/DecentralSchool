@@ -1,0 +1,264 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PixelPanel from "../components/PixelPanel.astro";
+
+const menu = [
+  { href: "/games", label: "Play Games" },
+  { href: "/learn", label: "Start Learning" },
+  { href: "/explore", label: "Explore" },
+  { href: "/resources", label: "Resources" },
+];
+
+const categories = [
+  {
+    key: "logic",
+    name: "Logic",
+    color: "var(--logic)",
+    ghost: "Inky",
+    blurb: "Each puzzle has one correct answer. Find it.",
+  },
+  {
+    key: "memory",
+    name: "Memory",
+    color: "var(--memory)",
+    ghost: "Pinky",
+    blurb: "Remember a pattern. The pattern gets longer each round.",
+  },
+  {
+    key: "algorithms",
+    name: "Algorithms",
+    color: "var(--algorithms)",
+    ghost: "Clyde",
+    blurb: "Give exact instructions in the correct order.",
+  },
+  {
+    key: "tinkering",
+    name: "Tinkering",
+    color: "var(--tinkering)",
+    ghost: "Blinky",
+    blurb: "Take something apart. Put it back together a different way.",
+  },
+];
+---
+
+<Layout title="DecentralSchool" description="DecentralSchool teaches programming logic, memory, and algorithms using games.">
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <h1 class="title">
+        DECENTRAL<span class="title-accent">SCHOOL</span>
+      </h1>
+      <p class="tagline">
+        This site has short games for high-school-level programming skills: logic,
+        memory, and algorithms. You can play each game many times.
+      </p>
+
+      <nav aria-label="Main menu" class="arcade-menu" id="arcade-menu">
+        <ul>
+          {menu.map((item, i) => (
+            <li>
+              <a href={item.href} data-index={i}>
+                <span class="menu-cursor" aria-hidden="true">▸</span>
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="menu-hint">↑ / ↓ to move &nbsp;·&nbsp; Enter to select</p>
+      </nav>
+    </div>
+  </section>
+
+  <section class="wrap categories">
+    <h2>Every game trains one of these</h2>
+    <div class="category-grid">
+      {categories.map((cat) => (
+        <PixelPanel as="li" accent={cat.color} class="category-card">
+          <a href={`/games#${cat.key}`} class="category-card-link">
+            <span class="ghost-dot" style={`background:${cat.color}`}></span>
+            <h3 style={`color:${cat.color}`}>{cat.name}</h3>
+            <p class="ghost-name">{cat.ghost}</p>
+            <p>{cat.blurb}</p>
+            <span class="category-go">See games →</span>
+          </a>
+        </PixelPanel>
+      ))}
+    </div>
+    <a href="/games" class="pixel-btn">See all games →</a>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    padding: 72px 0 56px;
+    text-align: center;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255, 212, 0, 0.08), transparent);
+    border-bottom: 3px solid var(--border);
+  }
+
+  .title {
+    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.6em;
+  }
+
+  .title-accent {
+    color: var(--pac-yellow);
+  }
+
+  .tagline {
+    color: var(--muted);
+    max-width: 56ch;
+    margin: 0 auto 2.5em;
+    font-size: 1rem;
+  }
+
+  .arcade-menu {
+    display: inline-block;
+    text-align: left;
+  }
+
+  .arcade-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .arcade-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 10px 4px;
+  }
+
+  .menu-cursor {
+    color: var(--pac-yellow);
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+
+  .arcade-menu a:hover,
+  .arcade-menu a.selected {
+    color: var(--ink);
+  }
+
+  .arcade-menu a:hover .menu-cursor,
+  .arcade-menu a.selected .menu-cursor {
+    opacity: 1;
+    animation: blink 0.8s steps(2) infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0.2; }
+  }
+
+  .menu-hint {
+    margin-top: 1.2em;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .categories {
+    padding: 64px 24px 40px;
+    text-align: center;
+  }
+
+  .categories h2 {
+    margin-bottom: 1em;
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    list-style: none;
+    margin: 0 0 2.5em;
+    padding: 0;
+    text-align: left;
+  }
+
+  .category-card {
+    transition: transform 0.1s ease;
+  }
+
+  .category-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .category-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .category-card h3 {
+    margin-bottom: 0.2em;
+  }
+
+  .category-go {
+    display: inline-block;
+    margin-top: 0.8em;
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    color: var(--ghost-cyan);
+  }
+
+  .category-card-link:hover .category-go {
+    color: var(--pac-yellow);
+  }
+
+  .ghost-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+  }
+
+  .ghost-name {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.8em;
+  }
+</style>
+
+<script>
+  const menu = document.getElementById("arcade-menu");
+  if (menu) {
+    const links = Array.from(menu.querySelectorAll<HTMLAnchorElement>("a"));
+    let selected = 0;
+
+    const render = () => {
+      links.forEach((link, i) => link.classList.toggle("selected", i === selected));
+    };
+
+    render();
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown") {
+        selected = (selected + 1) % links.length;
+        render();
+        e.preventDefault();
+      } else if (e.key === "ArrowUp") {
+        selected = (selected - 1 + links.length) % links.length;
+        render();
+        e.preventDefault();
+      } else if (e.key === "Enter" && document.activeElement === document.body) {
+        links[selected].click();
+      }
+    });
+
+    links.forEach((link, i) => {
+      link.addEventListener("mouseenter", () => {
+        selected = i;
+        render();
+      });
+    });
+  }
+</script>

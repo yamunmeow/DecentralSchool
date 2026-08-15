@@ -1,0 +1,68 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PixelPanel from "../../components/PixelPanel.astro";
+
+const pages = [
+  { href: "/explore/syntax", title: "Syntax", blurb: "Variables, loops, conditionals, and functions in two languages, side by side." },
+  { href: "/explore/languages", title: "Languages", blurb: "What Python, JavaScript, C, and SQL are each used for." },
+  { href: "/explore/history", title: "History", blurb: "Important events in the history of programming, from 1843 to now." },
+  { href: "/explore/sts", title: "Tech & Society", blurb: "How the people who write code make decisions that affect other people." },
+  { href: "/explore/tools", title: "Tools", blurb: "The editor, the terminal, and version control. Tools programmers use every day." },
+];
+---
+
+<Layout title="Explore" description="Pages about programming: syntax, languages, history, society, and tools.">
+  <section class="wrap header">
+    <h1>Explore</h1>
+    <p>
+      This page links to pages about programming. These pages explain ideas. They do
+      not have puzzles.
+    </p>
+  </section>
+
+  <section class="wrap grid">
+    {pages.map((p) => (
+      <a href={p.href} class="explore-link">
+        <PixelPanel>
+          <h2>{p.title}</h2>
+          <p>{p.blurb}</p>
+          <span class="go">Read →</span>
+        </PixelPanel>
+      </a>
+    ))}
+  </section>
+</Layout>
+
+<style>
+  .header {
+    padding: 56px 24px 8px;
+  }
+  .header p {
+    color: var(--muted);
+    max-width: 60ch;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+    padding: 32px 24px 60px;
+  }
+  .explore-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  .explore-link h2 {
+    margin-bottom: 0.4em;
+  }
+  .explore-link p {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .go {
+    display: inline-block;
+    margin-top: 1em;
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    color: var(--ghost-cyan);
+  }
+</style>

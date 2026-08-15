@@ -1,0 +1,14 @@
+---
+interface Props {
+  class?: string;
+  as?: "div" | "article" | "section" | "li";
+  accent?: string;
+}
+const { class: className = "", as: Tag = "div", accent }: Props = Astro.props;
+---
+
+<Tag class={`pixel-panel ${className}`} style={accent ? `--border-color: ${accent}` : undefined}>
+  <div class="pixel-panel-inner">
+    <slot />
+  </div>
+</Tag>

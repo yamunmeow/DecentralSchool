@@ -1,0 +1,78 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p class="footer-tag">
+      DecentralSchool teaches logic, memory, and algorithms using games.
+    </p>
+    <ul class="footer-links">
+      <li><a href="/games">Play</a></li>
+      <li><a href="/learn">Learn</a></li>
+      <li><a href="/explore">Explore</a></li>
+      <li><a href="/resources">Resources</a></li>
+    </ul>
+    <p class="footer-meta">© {year} DecentralSchool.</p>
+    <p class="footer-close" aria-hidden="true">{"}"} <span class="footer-comment">// end of decentralschool</span></p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 3px solid var(--border);
+    background: var(--bg-inset);
+    margin-top: 80px;
+  }
+
+  .footer-inner {
+    padding: 32px 24px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-tag {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+  }
+
+  .footer-links a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .footer-links a:hover {
+    color: var(--pac-yellow);
+  }
+
+  .footer-meta {
+    color: var(--muted);
+    font-size: 0.75rem;
+    margin: 0;
+  }
+
+  .footer-close {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--ink);
+    margin: 8px 0 0;
+  }
+
+  .footer-comment {
+    color: var(--comment);
+  }
+</style>

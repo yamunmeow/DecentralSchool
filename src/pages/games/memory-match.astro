@@ -1,0 +1,131 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Memory Match" description="Flip cards, find every matching pair of coding symbols, beat your best move count.">
+  <section class="wrap game-page">
+    <a href="/games" class="back-link">← All games</a>
+    <h1>Memory Match</h1>
+    <p class="lede">
+      This is a card-matching game. The pairs are code syntax: <code>{"{ }"}</code>,
+      <code>==</code>, <code>&amp;&amp;</code>, and more. Flip two cards at a time. Find
+      every pair. Try to use as few tries as possible.
+    </p>
+    <div id="game-root"></div>
+  </section>
+</Layout>
+
+<style>
+  .game-page {
+    padding: 40px 24px 60px;
+  }
+  .back-link {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link:hover {
+    color: var(--pac-yellow);
+  }
+  .lede {
+    color: var(--muted);
+    max-width: 60ch;
+  }
+  .lede code {
+    color: var(--ink);
+  }
+  #game-root {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+  }
+
+  :global(.mm-wrap) {
+    width: 100%;
+    max-width: 560px;
+  }
+
+  :global(.mm-menu) {
+    text-align: center;
+    padding: 40px 24px;
+    border: 3px solid var(--border);
+    background: var(--bg-inset);
+  }
+
+  :global(.mm-label) {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 1.4em;
+  }
+
+  :global(.mm-diff-row) {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  :global(.mm-bar) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+  }
+
+  :global(.mm-bar-actions) {
+    display: flex;
+    gap: 8px;
+  }
+
+  :global(.mm-bar-actions .pixel-btn) {
+    font-size: 0.55rem;
+    padding: 8px 12px;
+  }
+
+  :global(.mm-board) {
+    display: grid;
+    gap: 8px;
+  }
+
+  :global(.mm-card) {
+    aspect-ratio: 1;
+    background: var(--ghost-pink);
+    color: var(--bg-inset);
+    border: none;
+    font-family: var(--font-display);
+    font-size: clamp(0.6rem, 2.4vw, 0.95rem);
+    cursor: pointer;
+  }
+
+  :global(.mm-card:disabled) {
+    cursor: default;
+  }
+
+  :global(.mm-card.mm-up) {
+    background: var(--panel-raised);
+    color: var(--ink);
+    border: 2px solid var(--ghost-pink);
+  }
+
+  :global(.mm-card.mm-matched) {
+    background: var(--bg-inset);
+    color: #7fd88f;
+    border: 2px solid #7fd88f;
+  }
+
+  :global(.mm-solved) {
+    text-align: center;
+    font-family: var(--font-display);
+    color: var(--pac-yellow);
+    margin-top: 16px;
+  }
+</style>
+
+<script>
+  import { mountMemoryMatch } from "../../games/memory-match/game";
+  const root = document.getElementById("game-root");
+  if (root) mountMemoryMatch(root);
+</script>

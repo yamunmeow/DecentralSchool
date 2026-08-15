@@ -1,0 +1,122 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Simon Sequence" description="Watch the tiles light up, then repeat the pattern. It grows by one every round.">
+  <section class="wrap game-page">
+    <a href="/games" class="back-link">← All games</a>
+    <h1>Simon Sequence</h1>
+    <p class="lede">
+      This game has 4 tiles and one pattern. The pattern grows by one tile each round.
+      Watch which tiles light up. Click the tiles back in the same order. This test is
+      the same digit span test that memory researchers use to measure working memory.
+      You can pick a starting level below.
+    </p>
+    <div id="game-root"></div>
+  </section>
+</Layout>
+
+<style>
+  .game-page {
+    padding: 40px 24px 60px;
+  }
+  .back-link {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link:hover {
+    color: var(--pac-yellow);
+  }
+  .lede {
+    color: var(--muted);
+    max-width: 60ch;
+  }
+  #game-root {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+  }
+
+  :global(.sq-wrap) {
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+  }
+
+  :global(.sq-bar) {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    margin-bottom: 16px;
+    color: var(--muted);
+  }
+
+  :global(.sq-board) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  :global(.sq-tile) {
+    aspect-ratio: 1;
+    background: var(--tile-color);
+    opacity: 0.45;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.1s;
+  }
+
+  :global(.sq-tile:disabled) {
+    cursor: default;
+  }
+
+  :global(.sq-tile.sq-lit) {
+    opacity: 1;
+    box-shadow: 0 0 24px var(--tile-color);
+  }
+
+  :global(.sq-over) {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  :global(.sq-start-row) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  :global(.sq-start-row.sq-hidden) {
+    display: none;
+  }
+
+  :global(.sq-start-row .pixel-btn) {
+    font-size: 0.6rem;
+    padding: 8px 14px;
+  }
+
+  :global(.sq-start-level) {
+    font-size: 0.8rem;
+    color: var(--muted);
+    min-width: 9em;
+  }
+
+  :global(.sq-start-level #sq-start-level-num) {
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+  }
+</style>
+
+<script>
+  import { mountSimonSequence } from "../../games/simon-sequence/game";
+  const root = document.getElementById("game-root");
+  if (root) mountSimonSequence(root);
+</script>

@@ -1,0 +1,120 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const concepts = [
+  {
+    name: "Variables",
+    note: "A variable is a name for a value. Python and JavaScript detect the value's type automatically. In JavaScript, \"let\" means the value can change later. \"const\" means the value cannot change.",
+    python: `age = 16\nname = "Ada"\nis_student = True`,
+    javascript: `let age = 16;\nconst name = "Ada";\nlet isStudent = true;`,
+  },
+  {
+    name: "Conditionals",
+    note: "Run one block of code if a condition is true. Run a different block if the condition is false.",
+    python: `if age >= 16:\n    print("Old enough")\nelse:\n    print("Not yet")`,
+    javascript: `if (age >= 16) {\n  console.log("Old enough");\n} else {\n  console.log("Not yet");\n}`,
+  },
+  {
+    name: "Loops",
+    note: "Repeat one action for every item in a list. You write the action one time.",
+    python: `for n in [2, 3, 5, 7]:\n    print(n * n)`,
+    javascript: `for (const n of [2, 3, 5, 7]) {\n  console.log(n * n);\n}`,
+  },
+  {
+    name: "Functions",
+    note: "A function is a named block of instructions. You can run a function many times. A function can take input values. A function can return an output value.",
+    python: `def square(n):\n    return n * n\n\nsquare(5)  # 25`,
+    javascript: `function square(n) {\n  return n * n;\n}\n\nsquare(5); // 25`,
+  },
+  {
+    name: "Lists / arrays",
+    note: "A list stores many values in order. You can loop over a list. You can add values to a list. You can access one value by its position number.",
+    python: `scores = [88, 92, 79]\nscores.append(100)\nscores[0]  # 88`,
+    javascript: `let scores = [88, 92, 79];\nscores.push(100);\nscores[0]; // 88`,
+  },
+];
+---
+
+<Layout title="Syntax" description="Core programming concepts in Python and JavaScript.">
+  <section class="wrap header">
+    <a href="/explore" class="back-link">← Explore</a>
+    <h1>Syntax</h1>
+    <p>
+      Syntax means the exact rules for writing a language. Each language has different
+      syntax. Most languages use the same 5 core ideas: variables, conditionals, loops,
+      functions, and lists. This page shows these 5 ideas in Python and in JavaScript.
+    </p>
+  </section>
+
+  <section class="wrap concepts">
+    {concepts.map((c) => (
+      <article class="concept">
+        <h2>{c.name}</h2>
+        <p class="note">{c.note}</p>
+        <div class="code-cols">
+          <div class="code-col">
+            <p class="lang-tag">Python</p>
+            <pre><code>{c.python}</code></pre>
+          </div>
+          <div class="code-col">
+            <p class="lang-tag">JavaScript</p>
+            <pre><code>{c.javascript}</code></pre>
+          </div>
+        </div>
+      </article>
+    ))}
+  </section>
+</Layout>
+
+<style>
+  .header {
+    padding: 56px 24px 8px;
+  }
+  .back-link {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link:hover {
+    color: var(--pac-yellow);
+  }
+  .header p {
+    color: var(--muted);
+    max-width: 68ch;
+  }
+  .concepts {
+    padding: 24px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
+  .concept h2 {
+    color: var(--pac-yellow);
+  }
+  .note {
+    color: var(--muted);
+    max-width: 65ch;
+    font-size: 0.9rem;
+  }
+  .code-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 14px;
+  }
+  .lang-tag {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    color: var(--ghost-cyan);
+    margin-bottom: 6px;
+  }
+  .code-col pre {
+    margin: 0;
+  }
+  @media (max-width: 640px) {
+    .code-cols {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

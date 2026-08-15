@@ -1,0 +1,105 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PixelPanel from "../components/PixelPanel.astro";
+
+const groups = [
+  {
+    label: "Start here",
+    color: "var(--logic)",
+    items: [
+      { name: "freeCodeCamp", url: "https://www.freecodecamp.org/", note: "Free courses. Each course includes projects." },
+      { name: "Python for Everybody", url: "https://www.py4e.com/", note: "A free course for people with no programming experience." },
+      { name: "The Odin Project", url: "https://www.theodinproject.com/", note: "A free course. You build projects to learn full web development." },
+    ],
+  },
+  {
+    label: "Reference & documentation",
+    color: "var(--memory)",
+    items: [
+      { name: "MDN Web Docs", url: "https://developer.mozilla.org/", note: "A reference for HTML, CSS, and JavaScript. Professional programmers use this site to check syntax." },
+      { name: "W3Schools", url: "https://www.w3schools.com/", note: "References for most web languages. Each page includes examples." },
+      { name: "DevDocs", url: "https://devdocs.io/", note: "Documentation for many languages and frameworks. You can search all of them in one place." },
+    ],
+  },
+  {
+    label: "Practice & puzzles",
+    color: "var(--algorithms)",
+    items: [
+      { name: "CS50 (Harvard, free)", url: "https://cs50.harvard.edu/x/", note: "A free introduction to computer science from Harvard. This course covers more material than most introduction courses." },
+      { name: "Exercism", url: "https://exercism.org/", note: "Short exercises in many languages. People review your solutions and give feedback." },
+      { name: "Advent of Code", url: "https://adventofcode.com/", note: "A set of algorithm puzzles. One new puzzle appears each day in December." },
+    ],
+  },
+  {
+    label: "Community",
+    color: "var(--tinkering)",
+    items: [
+      { name: "Stack Overflow", url: "https://stackoverflow.com/", note: "A question and answer site for programming problems. Search for your error message before you post a new question." },
+      { name: "GitHub", url: "https://github.com/", note: "A site that stores code for most open-source projects. You can read the code of real projects here." },
+    ],
+  },
+];
+---
+
+<Layout title="Resources" description="Free resources for learning to program.">
+  <section class="wrap header">
+    <h1>Resources</h1>
+    <p>
+      Every resource on this page is free, or has a free plan.
+    </p>
+  </section>
+
+  {groups.map((g) => (
+    <section class="wrap group">
+      <h2 style={`color:${g.color}`}>{g.label}</h2>
+      <ul class="link-grid">
+        {g.items.map((item) => (
+          <li>
+            <PixelPanel accent={g.color}>
+              <a href={item.url} target="_blank" rel="noopener noreferrer" class="res-link">
+                {item.name} ↗
+              </a>
+              <p>{item.note}</p>
+            </PixelPanel>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Layout>
+
+<style>
+  .header {
+    padding: 56px 24px 8px;
+  }
+  .header p {
+    color: var(--muted);
+    max-width: 65ch;
+  }
+  .group {
+    padding: 24px 24px 8px;
+  }
+  .link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    list-style: none;
+    margin: 16px 0 40px;
+    padding: 0;
+  }
+  .res-link {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .res-link:hover {
+    color: var(--pac-yellow);
+  }
+  .link-grid p {
+    margin-top: 0.8em;
+    margin-bottom: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+</style>

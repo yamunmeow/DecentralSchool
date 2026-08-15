@@ -1,0 +1,70 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { games, categories } from "../../games/registry";
+
+export function getStaticPaths() {
+  return games
+    .filter((g) => g.status === "soon")
+    .map((game) => ({ params: { slug: game.slug }, props: { game } }));
+}
+
+const { game } = Astro.props;
+const cat = categories[game.category];
+---
+
+<Layout title={game.title} description={game.blurb}>
+  <section class="wrap game-page">
+    <a href="/games" class="back-link">← All games</a>
+    <h1>{game.title}</h1>
+    <p class="lede">{game.blurb}</p>
+
+    <div class="soon-panel" style={`--cat-color:${cat.color}`}>
+      <span class="soon-tag">Coming soon</span>
+      <h2>The idea</h2>
+      <p>{game.concept}</p>
+      <p class="soon-note">
+        This game is not built yet.
+      </p>
+      <a href="/games" class="pixel-btn">Back to all games →</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .game-page {
+    padding: 40px 24px 60px;
+  }
+  .back-link {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link:hover {
+    color: var(--pac-yellow);
+  }
+  .lede {
+    color: var(--muted);
+    max-width: 60ch;
+  }
+  .soon-panel {
+    margin-top: 32px;
+    max-width: 60ch;
+    padding: 28px;
+    border: 3px dashed var(--cat-color);
+    background: var(--bg-inset);
+  }
+  .soon-tag {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    color: var(--cat-color);
+    border: 1px solid var(--cat-color);
+    padding: 4px 10px;
+    margin-bottom: 1.2em;
+  }
+  .soon-note {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+</style>

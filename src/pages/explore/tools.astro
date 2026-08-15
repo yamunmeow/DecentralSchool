@@ -1,0 +1,71 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PixelPanel from "../../components/PixelPanel.astro";
+
+const tools = [
+  { name: "Code editor", ex: "VS Code, PyCharm", what: "A text editor for writing code. It understands the syntax of a programming language. It can find typos before you run the code. It can also complete code as you type." },
+  { name: "The terminal", ex: "Terminal, PowerShell", what: "A way to control your computer by typing text commands. You can run programs, move files, and install tools using the terminal." },
+  { name: "Version control", ex: "Git & GitHub", what: "Git saves every change you make to your code. You can undo mistakes. You can see exactly what changed and when it changed. GitHub stores your Git history online. GitHub lets you share code and work with other people." },
+  { name: "Package manager", ex: "npm, pip", what: "A package manager installs code that other people wrote. Many common tasks already have a tested library. A package manager can install a library with one command." },
+  { name: "Browser DevTools", ex: "Built into every browser", what: "Every browser has DevTools built in. Press F12 to open DevTools in most browsers. You can view the code of any website. You can edit a website's code on your own screen. You can watch network requests. You can debug JavaScript." },
+  { name: "AI coding assistants", ex: "Claude, Copilot", what: "These tools read your code. They can suggest code, explain errors, or write a first draft of code. You need to understand code yourself to know if the suggestion is correct." },
+];
+---
+
+<Layout title="Tools" description="Tools programmers use alongside a programming language.">
+  <section class="wrap header">
+    <a href="/explore" class="back-link">← Explore</a>
+    <h1>Tools</h1>
+    <p>
+      None of these are programming languages. These are tools programmers use
+      alongside a programming language. This page explains what each tool does.
+    </p>
+  </section>
+
+  <section class="wrap tool-list">
+    {tools.map((t) => (
+      <PixelPanel class="tool-card">
+        <h2>{t.name}</h2>
+        <p class="ex">{t.ex}</p>
+        <p>{t.what}</p>
+      </PixelPanel>
+    ))}
+  </section>
+</Layout>
+
+<style>
+  .header {
+    padding: 56px 24px 8px;
+  }
+  .back-link {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link:hover {
+    color: var(--pac-yellow);
+  }
+  .header p {
+    color: var(--muted);
+    max-width: 68ch;
+  }
+  .tool-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    padding: 24px 24px 60px;
+  }
+  .tool-card h2 {
+    color: var(--pac-yellow);
+    margin-bottom: 0.2em;
+  }
+  .ex {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 0.8em;
+  }
+  .tool-card p:not(.ex) {
+    font-size: 0.9rem;
+  }
+</style>

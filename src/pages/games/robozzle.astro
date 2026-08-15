@@ -1,0 +1,273 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Robozzle" description="Program a robot to collect every star on the board.">
+  <section class="wrap game-page">
+    <a href="/games" class="back-link">← All games</a>
+    <h1>Robozzle</h1>
+    <p class="lede">
+      Program a robot to collect every star. The robot has 3 moves: move forward, turn
+      left, turn right. You can also write up to 5 functions. Functions can call
+      themselves. Each instruction can have a color condition. An instruction with a
+      color condition only runs when the robot stands on a tile with that color.
+    </p>
+
+    <div id="game-root"></div>
+
+    <p class="citation">
+      These 77 levels (numbered 14 to 100) are from the original RoboZZle game, made by
+      <a href="https://robozzle.com/" target="_blank" rel="noopener noreferrer">Igor Ostrovsky and other early contributors</a>.
+      The level data comes from a saved copy on GitHub:
+      <a href="https://github.com/lostmsu/RoboZZle.LevelArchive" target="_blank" rel="noopener noreferrer">RoboZZle.LevelArchive</a>.
+      The level numbers are the same numbers robozzle.com used. Levels 1 to 13 are not in
+      this saved copy. Robozzle.com has over 1,000 levels in total. Play the full list at
+      <a href="https://robozzle.com/" target="_blank" rel="noopener noreferrer">robozzle.com</a>.
+    </p>
+  </section>
+</Layout>
+
+<style>
+  .game-page {
+    padding: 40px 24px 60px;
+  }
+  .back-link {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link:hover {
+    color: var(--pac-yellow);
+  }
+  .lede {
+    color: var(--muted);
+    max-width: 68ch;
+  }
+  .citation {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--muted);
+    max-width: 68ch;
+  }
+  #game-root {
+    margin-top: 24px;
+  }
+
+  :global(.rz-hint) {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  :global(.rz-level-grid) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  :global(.rz-level-btn) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    background: var(--bg-inset);
+    border: 2px solid var(--border);
+    color: var(--ink);
+    padding: 12px;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  :global(.rz-level-btn:hover) {
+    border-color: var(--algorithms);
+  }
+
+  :global(.rz-level-num) {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--algorithms);
+  }
+
+  :global(.rz-level-title) {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  :global(.rz-back) {
+    margin-bottom: 16px;
+    font-size: 0.6rem;
+  }
+
+  :global(.rz-title-row) {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  :global(.rz-title-row h2) {
+    margin: 0;
+  }
+
+  :global(.rz-author) {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  :global(.rz-about) {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+
+  :global(.rz-layout) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 28px;
+    margin-top: 20px;
+    align-items: start;
+  }
+
+  @media (max-width: 760px) {
+    :global(.rz-layout) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  :global(.rz-board-col) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  :global(#rz-canvas) {
+    background: #161622;
+    border: 3px solid var(--border);
+    touch-action: none;
+  }
+
+  :global(.rz-status) {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+    min-height: 1.4em;
+  }
+  :global(.rz-status-won) {
+    color: var(--pac-yellow);
+  }
+  :global(.rz-status-crashed),
+  :global(.rz-status-looping) {
+    color: var(--ghost-red);
+  }
+
+  :global(.rz-controls) {
+    display: flex;
+    gap: 10px;
+  }
+  :global(.rz-controls .pixel-btn) {
+    font-size: 0.6rem;
+    padding: 10px 16px;
+  }
+
+  :global(.rz-editor-label) {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin: 16px 0 8px;
+  }
+  :global(.rz-editor-label:first-child) {
+    margin-top: 0;
+  }
+
+  :global(.rz-func-row) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  :global(.rz-func-label) {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    color: var(--algorithms);
+    width: 2.4em;
+    flex-shrink: 0;
+  }
+
+  :global(.rz-slots) {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  :global(.rz-slot) {
+    width: 34px;
+    height: 34px;
+    border: 2px dashed var(--border);
+    background: var(--slot-bg, transparent);
+    color: var(--ink);
+    font-size: 0.85rem;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  :global(.rz-slot:not(.rz-slot-empty)) {
+    border-style: solid;
+    border-color: var(--bg-inset);
+  }
+
+  :global(.rz-palette) {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  :global(.rz-tool) {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 8px;
+    background: var(--bg-inset);
+    border: 2px solid var(--border);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    cursor: pointer;
+  }
+
+  :global(.rz-tool.active) {
+    border-color: var(--pac-yellow);
+    color: var(--pac-yellow);
+  }
+
+  :global(.rz-tool-clear) {
+    color: var(--ghost-red);
+  }
+
+  :global(.rz-color-tool) {
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--border);
+    background: var(--c, var(--panel-raised));
+    cursor: pointer;
+  }
+
+  :global(.rz-color-tool.active) {
+    border-color: var(--pac-yellow);
+  }
+
+  :global(.rz-note) {
+    margin-top: 14px;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+</style>
+
+<script>
+  import { mountRobozzle } from "../../games/robozzle/game";
+  const root = document.getElementById("game-root");
+  if (root) mountRobozzle(root);
+</script>

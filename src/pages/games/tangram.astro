@@ -1,0 +1,84 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Tangram" description="Break apart a 7-piece tangram square and make a different shape.">
+  <section class="wrap game-page">
+    <a href="/games" class="back-link">← All games</a>
+    <h1>Tangram</h1>
+    <p class="lede">
+      This is a 7-piece puzzle. Break the square apart. Drag, rotate, and flip the pieces
+      to make different shapes. All tangram shapes use the same 7 pieces.
+    </p>
+    <div id="game-root"></div>
+  </section>
+</Layout>
+
+<style>
+  .game-page {
+    padding: 40px 24px 60px;
+  }
+
+  .back-link {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    color: var(--pac-yellow);
+  }
+
+  .lede {
+    color: var(--muted);
+    max-width: 60ch;
+  }
+
+  #game-root {
+    margin-top: 24px;
+  }
+
+  :global(.tg-wrap) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  :global(.tg-hint) {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: center;
+    margin: 0;
+  }
+
+  :global(.tg-canvas) {
+    width: 100%;
+    max-width: 720px;
+    height: auto;
+    aspect-ratio: 720 / 560;
+    background: #161622;
+    border: 3px solid var(--border);
+    touch-action: none;
+    cursor: grab;
+  }
+
+  :global(.tg-controls) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  :global(.tg-controls button:disabled) {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+</style>
+
+<script>
+  import { mountTangram } from "../../games/tangram/game";
+  const root = document.getElementById("game-root");
+  if (root) mountTangram(root);
+</script>

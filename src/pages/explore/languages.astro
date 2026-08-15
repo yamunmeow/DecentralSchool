@@ -1,0 +1,90 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PixelPanel from "../../components/PixelPanel.astro";
+
+const langs = [
+  { name: "Python", color: "var(--logic)", use: "Data, AI, scripting, teaching", why: "Python syntax is close to English words. Many schools and companies use Python as a first language to teach. Most machine learning code is written in Python." },
+  { name: "JavaScript", color: "var(--memory)", use: "Websites, web apps, this site", why: "Every web browser can run JavaScript. Most interactive parts of websites use JavaScript." },
+  { name: "HTML & CSS", color: "var(--memory)", use: "Structure & style of web pages", why: "HTML and CSS are not programming languages. HTML describes the content of a page. CSS describes how a page looks. You need both to build web pages." },
+  { name: "Java", color: "var(--algorithms)", use: "Android apps, large business systems", why: "Java requires you to state the type of every variable. This makes large Java programs easier to maintain over many years." },
+  { name: "C / C++", color: "var(--tinkering)", use: "Operating systems, game engines, embedded devices", why: "C and C++ give you direct control over computer memory. Programs run fast. Python and JavaScript are themselves built using C." },
+  { name: "SQL", color: "var(--logic)", use: "Talking to databases", why: "SQL is not for building apps. SQL is for asking questions about data stored in a database. Most apps use SQL to store and find data." },
+  { name: "Swift", color: "var(--tinkering)", use: "iOS and macOS apps", why: "Apple made Swift for building apps that run on iPhone and Mac computers." },
+];
+---
+
+<Layout title="Languages" description="What each programming language is used for.">
+  <section class="wrap header">
+    <a href="/explore" class="back-link">← Explore</a>
+    <h1>Languages</h1>
+    <p>
+      Many people ask which programming language to learn first. This is not the right
+      first question. Each language was designed to solve a different kind of problem.
+      This page explains what each language is used for.
+    </p>
+  </section>
+
+  <section class="wrap lang-list">
+    {langs.map((l) => (
+      <PixelPanel accent={l.color} class="lang-card">
+        <h2 style={`color:${l.color}`}>{l.name}</h2>
+        <p class="use">{l.use}</p>
+        <p>{l.why}</p>
+      </PixelPanel>
+    ))}
+  </section>
+
+  <section class="wrap takeaway">
+    <PixelPanel accent="var(--pac-yellow)">
+      <h2>Which language should you learn first?</h2>
+      <p>
+        Python and JavaScript are both good first languages. You see results right away
+        with both. The ideas on the <a href="/explore/syntax">Syntax</a> page apply to
+        every language on this page. Learn one language well. A second language will
+        take less time to learn than the first one did.
+      </p>
+    </PixelPanel>
+  </section>
+</Layout>
+
+<style>
+  .header {
+    padding: 56px 24px 8px;
+  }
+  .back-link {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back-link:hover {
+    color: var(--pac-yellow);
+  }
+  .header p {
+    color: var(--muted);
+    max-width: 68ch;
+  }
+  .lang-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    padding: 24px 24px;
+  }
+  .lang-card h2 {
+    margin-bottom: 0.2em;
+  }
+  .use {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.8em;
+  }
+  .lang-card p:not(.use) {
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+  .takeaway {
+    padding: 16px 24px 60px;
+  }
+</style>

@@ -1,0 +1,288 @@
+@import "@fontsource/press-start-2p/400.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+@import "@fontsource/jetbrains-mono/700.css";
+
+/*
+  Palette: arcade-cabinet dark ground, four accent colors borrowed directly
+  from Pac-Man's four ghosts. There is no light theme by design, same as
+  Pac-Man doesn't have one -- the whole visual identity assumes a dark,
+  glowing-CRT background.
+
+  The four ghost colors double as the four game categories:
+    Inky (cyan)    -> Logic
+    Pinky (pink)   -> Memory
+    Clyde (orange) -> Algorithms
+    Blinky (red)   -> Tinkering
+*/
+:root {
+  --bg: #0a0a14;
+  --bg-inset: #050508;
+  --panel: #14141f;
+  --panel-raised: #1c1c2c;
+  --border: #2c2c40;
+
+  --ink: #f4f4ef;
+  --muted: #9d9db4;
+
+  --pac-yellow: #ffd400;
+  --pac-yellow-dim: #b89400;
+
+  --ghost-cyan: #4ce0ff;
+  --ghost-pink: #ff9fd6;
+  --ghost-orange: #ffa552;
+  --ghost-red: #ff4d6a;
+
+  --logic: var(--ghost-cyan);
+  --memory: var(--ghost-pink);
+  --algorithms: var(--ghost-orange);
+  --tinkering: var(--ghost-red);
+
+  --font-display: "Press Start 2P", "Courier New", monospace;
+  --font-body: "JetBrains Mono", "Fira Code", Consolas, monospace;
+
+  /* Code-comment green, the same convention most code editors use, applied
+     everywhere the design quotes C-style syntax: //, {, }, ;. */
+  --comment: #6a9955;
+
+  --notch: 8px;
+  --pixel-shadow: 4px 4px 0 var(--bg-inset);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.035) 1px, transparent 0);
+  background-size: 24px 24px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+main {
+  display: block;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  line-height: 1.5;
+  text-wrap: balance;
+  margin: 0 0 0.9em;
+}
+
+h1 { font-size: 1.6rem; }
+
+h2 {
+  font-size: 1.15rem;
+  color: var(--pac-yellow);
+}
+h2::after {
+  content: " {";
+  color: var(--comment);
+  font-family: var(--font-body);
+}
+
+h3 { font-size: 0.9rem; }
+
+p {
+  margin: 0 0 1em;
+  max-width: 68ch;
+}
+
+a {
+  color: var(--ghost-cyan);
+}
+
+a:hover {
+  color: var(--pac-yellow);
+}
+
+code, pre {
+  font-family: var(--font-body);
+}
+
+code {
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  font-size: 0.9em;
+}
+
+pre {
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  padding: 16px;
+  overflow-x: auto;
+  border-radius: 4px;
+}
+
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+::selection {
+  background: var(--pac-yellow);
+  color: var(--bg-inset);
+}
+
+:focus-visible {
+  outline: 3px solid var(--pac-yellow);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------- Pixel panel: an 8-bit-notched bordered box ---------- */
+
+.pixel-panel {
+  --panel-color: var(--panel);
+  --border-color: var(--border);
+  display: block;
+  background: var(--border-color);
+  padding: 3px;
+  clip-path: polygon(
+    0 var(--notch), var(--notch) var(--notch), var(--notch) 0,
+    calc(100% - var(--notch)) 0, calc(100% - var(--notch)) var(--notch), 100% var(--notch),
+    100% calc(100% - var(--notch)), calc(100% - var(--notch)) calc(100% - var(--notch)), calc(100% - var(--notch)) 100%,
+    var(--notch) 100%, var(--notch) calc(100% - var(--notch)), 0 calc(100% - var(--notch))
+  );
+}
+
+.pixel-panel-inner {
+  background: var(--panel-color);
+  position: relative;
+  height: 100%;
+  clip-path: polygon(
+    0 var(--notch), var(--notch) var(--notch), var(--notch) 0,
+    calc(100% - var(--notch)) 0, calc(100% - var(--notch)) var(--notch), 100% var(--notch),
+    100% calc(100% - var(--notch)), calc(100% - var(--notch)) calc(100% - var(--notch)), calc(100% - var(--notch)) 100%,
+    var(--notch) 100%, var(--notch) calc(100% - var(--notch)), 0 calc(100% - var(--notch))
+  );
+  padding: 20px;
+}
+
+.pixel-panel-inner::before,
+.pixel-panel-inner::after {
+  position: absolute;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--comment);
+  opacity: 0.6;
+}
+.pixel-panel-inner::before {
+  content: "{";
+  top: 6px;
+  left: 10px;
+}
+.pixel-panel-inner::after {
+  content: "}";
+  bottom: 6px;
+  right: 10px;
+}
+
+/* ---------- Pixel button ---------- */
+
+.pixel-btn {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  color: var(--bg-inset);
+  background: var(--pac-yellow);
+  border: none;
+  padding: 14px 20px;
+  cursor: pointer;
+  box-shadow: var(--pixel-shadow);
+  clip-path: polygon(
+    0 6px, 6px 6px, 6px 0,
+    calc(100% - 6px) 0, calc(100% - 6px) 6px, 100% 6px,
+    100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
+    6px 100%, 6px calc(100% - 6px), 0 calc(100% - 6px)
+  );
+  transition: transform 0.08s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.pixel-btn:hover {
+  color: var(--bg-inset);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--bg-inset);
+}
+
+.pixel-btn.secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 2px solid var(--border);
+  box-shadow: none;
+}
+
+.pixel-btn.secondary:hover {
+  color: var(--pac-yellow);
+  border-color: var(--pac-yellow);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---------- Dotted pellet divider, a nod to the maze ---------- */
+
+.pellet-rule {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 2.5em 0;
+  list-style: none;
+  padding: 0;
+}
+
+.pellet-rule::before,
+.pellet-rule::after {
+  content: "";
+  flex: 1;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--pac-yellow) 0 4px,
+    transparent 4px 14px
+  );
+}
+
+/* ---------- Utility ---------- */
+
+.wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.file-comment {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--comment);
+  margin: 14px auto 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
