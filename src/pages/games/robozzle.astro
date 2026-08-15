@@ -215,6 +215,11 @@ import Layout from "../../layouts/Layout.astro";
     flex-shrink: 0;
   }
 
+  :global(.rz-slot[data-op="L"]),
+  :global(.rz-slot[data-op="R"]) {
+    font-size: 1.4rem;
+  }
+
   :global(.rz-slot:not(.rz-slot-empty)) {
     border-style: solid;
     border-color: var(--bg-inset);
@@ -236,6 +241,11 @@ import Layout from "../../layouts/Layout.astro";
     font-family: var(--font-display);
     font-size: 0.7rem;
     cursor: pointer;
+  }
+
+  :global(.rz-tool[data-op="L"]),
+  :global(.rz-tool[data-op="R"]) {
+    font-size: 1.3rem;
   }
 
   :global(.rz-tool.active) {

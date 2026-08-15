@@ -180,7 +180,7 @@ export function mountRobozzle(root: HTMLElement) {
       return `<button class="rz-slot rz-slot-empty" data-fi="${fi}" data-si="${si}"></button>`;
     }
     const bg = instr.color ? TILE_COLORS[instr.color] : "var(--panel-raised)";
-    return `<button class="rz-slot" data-fi="${fi}" data-si="${si}" style="--slot-bg:${bg}">${OP_LABEL[instr.op]}</button>`;
+    return `<button class="rz-slot" data-fi="${fi}" data-si="${si}" data-op="${instr.op}" style="--slot-bg:${bg}">${OP_LABEL[instr.op]}</button>`;
   }
 
   function bindPalette() {
