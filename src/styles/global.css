@@ -3,18 +3,7 @@
 @import "@fontsource/jetbrains-mono/500.css";
 @import "@fontsource/jetbrains-mono/700.css";
 
-/*
-  Palette: arcade-cabinet dark ground, four accent colors borrowed directly
-  from Pac-Man's four ghosts. There is no light theme by design, same as
-  Pac-Man doesn't have one -- the whole visual identity assumes a dark,
-  glowing-CRT background.
 
-  The four ghost colors double as the four game categories:
-    Inky (cyan)    -> Logic
-    Pinky (pink)   -> Memory
-    Clyde (orange) -> Algorithms
-    Blinky (red)   -> Tinkering
-*/
 :root {
   --bg: #0a0a14;
   --bg-inset: #050508;

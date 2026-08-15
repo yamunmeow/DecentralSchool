@@ -1,4 +1,7 @@
 import { levels, type RobozzleLevel } from "./levels";
+import { beginnerLevels } from "./beginner-levels";
+
+const allLevels = [...beginnerLevels, ...levels];
 import { emptyProgram, initState, step, type Instr, type Op, type Condition, type Program, type RunState } from "./engine";
 import { sizeCanvas } from "../shared/canvas";
 
@@ -44,17 +47,35 @@ export function mountRobozzle(root: HTMLElement) {
     selectEl.hidden = false;
     playerEl.hidden = true;
     selectEl.innerHTML = `
-      <p class="rz-hint">Choose a level. These are numbered exactly as they were on the original site.</p>
-      <div class="rz-level-grid">
-        ${levels
-          .map(
-            (l) => `<button class="rz-level-btn" data-id="${l.id}">
-              <span class="rz-level-num">${l.id}</span>
-              <span class="rz-level-title">${escapeHtml(l.title)}</span>
-            </button>`
-          )
-          .join("")}
-      </div>
+      <section class="rz-level-section">
+        <h2 class="rz-section-title">Beginner</h2>
+        <p class="rz-hint">4 short levels made for this site, to learn the controls. Not from the original game.</p>
+        <div class="rz-level-grid">
+          ${beginnerLevels
+            .map(
+              (l) => `<button class="rz-level-btn rz-level-btn-beginner" data-id="${l.id}">
+                <span class="rz-level-num">Beginner ${l.id}</span>
+                <span class="rz-level-title">${escapeHtml(l.title)}</span>
+              </button>`
+            )
+            .join("")}
+        </div>
+      </section>
+
+      <section class="rz-level-section">
+        <h2 class="rz-section-title">Original RoboZZle levels</h2>
+        <p class="rz-hint">Numbered exactly as they were on the original site.</p>
+        <div class="rz-level-grid">
+          ${levels
+            .map(
+              (l) => `<button class="rz-level-btn" data-id="${l.id}">
+                <span class="rz-level-num">${l.id}</span>
+                <span class="rz-level-title">${escapeHtml(l.title)}</span>
+              </button>`
+            )
+            .join("")}
+        </div>
+      </section>
     `;
     selectEl.querySelectorAll<HTMLButtonElement>(".rz-level-btn").forEach((btn) => {
       btn.addEventListener("click", () => loadLevel(Number(btn.dataset.id)));
@@ -62,7 +83,7 @@ export function mountRobozzle(root: HTMLElement) {
   }
 
   function loadLevel(id: number) {
-    level = levels.find((l) => l.id === id)!;
+    level = allLevels.find((l) => l.id === id)!;
     program = emptyProgram(level.subLengths);
     run = initState(level);
     tool = { op: "F", color: null };

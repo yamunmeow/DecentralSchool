@@ -16,7 +16,9 @@ import Layout from "../../layouts/Layout.astro";
     <div id="game-root"></div>
 
     <p class="citation">
-      These 77 levels (numbered 14 to 100) are from the original RoboZZle game, made by
+      The 4 Beginner levels were made for this site, to teach the controls. They are not
+      from the original game. The 77 levels numbered 14 to 100 are from the original
+      RoboZZle game, made by
       <a href="https://robozzle.com/" target="_blank" rel="noopener noreferrer">Igor Ostrovsky and other early contributors</a>.
       The level data comes from a saved copy on GitHub:
       <a href="https://github.com/lostmsu/RoboZZle.LevelArchive" target="_blank" rel="noopener noreferrer">RoboZZle.LevelArchive</a>.
@@ -61,6 +63,18 @@ import Layout from "../../layouts/Layout.astro";
     font-size: 0.85rem;
   }
 
+  :global(.rz-level-section) {
+    margin-top: 32px;
+  }
+
+  :global(.rz-level-section:first-of-type) {
+    margin-top: 0;
+  }
+
+  :global(.rz-section-title) {
+    margin-bottom: 4px;
+  }
+
   :global(.rz-level-grid) {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -83,6 +97,18 @@ import Layout from "../../layouts/Layout.astro";
 
   :global(.rz-level-btn:hover) {
     border-color: var(--algorithms);
+  }
+
+  :global(.rz-level-btn-beginner) {
+    border-color: var(--tinkering);
+  }
+
+  :global(.rz-level-btn-beginner:hover) {
+    border-color: var(--pac-yellow);
+  }
+
+  :global(.rz-level-btn-beginner .rz-level-num) {
+    color: var(--tinkering);
   }
 
   :global(.rz-level-num) {
