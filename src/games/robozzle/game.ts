@@ -13,10 +13,13 @@ const TILE_COLORS: Record<string, string> = {
 
 const DIR_ANGLE = [270, 0, 90, 180]; // degrees, up/right/down/left, 0deg = pointing right
 
+// L and R reuse the exact same glyph as F (rotated via CSS) so the three
+// arrows are always identical in stroke weight and length -- the font's own
+// left/right arrow glyphs are drawn noticeably thinner than the up arrow.
 const OP_LABEL: Record<Op, string> = {
   F: "↑",
-  L: "←",
-  R: "→",
+  L: "↑",
+  R: "↑",
   "1": "F1",
   "2": "F2",
   "3": "F3",

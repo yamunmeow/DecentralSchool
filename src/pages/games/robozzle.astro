@@ -241,9 +241,11 @@ import Layout from "../../layouts/Layout.astro";
     flex-shrink: 0;
   }
 
-  :global(.rz-slot[data-op="L"]),
+  :global(.rz-slot[data-op="L"]) {
+    transform: rotate(-90deg);
+  }
   :global(.rz-slot[data-op="R"]) {
-    font-size: 1.4rem;
+    transform: rotate(90deg);
   }
 
   :global(.rz-slot:not(.rz-slot-empty)) {
@@ -269,9 +271,11 @@ import Layout from "../../layouts/Layout.astro";
     cursor: pointer;
   }
 
-  :global(.rz-tool[data-op="L"]),
+  :global(.rz-tool[data-op="L"]) {
+    transform: rotate(-90deg);
+  }
   :global(.rz-tool[data-op="R"]) {
-    font-size: 1.3rem;
+    transform: rotate(90deg);
   }
 
   :global(.rz-tool.active) {
