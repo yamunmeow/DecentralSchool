@@ -1,0 +1,243 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout title="Practice" description="Write, run, and check C programs right in the browser.">
+  <section class="wrap practice-header">
+    <h1>Practice C</h1>
+    <p class="lede">
+      Pick an exercise, write C code, then press Run to see what it prints or Check to test
+      it against the exercise's own examples. Code actually compiles and runs -- this is real
+      gcc, not a simulation.
+    </p>
+  </section>
+
+  <div id="practice-root" class="wrap"></div>
+</Layout>
+
+<style>
+  .practice-header {
+    padding: 40px 24px 8px;
+  }
+  .lede {
+    color: var(--muted);
+    max-width: 68ch;
+  }
+  #practice-root {
+    padding: 24px 24px 60px;
+  }
+
+  :global(.cx-wrap) {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 760px) {
+    :global(.cx-wrap) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  :global(.cx-sidebar-title) {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+
+  :global(.cx-list) {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  :global(.cx-list-item) {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    background: var(--panel);
+    border: 2px solid var(--border);
+    color: var(--ink);
+    padding: 10px 12px;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  :global(.cx-list-item:hover) {
+    border-color: var(--pac-yellow);
+  }
+
+  :global(.cx-list-item.active) {
+    border-color: var(--pac-yellow);
+    background: var(--panel-raised);
+  }
+
+  :global(.cx-list-title) {
+    font-size: 0.85rem;
+  }
+
+  :global(.cx-list-diff) {
+    font-family: var(--font-display);
+    font-size: 0.5rem;
+    letter-spacing: 0.03em;
+  }
+
+  :global(.cx-diff-warmup) {
+    color: var(--tinkering);
+  }
+  :global(.cx-diff-beginner) {
+    color: var(--logic);
+  }
+  :global(.cx-diff-intermediate) {
+    color: var(--algorithms);
+  }
+
+  :global(.cx-title) {
+    margin-bottom: 6px;
+  }
+
+  :global(.cx-prompt-text) {
+    color: var(--muted);
+    max-width: 68ch;
+  }
+
+  :global(.cx-example) {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  :global(.cx-example code) {
+    color: var(--ink);
+  }
+
+  :global(.cx-editor-shell) {
+    margin-top: 16px;
+    border: 2px solid var(--border);
+  }
+
+  :global(.cx-editor) {
+    height: 340px;
+  }
+  :global(.cx-editor .cm-editor) {
+    height: 100%;
+  }
+
+  :global(.cx-stdin-row) {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  :global(.cx-stdin-label) {
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    color: var(--muted);
+  }
+
+  :global(.cx-stdin) {
+    font-family: var(--font-body);
+    background: var(--bg-inset);
+    color: var(--ink);
+    border: 2px solid var(--border);
+    padding: 8px 10px;
+    resize: vertical;
+  }
+  :global(.cx-stdin:focus-visible) {
+    border-color: var(--pac-yellow);
+  }
+
+  :global(.cx-controls) {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  :global(.cx-controls .pixel-btn) {
+    font-size: 0.6rem;
+    padding: 10px 16px;
+  }
+
+  :global(.cx-busy) {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  :global(.cx-output) {
+    margin-top: 16px;
+    background: var(--bg-inset);
+    border: 2px solid var(--border);
+    padding: 14px 16px;
+    min-height: 4em;
+  }
+
+  :global(.cx-output-hint) {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  :global(.cx-output-label) {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  :global(.cx-label-error) {
+    color: var(--ghost-red);
+  }
+  :global(.cx-label-pass) {
+    color: var(--pac-yellow);
+  }
+
+  :global(.cx-pre) {
+    margin: 0 0 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  :global(.cx-pre-error) {
+    color: var(--ghost-red);
+  }
+
+  :global(.cx-test-row) {
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+  }
+  :global(.cx-test-row:first-of-type) {
+    border-top: none;
+  }
+  :global(.cx-test-head) {
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+  :global(.cx-test-pass .cx-test-head) {
+    color: var(--pac-yellow);
+  }
+  :global(.cx-test-fail .cx-test-head) {
+    color: var(--ghost-red);
+  }
+  :global(.cx-test-detail) {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin: 4px 0;
+  }
+
+  :global(.cx-note) {
+    margin-top: 16px;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+</style>
+
+<script>
+  import { mountCEditor } from "../../practice/c/editor";
+  const root = document.getElementById("practice-root");
+  if (root) mountCEditor(root);
+</script>
