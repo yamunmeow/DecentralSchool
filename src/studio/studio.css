@@ -2576,6 +2576,10 @@
   box-shadow: 0 0 0 4px var(--ok-tint);
 }
 
+.create-row .btn-primary {
+  margin-left: auto;
+}
+
 .btn-ai {
   background: var(--ok);
   color: var(--paper);

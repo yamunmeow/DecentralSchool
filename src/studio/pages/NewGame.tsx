@@ -97,12 +97,9 @@ export function NewGame({ template }: { template?: string }) {
                     AI connected · {modelName(ai.model)}
                   </>
                 ) : (
-                  <>
-                    <button type="button" className="btn btn-sm btn-ai" onClick={() => signIn()} title="Sign in or sign up for free at OpenRouter">
-                      AI
-                    </button>
-                    Free AI through OpenRouter: sign in once, for free
-                  </>
+                  <button type="button" className="btn btn-sm btn-ai" onClick={() => signIn()}>
+                    Login to OpenRouter AI for free
+                  </button>
                 )}
               </span>
               <span className="spacer" />
