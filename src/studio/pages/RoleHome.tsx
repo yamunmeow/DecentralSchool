@@ -21,7 +21,7 @@ export function RoleHome() {
 }
 
 const FEATURES = [
-  { href: "#/play", title: "Play now", text: "Games from the CAEB in Porto-Novo, random quizzes and examples. Nothing to install.", zo: "student", pose: "cheer" },
+  { href: "#/play", title: "Play now", text: "Random quizzes, examples and games from the CAEB in Porto-Novo. Nothing to install.", zo: "student", pose: "cheer" },
   { href: "#/code", title: "Game Lab", text: "Make games with Scratch's blocks and see the same game as JavaScript.", zo: "artist", pose: "wave" },
   { href: "#/learn", title: "Zo Wants to Learn", text: "Fix mistakes in a set of data, train a small model and test it.", zo: "scientist", pose: "stand" },
   { href: "#/games", title: "Quick games", text: "Quizzes, maths, grammar, words and reading, ready as a link, a file or an app.", zo: "teacher", pose: "wave" },

@@ -5,6 +5,7 @@ import { Critter } from "../Critter";
 import { ACCEPT_TEXT, textFromFile } from "../importText";
 import { PALETTE, TEMPLATE_CRITTER } from "../palette";
 import { fromLibrary, LIBRARY, libraryUrl } from "../play/library";
+import { GameTile } from "../components/GameCard";
 import { go, useApp } from "../store";
 import { blankGame, fromStarter, TEMPLATE_INFO } from "../templates";
 import { Icon } from "../ui";
@@ -179,15 +180,13 @@ export function NewGame({ template }: { template?: string }) {
       </div>
       <div className="tile-grid">
         {LIBRARY.flatMap((g) => g.templates.map((t) => ({ g, t }))).map(({ g, t }) => (
-          <button
+          <GameTile
             key={`${g.id}-${t.file}`}
-            className="quiz-tile"
-            onClick={() => fromLibrary(g, t.file).then(create, (e: Error) => toast(e.message, "error"))}
-          >
-            <img src={libraryUrl(g, "icon.png")} alt="" width={52} height={52} className="lib-icon" />
-            <strong>{g.title}</strong>
-            <small>{t.label}</small>
-          </button>
+            img={libraryUrl(g, "icon.png")}
+            title={g.title}
+            note={t.label}
+            onOpen={() => fromLibrary(g, t.file).then(create, (e: Error) => toast(e.message, "error"))}
+          />
         ))}
       </div>
     </div>

@@ -1,7 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	// The studio, the student player at /p/ and the APK shell are static files. The Worker
-	// runs only for /api/* (sign-in); games and class work never reach this server.
+	// runs only for /api/*: sign-in, and games teachers send in for the Wall of Fame.
 	"name": "decentralschool",
 	"main": "worker/index.ts",
 	"compatibility_date": "2026-09-15",
@@ -20,7 +20,8 @@
 		}
 	],
 	// Secrets (wrangler secret put): BETTER_AUTH_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
-	// MICROSOFT_CLIENT_ID, MICROSOFT_CLIENT_SECRET. For local dev they go in .dev.vars.
+	// MICROSOFT_CLIENT_ID, MICROSOFT_CLIENT_SECRET, and REVIEWERS (comma-separated emails of the
+	// people who review Wall of Fame games). For local dev they go in .dev.vars.
 	"triggers": {
 		"crons": ["17 3 * * *"]
 	},

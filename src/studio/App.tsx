@@ -24,6 +24,7 @@ const ClassPage = lazy(() => import("./class/ClassPage").then((m) => ({ default:
 const JoinPage = lazy(() => import("./class/ClassPage").then((m) => ({ default: m.JoinPage })));
 const FeedbackPage = lazy(() => import("./class/ClassPage").then((m) => ({ default: m.FeedbackPage })));
 const PlayPage = lazy(() => import("./play/PlayPage").then((m) => ({ default: m.PlayPage })));
+const FamePage = lazy(() => import("./fame/FamePage").then((m) => ({ default: m.FamePage })));
 const MissionPage = lazy(() => import("./pages/MissionPage").then((m) => ({ default: m.MissionPage })));
 const PrivacyPage = lazy(() => import("./pages/PrivacyPage").then((m) => ({ default: m.PrivacyPage })));
 const TermsPage = lazy(() => import("./pages/TermsPage").then((m) => ({ default: m.TermsPage })));
@@ -87,6 +88,7 @@ function Shell() {
   else if (head === "feedback" && id) page = <FeedbackPage key={id} data={id} />;
   else if (head === "games") page = <Home />;
   else if (head === "play") page = <PlayPage id={id} />;
+  else if (head === "fame") page = <FamePage sub={id} />;
   else if (head === "mission") page = <MissionPage />;
   else if (head === "privacy") page = <PrivacyPage />;
   else if (head === "terms") page = <TermsPage />;
@@ -176,6 +178,7 @@ function useNav(current: string[]) {
   const [head] = current;
   const items: { href: string; label: string; icon: Parameters<typeof Icon>[0]["name"]; on: boolean }[] = [
     { href: "play", label: "Play", icon: "play", on: head === "play" },
+    { href: "fame", label: "Wall of Fame", icon: "star", on: head === "fame" },
     { href: "code", label: "Game Lab", icon: "code", on: head === "code" },
     { href: "learn", label: "Zo Wants to Learn", icon: "cap", on: head === "learn" },
     { href: "games", label: "Quick games", icon: "game", on: head === "games" || head === "new" || head === "game" },

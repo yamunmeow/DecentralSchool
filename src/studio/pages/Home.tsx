@@ -2,6 +2,7 @@ import { useRef, useState, type CSSProperties } from "react";
 import { getKey, signIn } from "../ai/openrouter";
 import type { Game } from "../../shared/types";
 import { Critter } from "../Critter";
+import { GameCard } from "../components/GameCard";
 import { duplicate, forImport, gamesFromText, summary } from "../gameio";
 import { PALETTE, TEMPLATE_CRITTER } from "../palette";
 import { go, useApp } from "../store";
@@ -82,9 +83,9 @@ export function Home() {
       </div>
 
       {games.length ? (
-        <div className="game-grid">
+        <div className="play-grid">
           {games.map((g) => (
-            <GameCard key={g.id} game={g} />
+            <MyGameCard key={g.id} game={g} />
           ))}
         </div>
       ) : (
@@ -98,63 +99,65 @@ export function Home() {
   );
 }
 
-function GameCard({ game }: { game: Game }) {
+function MyGameCard({ game }: { game: Game }) {
   const { save, remove, toast } = useApp();
   const [menu, setMenu] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const info = templateInfo(game.template);
-  const p = PALETTE[game.tint];
   return (
-    <article className="game-card" style={{ "--tint": p.tint, "--deep": p.deep, "--ink-t": p.ink } as CSSProperties}>
-      <a href={`#/game/${game.id}`} className="game-card-main">
-        <span className="game-emoji">{game.emoji}</span>
-        <span className="game-card-text">
-          <strong>{game.title}</strong>
-          <small>
-            {info.name} · {summary(game)}
-          </small>
-        </span>
-      </a>
-      <div className="game-card-actions">
-        <a className="btn btn-soft btn-sm" href={`#/game/${game.id}/play`}>
-          <Icon name="play" size={16} /> Play
-        </a>
-        <a className="btn btn-ghost btn-sm" href={`#/game/${game.id}/share`}>
-          <Icon name="share" size={16} /> Share
-        </a>
-        <span className="spacer" />
-        <div className="menu-wrap">
-          <button className="icon-btn icon-btn-sm" aria-label={`More for ${game.title}`} aria-expanded={menu} onClick={() => setMenu(!menu)}>
-            <Icon name="dots" />
-          </button>
-          {menu && (
-            <>
-              <div className="menu-catch" onClick={() => setMenu(false)} />
-              <div className="menu" role="menu">
-                <button
-                  role="menuitem"
-                  onClick={() => {
-                    setMenu(false);
-                    save(duplicate(game)).then(() => toast("Copy made"));
-                  }}
-                >
-                  <Icon name="copy" size={18} /> Make a copy
-                </button>
-                <button
-                  role="menuitem"
-                  className="danger"
-                  onClick={() => {
-                    setMenu(false);
-                    setConfirming(true);
-                  }}
-                >
-                  <Icon name="trash" size={18} /> Delete
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
+    <>
+      <GameCard
+        title={game.title}
+        blurb={summary(game)}
+        tags={[info.name]}
+        cover={{ emoji: game.emoji }}
+        tint={game.tint}
+        coverExtra={<Critter kind={TEMPLATE_CRITTER[game.template]} color={game.tint} size={56} className="play-critter" />}
+        href={`#/game/${game.id}`}
+        badge={{ label: "Edit", icon: "edit" }}
+        actions={
+          <>
+            <a className="btn btn-soft btn-sm" href={`#/game/${game.id}/play`}>
+              <Icon name="play" size={16} /> Play
+            </a>
+            <a className="btn btn-ghost btn-sm" href={`#/game/${game.id}/share`}>
+              <Icon name="share" size={16} /> Share
+            </a>
+            <span className="spacer" />
+            <div className="menu-wrap">
+              <button className="icon-btn icon-btn-sm" aria-label={`More for ${game.title}`} aria-expanded={menu} onClick={() => setMenu(!menu)}>
+                <Icon name="dots" />
+              </button>
+              {menu && (
+                <>
+                  <div className="menu-catch" onClick={() => setMenu(false)} />
+                  <div className="menu" role="menu">
+                    <button
+                      role="menuitem"
+                      onClick={() => {
+                        setMenu(false);
+                        save(duplicate(game)).then(() => toast("Copy made"));
+                      }}
+                    >
+                      <Icon name="copy" size={18} /> Make a copy
+                    </button>
+                    <button
+                      role="menuitem"
+                      className="danger"
+                      onClick={() => {
+                        setMenu(false);
+                        setConfirming(true);
+                      }}
+                    >
+                      <Icon name="trash" size={18} /> Delete
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </>
+        }
+      />
       {confirming && (
         <Modal
           title={`Delete “${game.title}”?`}
@@ -180,8 +183,7 @@ function GameCard({ game }: { game: Game }) {
           <p>Links, files and apps you already sent keep working. It's only removed from this studio.</p>
         </Modal>
       )}
-      <Critter kind={TEMPLATE_CRITTER[game.template]} color={game.tint} size={46} className="game-card-critter" />
-    </article>
+    </>
   );
 }
 

@@ -4,6 +4,7 @@ import { AiError, chat, type Message } from "../ai/openrouter";
 import { assistantSystem, readReply } from "../ai/prompts";
 import { Critter } from "../Critter";
 import { ConnectAi } from "./ConnectAi";
+import { ModelPicker } from "./ModelPicker";
 import { kv } from "../db";
 import { summary } from "../gameio";
 import { ACCEPT_TEXT, textFromFile } from "../importText";
@@ -172,6 +173,7 @@ export function Chat({ game, onGame, storageKey, initial, draft, placeholder, su
           send(input);
         }}
       >
+        <ModelPicker />
         <button type="button" className="icon-btn icon-btn-sm" onClick={() => file.current?.click()} aria-label="Attach a text" title="Attach a text">
           <Icon name="file" size={20} />
         </button>

@@ -7,6 +7,7 @@ import { Critter } from "../Critter";
 import { projects as table } from "../db";
 import { go, useApp } from "../store";
 import { Empty, Icon, Modal } from "../ui";
+import { GameCard } from "../components/GameCard";
 import { projectFromFile } from "./files";
 import { STARTERS } from "./starters";
 import "./code.css";
@@ -84,13 +85,9 @@ export function CodeHome() {
       <div className="page-head">
         <h2 className="section-title">Start from an example</h2>
       </div>
-      <div className="starter-row">
+      <div className="play-grid">
         {STARTERS.map((s) => (
-          <button key={s.id} className="starter" onClick={() => open(s.make())}>
-            <img src={s.thumb()} alt="" />
-            <strong>{s.title}</strong>
-            <small>{s.blurb}</small>
-          </button>
+          <GameCard key={s.id} title={s.title} blurb={s.blurb} tags={["Example"]} cover={{ img: s.thumb(), framed: true }} tint="mint" badge={{ label: "Open", icon: "edit" }} onOpen={() => open(s.make())} />
         ))}
       </div>
 
@@ -98,31 +95,29 @@ export function CodeHome() {
         <h2 className="section-title">My games</h2>
       </div>
       {list && list.length ? (
-        <div className="game-grid">
+        <div className="play-grid">
           {list.map((p) => {
             const sprite = p.sprites[0];
             const thumb = sprite?.costumes[sprite.costume] || p.stage.costumes[p.stage.costume];
             return (
-              <article key={p.id} className="game-card">
-                <a href={`#/code/${p.id}`} className="game-card-main">
-                  <span className="game-emoji project-thumb">{thumb && <img src={svgUrl(costumeSvg(thumb))} alt="" />}</span>
-                  <span className="game-card-text">
-                    <strong>{p.title}</strong>
-                    <small>
-                      {p.sprites.length} sprite{p.sprites.length === 1 ? "" : "s"} · {new Date(p.updated).toLocaleDateString()}
-                    </small>
-                  </span>
-                </a>
-                <div className="game-card-actions">
-                  <a className="btn btn-soft btn-sm" href={`#/code/${p.id}`}>
-                    <Icon name="edit" size={16} /> Open
-                  </a>
-                  <span className="spacer" />
-                  <button className="icon-btn icon-btn-sm danger-hover" aria-label={`Delete ${p.title}`} onClick={() => setDeleting(p)}>
-                    <Icon name="trash" size={18} />
-                  </button>
-                </div>
-              </article>
+              <GameCard
+                key={p.id}
+                title={p.title}
+                blurb={`${p.sprites.length} sprite${p.sprites.length === 1 ? "" : "s"} · ${new Date(p.updated).toLocaleDateString()}`}
+                tags={["Game Lab"]}
+                cover={thumb ? { img: svgUrl(costumeSvg(thumb)), framed: true } : { emoji: "🎮" }}
+                tint="mint"
+                href={`#/code/${p.id}`}
+                badge={{ label: "Open", icon: "edit" }}
+                actions={
+                  <>
+                    <span className="spacer" />
+                    <button className="icon-btn icon-btn-sm danger-hover" aria-label={`Delete ${p.title}`} onClick={() => setDeleting(p)}>
+                      <Icon name="trash" size={18} />
+                    </button>
+                  </>
+                }
+              />
             );
           })}
         </div>

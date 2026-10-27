@@ -1,6 +1,7 @@
 import { useRef, useState, type ReactNode } from "react";
 import { chat, signIn } from "../ai/openrouter";
 import { generatorPrompt, readGenerated, type GenerateRequest } from "../ai/prompts";
+import { ModelPicker } from "../components/ModelPicker";
 import { Field, Icon, Modal } from "../ui";
 import { useAi } from "../useAi";
 
@@ -153,7 +154,7 @@ function GenerateModal({ request, onClose, onResult }: { request: Partial<Genera
       onClose();
     } catch (e) {
       if ((e as Error).name === "AbortError") return;
-      setError((e as Error).message && (e as Error).message !== "empty" && !(e instanceof SyntaxError) ? (e as Error).message : "The model's answer couldn't be read. Try again or pick another model in Settings.");
+      setError((e as Error).message && (e as Error).message !== "empty" && !(e instanceof SyntaxError) ? (e as Error).message : "The model's answer couldn't be read. Try again or pick another model.");
     } finally {
       setBusy(false);
     }
@@ -169,6 +170,7 @@ function GenerateModal({ request, onClose, onResult }: { request: Partial<Genera
       footer={
         ai.connected ? (
           <>
+            <ModelPicker />
             {busy && <span className="muted">Writing… {progress > 0 ? `${Math.round(progress / 100) / 10}k` : ""}</span>}
             <span className="spacer" />
             <button className="btn btn-primary" disabled={busy || (!reading && !topic.trim())} onClick={run}>

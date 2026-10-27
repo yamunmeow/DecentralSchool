@@ -45,12 +45,35 @@ export function TermsPage() {
         </div>
         <div className="prose">
           <p>
-            Games, Game Lab projects, Zo's models and class work belong to whoever made them. We don't get a copy: they're saved on your device, so we
-            can't recover them if they're lost. Use <strong>Settings → Back up</strong> now and then.
+            Games, Game Lab projects, Zo's models and class work belong to whoever made them. We don't get a copy, unless you submit a game to the Wall of
+            Fame: they're saved on your device, so we can't recover them if they're lost. Use <strong>Settings → Back up</strong> now and then.
           </p>
           <p>
             Only put in pictures, sounds and texts you're allowed to use. Games in the library and the templates keep their own credits, listed on the{" "}
             <a href="#/mission/license">Mission page</a>.
+          </p>
+        </div>
+      </section>
+
+      <section className="story" aria-labelledby="fame">
+        <div>
+          <h2 id="fame" className="section-title">
+            The Wall of Fame
+          </h2>
+        </div>
+        <div className="prose">
+          <p>
+            Teachers can submit games they made. By submitting one, you confirm that you made it, that you may share everything in it, and that it has no
+            students' names, photos or other personal details. You let anyone play, copy and change it under{" "}
+            <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">
+              CC BY 4.0
+            </a>
+            , with the name you typed shown as its maker.
+          </p>
+          <p>
+            We review new games every week and choose the most creative and unique. We may decline a game without giving a reason, or take one down later.
+            Chosen games earn a certificate of appreciation, which you can print from the Wall of Fame page. You can withdraw your game at any time; copies
+            others already made stay theirs under the licence.
           </p>
         </div>
       </section>

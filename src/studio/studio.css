@@ -420,14 +420,6 @@
   flex-wrap: wrap;
 }
 
-.game-card-critter {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  opacity: 0.9;
-  pointer-events: none;
-}
-
 .menu-wrap {
   position: relative;
 }
@@ -1333,14 +1325,139 @@
 
 .chat-input {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end;
   gap: 6px;
-  padding: 10px 12px 12px;
+  padding: 8px 12px 12px;
   border-top: 2px dashed var(--line);
   background: var(--paper);
 }
 
+/* The model chip gets its own row above the message box. */
+.chat-input .model-picker {
+  flex-basis: 100%;
+}
+
+.modal-foot:has(.model-picker) {
+  position: relative;
+}
+
+.modal-foot .model-picker {
+  position: static;
+}
+
+/* The dialog scrolls inside .modal-inner, so while the list is open it can rise above a short dialog. */
+.modal:has(.model-menu) {
+  overflow: visible;
+}
+
+.model-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-btn);
+  background: var(--paper);
+  color: var(--ink-2);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.model-chip:hover,
+.model-chip[aria-expanded="true"] {
+  background: var(--paper-2);
+  color: var(--ink);
+}
+
+.model-chip-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* As wide as the row it opens from (the chat box, or a dialog's footer), up to 340px, so it never runs off a phone screen. */
+.model-menu {
+  width: min(340px, 100%);
+  min-width: 0;
+  max-height: min(380px, 60dvh);
+  padding: 0;
+  overflow: hidden;
+}
+
+.model-menu-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-bottom: 1.5px solid var(--line);
+}
+
+.model-menu-head input[type="search"] {
+  flex: 1;
+  min-width: 0;
+  min-height: 38px;
+  padding: 0 12px;
+}
+
+.model-menu-head .check {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.model-menu-list {
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.model-menu-list > button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.model-menu-list > button:hover {
+  background: var(--paper-2);
+}
+
+.model-menu-list > button.on {
+  background: var(--accent-soft);
+}
+
+.model-menu-list small {
+  color: var(--ink-3);
+  font-weight: 700;
+}
+
+.model-menu-check {
+  display: inline-flex;
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.model-menu-note {
+  margin: 0;
+  padding: 10px;
+}
+
 .chat-input textarea {
+  flex: 1;
+  min-width: 0;
   min-height: 46px;
   max-height: 180px;
   padding: 10px 14px;
@@ -1981,14 +2098,19 @@
   gap: 20px;
 }
 
+/* No overflow clipping, so a card's menus can open past its edge; the cover rounds its own top corners instead. */
 .play-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   border-radius: var(--r-lg);
   background: var(--paper);
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
-  overflow: hidden;
+}
+
+.play-card:has(.menu) {
+  z-index: 5;
 }
 
 .play-cover {
@@ -1997,9 +2119,59 @@
   place-items: center;
   height: 168px;
   border: 0;
+  border-radius: calc(var(--r-lg) - 2px) calc(var(--r-lg) - 2px) 0 0;
+  overflow: hidden;
   background-color: var(--brand);
   background-image: var(--doodles);
   background-size: 260px 260px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.play-cover.is-tinted {
+  background-color: var(--cover);
+}
+
+/* An emoji or a thumbnail, in the same rounded square as an app icon. */
+.play-pic {
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 104px;
+  border-radius: 24px;
+  background: var(--paper);
+  box-shadow: 0 12px 28px -12px rgb(0 0 0 / 0.45);
+  font-size: 3.4rem;
+  line-height: 1;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.play-pic img {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.play-card:hover .play-pic {
+  transform: scale(1.08) rotate(-4deg);
+}
+
+.play-card:hover .play-pic img {
+  transform: none;
+}
+
+.play-critter {
+  position: absolute;
+  right: 14px;
+  bottom: 10px;
+  pointer-events: none;
+}
+
+.play-card.is-make {
+  border-style: dashed;
+  box-shadow: none;
 }
 
 .play-cover img {
@@ -2351,8 +2523,7 @@
 .role-card,
 .belief,
 .mode-card,
-.example-card,
-.starter {
+.example-card {
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
@@ -2365,8 +2536,7 @@
 .role-card:hover,
 .belief:hover,
 .mode-card:hover,
-.example-card:hover,
-.starter:hover {
+.example-card:hover {
   transform: translateY(-4px) rotate(-0.6deg);
   box-shadow: var(--shadow-lift);
   border-color: var(--accent-line);
@@ -2398,7 +2568,6 @@
 .game-emoji,
 .mini-pic img,
 .mode-card .zo-pic,
-.starter img,
 .hero-critters > *,
 .belief .icon {
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -2406,7 +2575,6 @@
 
 .feature-card:hover .zo-pic,
 .mode-card:hover .zo-pic,
-.starter:hover img,
 .quiz-tile:hover img,
 .mini-card:hover .mini-pic img,
 .hero-critters:hover > * {

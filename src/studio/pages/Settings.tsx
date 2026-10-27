@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { deleteAccount, signOut, useAccount } from "../account";
-import { DEFAULT_MODEL, listModels, setKey, setModel, type Model } from "../ai/openrouter";
+import { setKey } from "../ai/openrouter";
 import { ConnectAi } from "../components/ConnectAi";
 import { SignInButtons } from "../components/SignIn";
 import { exportKeyFile, importKeyFile, loadStored, newSigningKey } from "../apk/keys";
@@ -119,14 +119,6 @@ function YouCard() {
 
 function AiCard() {
   const ai = useAi();
-  const [models, setModels] = useState<Model[] | null>(null);
-  const [freeOnly, setFreeOnly] = useState(true);
-
-  useEffect(() => {
-    listModels().then(setModels, () => setModels([]));
-  }, []);
-
-  const shown = (models || []).filter((m) => m.chat && (!freeOnly || m.free || m.id === ai.model));
   return (
     <section className="card">
       <div className="section-bar">
@@ -135,23 +127,6 @@ function AiCard() {
       </div>
       {ai.connected ? (
         <>
-          <div className="form-grid">
-            <Field label="Model">
-              <select value={ai.model} onChange={(e) => setModel(e.target.value)}>
-                <option value={DEFAULT_MODEL}>Best free models, picked for you (recommended)</option>
-                {models === null && <option>Loading…</option>}
-                {shown.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {`${m.name}${m.free ? " · free" : ""}`}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <label className="check field-check">
-              <input type="checkbox" checked={freeOnly} onChange={(e) => setFreeOnly(e.target.checked)} />
-              Free models only
-            </label>
-          </div>
           <div className="toolbar">
             <a className="btn btn-ghost btn-sm" href="https://openrouter.ai/settings/keys" target="_blank" rel="noreferrer">
               OpenRouter account

@@ -205,7 +205,7 @@ async function modelFields(): Promise<{ model: string; models?: string[] }> {
   return list.length > 1 ? { model: list[0], models: list } : { model: list[0] };
 }
 
-const SAFETY_ONLY = "That model only checks messages for safety and can't write games. Pick another model in Settings, or use “best free models”.";
+const SAFETY_ONLY = "That model only checks messages for safety and can't write games. Pick another model, or use “best free models”.";
 
 /** Streams the reply; onText gets the whole text so far. Resolves with the final text. */
 export async function chat(messages: Message[], onText: (text: string) => void, signal?: AbortSignal): Promise<string> {
@@ -235,7 +235,7 @@ export async function chat(messages: Message[], onText: (text: string) => void, 
       setKey(null);
       throw new AiError("Your OpenRouter sign-in has ended. Connect again in Settings.", 401);
     }
-    if (res.status === 402) throw new AiError("This model needs credits on your OpenRouter account. Pick a free model in Settings.", 402);
+    if (res.status === 402) throw new AiError("This model needs credits on your OpenRouter account. Pick a free model.", 402);
     if (res.status === 429) throw new AiError("The free models are busy right now. Wait a minute and try again, or pick another model.", 429);
     throw new AiError(msg || `OpenRouter error ${res.status}`, res.status);
   }

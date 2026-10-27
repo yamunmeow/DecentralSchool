@@ -17,7 +17,7 @@ const NOT_KEPT = [
   "Your profile photo.",
   "Your IP address or what device you use, in our database.",
   "Google access keys. They're thrown away at sign-in, so we can't read your email, files, calendar or contacts.",
-  "Your games, projects, class work or Zo's models. Those stay on your device.",
+  "Your games, projects, class work or Zo's models. Those stay on your device, unless you submit a game to the Wall of Fame.",
 ];
 
 const COOKIES = [
@@ -65,7 +65,7 @@ export function PrivacyPage() {
           <p>
             Your games, Game Lab projects, Zo's models, challenges, hand-ins and feedback are saved in
             this browser, on your device. So are your settings: student or teacher, your name, the theme, the AI key and the app signing key. We never see
-            any of it.
+            any of it, except a game you choose to submit to the Wall of Fame (see below).
           </p>
           <p>
             Game links carry the game after the <code>#</code> in the address. Browsers never send that part to a server, so a shared game doesn't pass
@@ -116,6 +116,27 @@ export function PrivacyPage() {
             ))}
           </ul>
           <p>Your name and email are also saved in your browser, so the studio still knows who you are when you're offline.</p>
+        </div>
+      </section>
+
+      <section className="story" aria-labelledby="fame">
+        <div>
+          <h2 id="fame" className="section-title">
+            Wall of Fame
+          </h2>
+        </div>
+        <div className="prose">
+          <p>
+            When you submit a game, we keep the game itself, the title, what makes it special, the name and school you typed, your note to the reviewers,
+            the date, and which account sent it. Before it leaves your device, the studio takes out class work, feedback and app-signing details.
+          </p>
+          <p>
+            Our reviewers see all of that, plus your account's name and email, so they can contact you. If the game is chosen, everyone signed in to
+            DecentralSchool can play and copy it and see the name and school you typed, but not your email or your note.
+          </p>
+          <p>
+            It stays until you withdraw it on the Wall of Fame page or delete your account, and both remove it straight away.
+          </p>
         </div>
       </section>
 
@@ -210,7 +231,7 @@ export function PrivacyPage() {
             Your account stays until you delete it. A sign-in session ends when you sign out, or after 30 days without visiting.
           </p>
           <p>
-            <strong>Settings → Account → Delete account</strong> removes your name, email and sessions straight away. Cloudflare keeps a recovery copy of
+            <strong>Settings → Account → Delete account</strong> removes your name, email, sessions and Wall of Fame submissions straight away. Cloudflare keeps a recovery copy of
             the database for 7 days, so after that it's gone completely. Games on your device are yours to delete in the studio or by clearing your
             browser's data for this site.
           </p>
