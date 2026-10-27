@@ -1,0 +1,26 @@
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #1c1810; color: #fbf3dd; font-family: ui-rounded, "Nunito", system-ui, -apple-system, Roboto, sans-serif; }
+.cp { height: 100%; display: flex; flex-direction: column; }
+.cp-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; padding-top: max(8px, env(safe-area-inset-top)); }
+.cp-title { flex: 1; min-width: 0; margin: 0 6px; font-size: 1.05rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cp-btn { width: 48px; height: 48px; border-radius: 14px; border: 0; background: #322a1d; color: #fbf3dd; font-size: 1.3rem; display: grid; place-items: center; cursor: pointer; touch-action: manipulation; }
+.cp-btn:active { transform: scale(0.95); }
+.cp-flag { background: #e7f6e8; }
+.cp-btn:focus-visible { outline: 3px solid #ffd35c; outline-offset: 2px; }
+.cp-stage-wrap { flex: 1; min-height: 0; display: flex; padding: 6px 8px 10px; }
+.cp-stage-box { position: relative; flex: 1; min-height: 0; }
+.cp-stage { background: #fff; border-radius: 4px; overflow: hidden; box-shadow: 0 20px 40px -20px #000; }
+.cp-stage canvas { display: block; }
+.cp-empty { padding: 40px 20px; text-align: center; font-size: 1.2rem; }
+.cp.has-pad .cp-stage-wrap { padding-bottom: 0; }
+.cp-pad { display: grid; grid-template-columns: 64px 64px 64px 1fr; grid-template-rows: 56px 56px; gap: 8px; padding: 10px 14px max(14px, env(safe-area-inset-bottom)); }
+.cp-key { border: 0; border-radius: 16px; background: #322a1d; color: #fbf3dd; font-size: 1.3rem; font-weight: 800; touch-action: none; user-select: none; -webkit-user-select: none; }
+.cp-key:active { background: #ffcf40; }
+.k-up { grid-column: 2; grid-row: 1; } .k-left { grid-column: 1; grid-row: 2; } .k-down { grid-column: 2; grid-row: 2; } .k-right { grid-column: 3; grid-row: 2; }
+.k-space { grid-column: 4; grid-row: 1 / span 2; font-size: 1rem; }
+.leopard__askBox { position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; gap: 6px; padding: 8px; background: #fff; border: 2px solid #d9d9e3; border-radius: 12px; color: #262b45; }
+.leopard__askText { display: block; width: 100%; font-weight: 700; }
+.leopard__askBox { flex-wrap: wrap; }
+.leopard__askInput { flex: 1; min-width: 0; height: 36px; border: 2px solid #d9d9e3; border-radius: 18px; padding: 0 12px; font: inherit; }
+.leopard__askButton { width: 36px; height: 36px; border: 0; border-radius: 50%; background: #f5b700; color: #3d2f10; font-weight: 800; }

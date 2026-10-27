@@ -1,0 +1,51 @@
+{
+  "name": "decentralschool",
+  "private": true,
+  "description": "Offline-first, open-source studio where students make games and teachers supervise; Game Lab built on Scratch's block language.",
+  "homepage": "https://decentralschool.org",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:api": "wrangler d1 migrations apply DB --local && wrangler dev --port 8787",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b",
+    "shell": "sh shell/build_shell.sh && cp shell/shell-template.apk public/shell-template.apk",
+    "deploy": "npm run build && wrangler d1 migrations apply DB --remote && wrangler deploy",
+    "auth:schema": "node scripts/auth-schema.ts",
+    "library": "node scripts/import-games.mjs"
+  },
+  "dependencies": {
+    "@blockly/continuous-toolbox": "^13.4.0",
+    "@blockly/field-colour": "^13.4.0",
+    "@codemirror/lang-css": "^6.3.1",
+    "@codemirror/lang-html": "^6.4.12",
+    "@codemirror/lang-javascript": "^6.2.5",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/theme-one-dark": "^6.1.3",
+    "@codemirror/view": "^6.43.15",
+    "@fontsource-variable/fredoka": "^5.3.0",
+    "@fontsource-variable/nunito": "^5.3.0",
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
+    "better-auth": "^1.7.14",
+    "blockly": "^13.4.0",
+    "codemirror": "^6.0.2",
+    "fflate": "^0.8.3",
+    "leopard": "^1.6.1",
+    "pdfjs-dist": "^6.4.299",
+    "qrcode-generator": "^2.0.4",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "playwright": "^1.64.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "wrangler": "^4.151.1"
+  }
+}

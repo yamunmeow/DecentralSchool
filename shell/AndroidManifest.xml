@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Template manifest. The studio (src/studio/apk/manifest.ts) rewrites three placeholder values in the
+  compiled (binary) copy of this file for every game:
+    package            org.decentralschool.shell     -> the game's app id
+    android:label      SHELL_APP_LABEL    -> the game title
+    versionName/Code   (set by build_shell.sh) -> the app version / versionCode
+  Keep those placeholders unique, and keep every class name fully qualified, so the
+  rewrite never touches anything else.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.decentralschool.shell">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <queries>
+        <!-- Needed (Android 11+) to find the text-to-speech engine. -->
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
+    <application
+        android:label="SHELL_APP_LABEL"
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="true"
+        android:enableOnBackInvokedCallback="true"
+        android:hardwareAccelerated="true"
+        android:theme="@android:style/Theme.Material.Light.NoActionBar">
+
+        <activity
+            android:name="org.decentralschool.shell.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|navigation|uiMode|density"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

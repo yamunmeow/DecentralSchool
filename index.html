@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content="DecentralSchool: a free, open-source, offline-first studio where students make learning games and teachers supervise. Play, create and share as a link, a file or an Android app." />
+    <link rel="canonical" href="https://decentralschool.org/" />
+    <meta property="og:title" content="DecentralSchool" />
+    <meta property="og:description" content="Make learning games. Play them anywhere, even offline." />
+    <meta property="og:url" content="https://decentralschool.org/" />
+    <meta property="og:image" content="https://decentralschool.org/icon-192.png" />
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-48.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <title>DecentralSchool</title>
+    <script>
+      // Pick the theme before the first paint so dark mode never flashes light.
+      (function () {
+        var saved = null;
+        try { saved = localStorage.getItem("theme"); } catch (e) {}
+        var dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+        document.querySelector('meta[name="theme-color"]').content = dark ? "#28221a" : "#ffffff";
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/studio/main.tsx"></script>
+  </body>
+</html>

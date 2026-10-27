@@ -1,0 +1,8 @@
+# Copy to .dev.vars for `npm run dev:api`. Never commit .dev.vars.
+BETTER_AUTH_URL=http://localhost:5173
+# openssl rand -base64 32
+BETTER_AUTH_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+MICROSOFT_CLIENT_ID=
+MICROSOFT_CLIENT_SECRET=

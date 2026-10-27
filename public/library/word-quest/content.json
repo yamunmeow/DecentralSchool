@@ -1,0 +1,251 @@
+{
+  "id": "word-quest-en",
+  "title": "Word Quest",
+  "subtitle": "Learn English words. Listen, play and spell.",
+  "speechLang": "en-GB",
+  "roundLength": 10,
+  "questionTypes": ["meaning", "word", "gap", "listen", "spell", "opposite"],
+  "players": [],
+  "decks": [
+    {
+      "id": "home",
+      "title": "At Home",
+      "icon": "🏠",
+      "level": "A1",
+      "words": [
+        { "word": "kitchen", "type": "noun", "meaning": "the room where you cook food", "example": "Dad cooks dinner in the kitchen.", "emoji": "🍳" },
+        { "word": "bedroom", "type": "noun", "meaning": "the room where you sleep", "example": "I sleep in my bedroom.", "emoji": "🛏️" },
+        { "word": "bathroom", "type": "noun", "meaning": "the room where you wash and brush your teeth", "example": "I brush my teeth in the bathroom.", "emoji": "🛁" },
+        { "word": "sofa", "type": "noun", "meaning": "a long, soft seat for two or more people", "example": "We sit on the sofa and watch TV.", "emoji": "🛋️" },
+        { "word": "window", "type": "noun", "meaning": "a glass opening in a wall that lets in light", "example": "Open the window to let in some fresh air.", "emoji": "🪟" },
+        { "word": "door", "type": "noun", "meaning": "you open and close it to go into a room", "example": "Please knock on the door before you come in.", "emoji": "🚪" },
+        { "word": "stairs", "type": "noun", "meaning": "steps that go up to the next floor", "example": "Walk up the stairs to the first floor.", "emoji": "🪜" },
+        { "word": "garden", "type": "noun", "meaning": "land next to a house, with grass and flowers", "example": "Grandma grows flowers in the garden.", "emoji": "🌷" },
+        { "word": "lamp", "type": "noun", "meaning": "a small light that you can move", "example": "Turn on the lamp so I can read in bed.", "emoji": "💡" },
+        { "word": "mirror", "type": "noun", "meaning": "glass where you can see yourself", "example": "She looks at her face in the mirror.", "emoji": "🪞" },
+        { "word": "key", "type": "noun", "meaning": "a small piece of metal that opens a lock", "example": "I lost my key, so I cannot open the lock.", "emoji": "🔑" },
+        { "word": "roof", "type": "noun", "meaning": "the top part of a house", "example": "There is a bird on the roof of our house.", "emoji": "🏠" }
+      ]
+    },
+    {
+      "id": "food",
+      "title": "Food & Drink",
+      "icon": "🍎",
+      "level": "A1",
+      "words": [
+        { "word": "bread", "type": "noun", "meaning": "food made from flour; you make toast with it", "example": "I make a sandwich with two slices of bread.", "emoji": "🍞" },
+        { "word": "cheese", "type": "noun", "meaning": "a yellow or white food made from milk", "example": "Mice love to eat cheese.", "emoji": "🧀" },
+        { "word": "breakfast", "type": "noun", "meaning": "the first meal of the day", "example": "I eat breakfast at seven o'clock in the morning.", "emoji": "🥣" },
+        { "word": "soup", "type": "noun", "meaning": "hot liquid food that you eat with a spoon", "example": "This tomato soup is very hot, so I wait.", "emoji": "🍲" },
+        { "word": "egg", "type": "noun", "meaning": "a round food that comes from a hen", "example": "She boils an egg for four minutes.", "emoji": "🥚" },
+        { "word": "carrot", "type": "noun", "meaning": "a long orange vegetable", "example": "The rabbit eats a long orange carrot.", "emoji": "🥕" },
+        { "word": "juice", "type": "noun", "meaning": "a drink made from fruit", "example": "I drink a glass of orange juice.", "emoji": "🧃" },
+        { "word": "rice", "type": "noun", "meaning": "small white grains that you cook in water", "example": "We cook the rice in a pot of water.", "emoji": "🍚" },
+        { "word": "hungry", "type": "adjective", "meaning": "wanting to eat", "example": "I did not eat lunch, so I am very hungry.", "emoji": "😋", "opposite": "full" },
+        { "word": "thirsty", "type": "adjective", "meaning": "wanting to drink", "example": "After running, I am thirsty, so I drink some water.", "emoji": "🥤" },
+        { "word": "delicious", "type": "adjective", "meaning": "very good to eat", "example": "Mum's cake is delicious! Can I have more?", "emoji": "🍰" },
+        { "word": "spoon", "type": "noun", "meaning": "you use it to eat soup or cereal", "example": "Eat your cereal with a spoon.", "emoji": "🥄" }
+      ]
+    },
+    {
+      "id": "animals",
+      "title": "Animals",
+      "icon": "🐾",
+      "level": "A1",
+      "words": [
+        { "word": "rabbit", "type": "noun", "meaning": "a small animal with long ears", "example": "The rabbit has long ears and a short tail.", "emoji": "🐇" },
+        { "word": "horse", "type": "noun", "meaning": "a big animal that people can ride", "example": "My cousin rides a horse on the farm.", "emoji": "🐎" },
+        { "word": "duck", "type": "noun", "meaning": "a bird that swims and says 'quack'", "example": "The duck swims on the pond and says quack.", "emoji": "🦆" },
+        { "word": "frog", "type": "noun", "meaning": "a small green animal that jumps and lives near water", "example": "The green frog jumps into the pond.", "emoji": "🐸" },
+        { "word": "sheep", "type": "noun", "meaning": "a farm animal that gives us wool", "example": "We get wool from a sheep.", "emoji": "🐑" },
+        { "word": "tiger", "type": "noun", "meaning": "a big wild cat with orange and black stripes", "example": "The tiger has orange and black stripes.", "emoji": "🐅" },
+        { "word": "elephant", "type": "noun", "meaning": "a very big grey animal with a long nose", "example": "The elephant drinks water with its long trunk.", "emoji": "🐘" },
+        { "word": "bee", "type": "noun", "meaning": "a small flying insect that makes honey", "example": "A bee makes honey from flowers.", "emoji": "🐝" },
+        { "word": "snake", "type": "noun", "meaning": "a long animal with no legs", "example": "The snake has no legs, but it moves fast.", "emoji": "🐍" },
+        { "word": "owl", "type": "noun", "meaning": "a bird that sleeps in the day and is awake at night", "example": "The owl sleeps in the day and hunts at night.", "emoji": "🦉" },
+        { "word": "monkey", "type": "noun", "meaning": "an animal that climbs trees and loves bananas", "example": "The monkey goes up the tree to get a banana.", "emoji": "🐒" },
+        { "word": "turtle", "type": "noun", "meaning": "an animal with a hard shell that moves slowly", "example": "The turtle hides inside its hard shell.", "emoji": "🐢" }
+      ]
+    },
+    {
+      "id": "school",
+      "title": "At School",
+      "icon": "🎒",
+      "level": "A1",
+      "words": [
+        { "word": "teacher", "type": "noun", "meaning": "a person who helps students learn", "example": "Our teacher writes the new words on the board.", "emoji": "🧑‍🏫" },
+        { "word": "pencil", "type": "noun", "meaning": "you write and draw with it; it is made of wood", "example": "I draw a picture with a pencil.", "emoji": "✏️" },
+        { "word": "eraser", "type": "noun", "meaning": "a small thing that takes away pencil marks", "example": "I made a mistake, so I need an eraser." },
+        { "word": "ruler", "type": "noun", "meaning": "a flat stick for measuring and drawing straight lines", "example": "Draw a straight line with a ruler.", "emoji": "📏" },
+        { "word": "scissors", "type": "noun", "meaning": "a tool for cutting paper", "example": "Cut the paper with scissors.", "emoji": "✂️" },
+        { "word": "homework", "type": "noun", "meaning": "school work that you do at home", "example": "I do my homework after school.", "emoji": "📝" },
+        { "word": "classroom", "type": "noun", "meaning": "a room in a school where students learn", "example": "There are twenty desks in our classroom.", "emoji": "🏫" },
+        { "word": "notebook", "type": "noun", "meaning": "a small book with empty pages for writing", "example": "Write the new words in your notebook.", "emoji": "📓" },
+        { "word": "library", "type": "noun", "meaning": "a place where you can borrow books", "example": "I borrow two books from the library every week.", "emoji": "📚" },
+        { "word": "backpack", "type": "noun", "meaning": "a bag that you carry on your back", "example": "I carry my books in my backpack.", "emoji": "🎒" },
+        { "word": "lesson", "type": "noun", "meaning": "a time at school when you learn a subject", "example": "Our English lesson starts at nine o'clock.", "emoji": "📖" },
+        { "word": "answer", "type": "noun", "meaning": "what you say or write when someone asks a question", "example": "Do you know the answer to this question?", "emoji": "💬" }
+      ]
+    },
+    {
+      "id": "nature",
+      "title": "Weather & Nature",
+      "icon": "🌦️",
+      "level": "A1",
+      "words": [
+        { "word": "rain", "type": "noun", "meaning": "water that falls from clouds", "example": "Take an umbrella because of the rain.", "emoji": "🌧️" },
+        { "word": "cloud", "type": "noun", "meaning": "a white or grey shape in the sky", "example": "A big grey cloud covers the sun.", "emoji": "☁️" },
+        { "word": "snow", "type": "noun", "meaning": "soft, white, cold flakes that fall in winter", "example": "In winter, the snow is white and cold.", "emoji": "❄️" },
+        { "word": "wind", "type": "noun", "meaning": "air that moves fast outside", "example": "The wind blows my hat away.", "emoji": "🌬️" },
+        { "word": "sunny", "type": "adjective", "meaning": "with a lot of sun", "example": "It is sunny today, so wear your sunglasses.", "emoji": "☀️" },
+        { "word": "storm", "type": "noun", "meaning": "very bad weather with strong wind, rain and thunder", "example": "There is thunder and lightning in the storm.", "emoji": "⛈️" },
+        { "word": "rainbow", "type": "noun", "meaning": "a curve of colours in the sky after rain", "example": "After the rain, we see a rainbow with seven colours.", "emoji": "🌈" },
+        { "word": "river", "type": "noun", "meaning": "a long line of water that flows to the sea", "example": "The river flows to the sea.", "emoji": "🏞️" },
+        { "word": "mountain", "type": "noun", "meaning": "a very high hill", "example": "We climb to the top of the mountain.", "emoji": "⛰️" },
+        { "word": "forest", "type": "noun", "meaning": "a big place with many trees", "example": "There are many tall trees in the forest.", "emoji": "🌲" },
+        { "word": "beach", "type": "noun", "meaning": "the sand next to the sea", "example": "We play in the sand at the beach.", "emoji": "🏖️" },
+        { "word": "leaf", "type": "noun", "meaning": "a flat green part of a tree or plant", "example": "A yellow leaf falls from the tree in autumn.", "emoji": "🍂" }
+      ]
+    },
+    {
+      "id": "body",
+      "title": "Body & Health",
+      "icon": "💪",
+      "level": "A1",
+      "words": [
+        { "word": "head", "type": "noun", "meaning": "the top part of your body, with your eyes and mouth", "example": "Put your hat on your head.", "emoji": "🧢" },
+        { "word": "shoulder", "type": "noun", "meaning": "the part of your body between your neck and your arm", "example": "She carries her bag on her shoulder.", "emoji": "🤷" },
+        { "word": "knee", "type": "noun", "meaning": "the middle part of your leg that bends", "example": "I fell off my bike and hurt my knee.", "emoji": "🦵" },
+        { "word": "finger", "type": "noun", "meaning": "one of the five long parts at the end of your hand", "example": "She wears a ring on her finger.", "emoji": "☝️" },
+        { "word": "tooth", "type": "noun", "meaning": "one of the hard white things in your mouth", "example": "The dentist looks at my tooth.", "emoji": "🦷" },
+        { "word": "stomach", "type": "noun", "meaning": "the part of your body where food goes after you eat", "example": "I ate too much and now my stomach hurts." },
+        { "word": "ear", "type": "noun", "meaning": "the part of your body that you hear with", "example": "I listen to music with my left ear.", "emoji": "👂" },
+        { "word": "nose", "type": "noun", "meaning": "the part of your face that you smell with", "example": "I smell the flowers with my nose.", "emoji": "👃" },
+        { "word": "sick", "type": "adjective", "meaning": "not well; ill", "example": "I am sick, so I stay in bed today.", "emoji": "🤒", "opposite": "well" },
+        { "word": "tired", "type": "adjective", "meaning": "needing to sleep or rest", "example": "I am tired after the long walk, so I go to bed.", "emoji": "😴" },
+        { "word": "doctor", "type": "noun", "meaning": "a person who helps sick people get better", "example": "The doctor says I need to rest.", "emoji": "🩺" },
+        { "word": "medicine", "type": "noun", "meaning": "something you take to feel better when you are ill", "example": "Take this medicine twice a day.", "emoji": "💊" }
+      ]
+    },
+    {
+      "id": "feelings",
+      "title": "Feelings",
+      "icon": "😊",
+      "level": "A1",
+      "words": [
+        { "word": "happy", "type": "adjective", "meaning": "feeling good and pleased", "example": "I am happy because it is my birthday!", "emoji": "😀", "opposite": "sad" },
+        { "word": "sad", "type": "adjective", "meaning": "feeling unhappy", "example": "He is sad because he lost his dog.", "emoji": "😢", "opposite": "happy" },
+        { "word": "angry", "type": "adjective", "meaning": "feeling very upset with someone", "example": "Mum is angry because I broke her glasses.", "emoji": "😠", "opposite": "calm" },
+        { "word": "scared", "type": "adjective", "meaning": "afraid", "example": "My little sister is scared of the dark.", "emoji": "😨", "opposite": "brave" },
+        { "word": "excited", "type": "adjective", "meaning": "very happy about something that will happen", "example": "I am so excited about the trip tomorrow!", "emoji": "🤩", "opposite": "bored" },
+        { "word": "bored", "type": "adjective", "meaning": "not interested because there is nothing to do", "example": "It is raining and there is nothing to do. I am bored.", "emoji": "🥱", "opposite": "excited" },
+        { "word": "proud", "type": "adjective", "meaning": "happy about something good that you did", "example": "I am proud of my good test score.", "emoji": "🥇" },
+        { "word": "worried", "type": "adjective", "meaning": "thinking that something bad may happen", "example": "She is worried because her cat is not home yet.", "emoji": "😟", "opposite": "calm" },
+        { "word": "surprised", "type": "adjective", "meaning": "feeling something because you did not expect it", "example": "He is surprised when he sees the party for him.", "emoji": "😮" },
+        { "word": "calm", "type": "adjective", "meaning": "quiet and not worried or angry", "example": "Take a deep breath and stay calm.", "emoji": "😌", "opposite": "angry" },
+        { "word": "shy", "type": "adjective", "meaning": "a little afraid to talk to new people", "example": "The new boy is shy and speaks very quietly.", "emoji": "🙈" },
+        { "word": "brave", "type": "adjective", "meaning": "not afraid of danger", "example": "The brave girl climbs the tree to save the cat.", "emoji": "🦸", "opposite": "scared" }
+      ]
+    },
+    {
+      "id": "verbs",
+      "title": "Action Words",
+      "icon": "🏃",
+      "level": "A1",
+      "words": [
+        { "word": "run", "type": "verb", "meaning": "to move very fast on your feet", "example": "I run fast so I do not miss the bus.", "emoji": "🏃" },
+        { "word": "jump", "type": "verb", "meaning": "to push yourself up into the air", "example": "Can you jump over the box?", "emoji": "🦘" },
+        { "word": "swim", "type": "verb", "meaning": "to move through water", "example": "We swim in the lake in summer.", "emoji": "🏊" },
+        { "word": "climb", "type": "verb", "meaning": "to go up something using your hands and feet", "example": "Cats can climb trees.", "emoji": "🧗" },
+        { "word": "throw", "type": "verb", "meaning": "to send something through the air with your hand", "example": "Throw the ball to me!", "emoji": "🤾" },
+        { "word": "catch", "type": "verb", "meaning": "to take something that is moving through the air", "example": "I hold out my hands to catch the ball.", "emoji": "🥎" },
+        { "word": "carry", "type": "verb", "meaning": "to hold something and take it with you", "example": "Can you help me carry this heavy box?", "emoji": "📦" },
+        { "word": "laugh", "type": "verb", "meaning": "to make a happy sound when something is funny", "example": "The joke is so funny that we laugh.", "emoji": "😂", "opposite": "cry" },
+        { "word": "whisper", "type": "verb", "meaning": "to speak very quietly", "example": "Please whisper. The baby is sleeping.", "emoji": "🤫", "opposite": "shout" },
+        { "word": "build", "type": "verb", "meaning": "to make something by putting parts together", "example": "Let's build a sandcastle at the beach.", "emoji": "🏗️" },
+        { "word": "borrow", "type": "verb", "meaning": "to take something and give it back later", "example": "Can I borrow your pencil? I will give it back.", "emoji": "🤝", "opposite": "lend" },
+        { "word": "forget", "type": "verb", "meaning": "to not remember", "example": "Don't forget your homework!", "emoji": "🤔", "opposite": "remember" }
+      ]
+    },
+    {
+      "id": "opposites",
+      "title": "Opposites",
+      "icon": "↔️",
+      "level": "A1",
+      "words": [
+        { "word": "hot", "type": "adjective", "meaning": "very warm", "example": "The tea is too hot to drink.", "emoji": "🔥", "opposite": "cold" },
+        { "word": "big", "type": "adjective", "meaning": "large in size", "example": "A whale is a very big animal.", "emoji": "🐋", "opposite": "small" },
+        { "word": "fast", "type": "adjective", "meaning": "moving very quickly", "example": "A cheetah is a very fast animal.", "emoji": "🐆", "opposite": "slow" },
+        { "word": "heavy", "type": "adjective", "meaning": "weighing a lot; hard to lift", "example": "This bag is too heavy to lift.", "emoji": "🏋️", "opposite": "light" },
+        { "word": "early", "type": "adjective", "meaning": "before the usual or expected time", "example": "I get up early to see the sunrise.", "emoji": "🌅", "opposite": "late" },
+        { "word": "empty", "type": "adjective", "meaning": "with nothing inside", "example": "The bottle is empty. There is no water in it.", "emoji": "🫙", "opposite": "full" },
+        { "word": "loud", "type": "adjective", "meaning": "making a lot of noise", "example": "The music is too loud! Please turn it down.", "emoji": "📢", "opposite": "quiet" },
+        { "word": "cheap", "type": "adjective", "meaning": "not costing much money", "example": "This pen is cheap; it costs very little.", "emoji": "🪙", "opposite": "expensive" },
+        { "word": "easy", "type": "adjective", "meaning": "not difficult", "example": "This test is easy. I know all the answers.", "emoji": "✅", "opposite": "difficult" },
+        { "word": "clean", "type": "adjective", "meaning": "not dirty", "example": "Wash your hands so they are clean.", "emoji": "🧼", "opposite": "dirty" },
+        { "word": "strong", "type": "adjective", "meaning": "able to lift heavy things", "example": "He is strong enough to lift the big box.", "emoji": "💪", "opposite": "weak" },
+        { "word": "old", "type": "adjective", "meaning": "having lived for many years", "example": "My grandfather is very old. He is ninety.", "emoji": "👴", "opposite": "young" }
+      ]
+    },
+    {
+      "id": "town",
+      "title": "Around Town",
+      "icon": "🏙️",
+      "level": "A2",
+      "words": [
+        { "word": "bakery", "type": "noun", "meaning": "a shop that makes and sells bread and cakes", "example": "We buy fresh bread at the bakery.", "emoji": "🥐" },
+        { "word": "hospital", "type": "noun", "meaning": "a building where doctors and nurses help sick people", "example": "The ambulance takes him to the hospital.", "emoji": "🏥" },
+        { "word": "station", "type": "noun", "meaning": "a place where trains stop", "example": "The train leaves the station at ten o'clock.", "emoji": "🚉" },
+        { "word": "park", "type": "noun", "meaning": "a public garden with grass and trees where people play", "example": "The children play on the swings in the park.", "emoji": "🛝" },
+        { "word": "bridge", "type": "noun", "meaning": "it goes over a river so you can cross it", "example": "We walk across the bridge over the river.", "emoji": "🌉" },
+        { "word": "market", "type": "noun", "meaning": "an outdoor place where people sell fruit, vegetables and other things", "example": "We buy apples and carrots at the market.", "emoji": "🧺" },
+        { "word": "museum", "type": "noun", "meaning": "a building where you can look at old or important things", "example": "We see dinosaur bones at the museum.", "emoji": "🏛️" },
+        { "word": "street", "type": "noun", "meaning": "a road in a town, with houses or shops", "example": "Look left and right before you cross the street.", "emoji": "🚦" },
+        { "word": "cinema", "type": "noun", "meaning": "a place where you watch films on a big screen", "example": "We watch a new film at the cinema.", "emoji": "🎬" },
+        { "word": "post office", "type": "noun", "meaning": "a place where you send letters and parcels", "example": "I send a letter to my aunt at the post office.", "emoji": "📮" },
+        { "word": "pharmacy", "type": "noun", "meaning": "a shop that sells medicine", "example": "Dad buys medicine at the pharmacy.", "emoji": "⚕️" },
+        { "word": "restaurant", "type": "noun", "meaning": "a place where you pay to eat a meal", "example": "We have dinner at an Italian restaurant.", "emoji": "🍝" }
+      ]
+    },
+    {
+      "id": "time",
+      "title": "Time & Routine",
+      "icon": "⏰",
+      "level": "A2",
+      "words": [
+        { "word": "morning", "type": "noun", "meaning": "the early part of the day", "example": "I have a shower every morning before school.", "emoji": "🌄" },
+        { "word": "afternoon", "type": "noun", "meaning": "the time after lunch and before the evening", "example": "We play football in the afternoon, after lunch.", "emoji": "🕒" },
+        { "word": "evening", "type": "noun", "meaning": "the end of the day, before night", "example": "We eat dinner together in the evening.", "emoji": "🌆" },
+        { "word": "yesterday", "type": "noun", "meaning": "the day before today", "example": "Yesterday was Sunday, so today is Monday.", "emoji": "⏪" },
+        { "word": "tomorrow", "type": "noun", "meaning": "the day after today", "example": "Today is Friday, so tomorrow is Saturday.", "emoji": "⏩" },
+        { "word": "weekend", "type": "noun", "meaning": "Saturday and Sunday", "example": "We do not go to school at the weekend.", "emoji": "🎉" },
+        { "word": "always", "type": "adverb", "meaning": "every time", "example": "I always brush my teeth before bed.", "emoji": "🔁", "opposite": "never" },
+        { "word": "never", "type": "adverb", "meaning": "not at any time", "example": "Penguins never fly.", "emoji": "🚫", "opposite": "always" },
+        { "word": "sometimes", "type": "adverb", "meaning": "on some days, but not always", "example": "I sometimes walk to school, but usually I take the bus.", "emoji": "🎲" },
+        { "word": "minute", "type": "noun", "meaning": "sixty seconds", "example": "Wait a minute! I am almost ready.", "emoji": "⏱️" },
+        { "word": "hour", "type": "noun", "meaning": "sixty minutes", "example": "The film is one hour long.", "emoji": "⏳" },
+        { "word": "birthday", "type": "noun", "meaning": "the day each year when you remember the day you were born", "example": "On my birthday, I have a cake with candles.", "emoji": "🎂" }
+      ]
+    },
+    {
+      "id": "travel",
+      "title": "Travel",
+      "icon": "✈️",
+      "level": "A2",
+      "words": [
+        { "word": "passport", "type": "noun", "meaning": "a small book that lets you travel to other countries", "example": "Show your passport when you go to another country.", "emoji": "🛂" },
+        { "word": "suitcase", "type": "noun", "meaning": "a big bag for your clothes when you travel", "example": "I pack my clothes in a suitcase.", "emoji": "🧳" },
+        { "word": "ticket", "type": "noun", "meaning": "a piece of paper that lets you travel on a train or plane", "example": "You need a ticket to get on the train.", "emoji": "🎫" },
+        { "word": "airport", "type": "noun", "meaning": "a place where planes take off and land", "example": "Our plane leaves the airport at noon.", "emoji": "🛫" },
+        { "word": "map", "type": "noun", "meaning": "a picture that shows where places are", "example": "We look at the map to find the way.", "emoji": "🗺️" },
+        { "word": "hotel", "type": "noun", "meaning": "a building where you pay to sleep when you travel", "example": "We sleep in a hotel near the sea.", "emoji": "🏨" },
+        { "word": "tourist", "type": "noun", "meaning": "a person who visits a place on holiday", "example": "The tourist takes photos of the old castle.", "emoji": "📸" },
+        { "word": "holiday", "type": "noun", "meaning": "a time with no work or school, often for travel", "example": "We go to the sea for our summer holiday.", "emoji": "🏝️" },
+        { "word": "arrive", "type": "verb", "meaning": "to get to a place", "example": "The train will arrive at six o'clock.", "emoji": "🛬", "opposite": "leave" },
+        { "word": "visit", "type": "verb", "meaning": "to go and see a person or a place", "example": "We visit Grandma every Sunday.", "emoji": "🏡" },
+        { "word": "abroad", "type": "adverb", "meaning": "in or to another country", "example": "My aunt lives abroad, in Japan.", "emoji": "🌍" },
+        { "word": "journey", "type": "noun", "meaning": "travelling from one place to another", "example": "The journey by train takes three hours.", "emoji": "🚆" }
+      ]
+    }
+  ]
+}

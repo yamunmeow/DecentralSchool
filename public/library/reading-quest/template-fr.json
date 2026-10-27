@@ -1,0 +1,1247 @@
+{
+ "template": "reading",
+ "title": "Reading Quest (français)",
+ "subtitle": "De petites histoires à lire, puis des questions.",
+ "emoji": "📖",
+ "tint": "sage",
+ "settings": {
+  "round": 8,
+  "timer": 0,
+  "lives": 0,
+  "instant": true,
+  "fresh": true,
+  "speech": "fr-FR",
+  "ui": "fr",
+  "sound": true
+ },
+ "activities": [
+  "questions",
+  "cloze",
+  "sequence",
+  "truefalse"
+ ],
+ "passages": [
+  {
+   "title": "🐱 Le chat et le chapeau",
+   "text": "Milo est un petit chat. Il trouve un grand chapeau rouge sur le canapé. Le chapeau est trop grand. Milo va dans la cuisine, mais il ne voit rien. Il touche une chaise. La chaise va bien. Milo va bien. Son chapeau est par terre. Maintenant, le chien le porte !",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Milo est quel animal ?",
+     "options": [
+      "Un chat",
+      "Un chien",
+      "Un oiseau"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "De quelle couleur est le chapeau ?",
+     "options": [
+      "Rouge",
+      "Bleu",
+      "Vert"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où va Milo ?",
+     "options": [
+      "Dans la cuisine",
+      "Dans le jardin",
+      "À l’école"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qui porte le chapeau à la fin ?",
+     "options": [
+      "Le chien",
+      "La chaise",
+      "La mère de Milo"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🍌 Le téléphone banane",
+   "text": "Lina a une banane jaune. Elle la met près de son oreille. « Allô, Mamie ! » dit-elle. Mamie est dans la pièce et elle rit. « C’est une banane, pas un téléphone ! » Lina sourit. « Je sais. Mais ce téléphone est délicieux. » Puis elle mange la banane.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Que met Lina près de son oreille ?",
+     "options": [
+      "Une banane",
+      "Une pomme",
+      "Une chaussure"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qui est dans la pièce ?",
+     "options": [
+      "Mamie",
+      "La maîtresse",
+      "Un médecin"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que fait Mamie ?",
+     "options": [
+      "Elle rit",
+      "Elle dort",
+      "Elle chante"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que fait Lina à la fin ?",
+     "options": [
+      "Elle mange la banane",
+      "Elle appelle une amie",
+      "Elle sort"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🐸 Une grenouille à l’école",
+   "text": "Une grenouille verte est sur la table de Tom. Tom dit : « Bonjour ! » La grenouille saute sur son livre. La maîtresse arrive. Tout le monde se tait. Puis la grenouille fait : « Croâ ! » La classe rit. La maîtresse dit : « Notre nouvel élève saute très bien. »",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "De quelle couleur est la grenouille ?",
+     "options": [
+      "Verte",
+      "Rose",
+      "Noire"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où est-elle au début ?",
+     "options": [
+      "Sur la table de Tom",
+      "Sous un arbre",
+      "Dans un bus"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Sur quoi saute-t-elle ?",
+     "options": [
+      "Un livre",
+      "Une chaise",
+      "Un sac"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que fait bien la grenouille ?",
+     "options": [
+      "Elle saute",
+      "Elle lit",
+      "Elle chante"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🧦 La chaussette perdue",
+   "text": "Omar a deux chaussettes bleues. Le matin, il n’en voit qu’une. Il cherche sous son lit. Pas de chaussette. Il cherche dans son sac. Pas de chaussette. Son petit chien entre dans la chambre. Le chien a la chaussette bleue sur la tête. Omar rit et reprend sa chaussette.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Combien de chaussettes Omar a-t-il ?",
+     "options": [
+      "Deux",
+      "Trois",
+      "Une"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où cherche-t-il d’abord ?",
+     "options": [
+      "Sous son lit",
+      "Dans le jardin",
+      "Dans la cuisine"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qui a la chaussette ?",
+     "options": [
+      "Son chien",
+      "Sa sœur",
+      "Sa maîtresse"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où est la chaussette sur le chien ?",
+     "options": [
+      "Sur sa tête",
+      "Sur sa queue",
+      "Sur son pied"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🍕 Une pizza au petit déjeuner",
+   "text": "C’est samedi. Papa prépare une pizza pour le petit déjeuner. Il y a de la tomate et du fromage. Ava met un peu de banane sur sa part. Papa dit : « De la banane sur une pizza ? » Ava goûte. « Oui ! C’est sucré et bon. » Papa goûte aussi. Il sourit, mais maman veut du pain.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Quel jour est-ce ?",
+     "options": [
+      "Samedi",
+      "Lundi",
+      "Vendredi"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qui prépare la pizza ?",
+     "options": [
+      "Papa",
+      "Ava",
+      "Maman"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que met Ava sur sa part ?",
+     "options": [
+      "De la banane",
+      "Une carotte",
+      "Du poisson"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que veut maman ?",
+     "options": [
+      "Du pain",
+      "Du riz",
+      "De la soupe"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🚲 La course lente",
+   "text": "Nina et Léo font du vélo dans le parc. « On fait la course ! » dit Léo. Nina va vite. Léo va lentement, car une famille de canards traverse le chemin. Nina s’arrête et attend avec lui. Les canards vont à l’étang. Léo et Nina repartent. Les canards gagnent la course !",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Où font-ils du vélo ?",
+     "options": [
+      "Dans le parc",
+      "À l’école",
+      "À la plage"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qui va lentement ?",
+     "options": [
+      "Léo",
+      "Nina",
+      "Un canard"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qui traverse le chemin ?",
+     "options": [
+      "Une famille de canards",
+      "Un bus",
+      "Un chat"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où vont les canards ?",
+     "options": [
+      "À l’étang",
+      "Dans un magasin",
+      "Dans une maison"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "☔ Un parapluie pour le soleil",
+   "text": "Le ciel est bleu. Il fait chaud. Ben prend un parapluie pour aller au parc. Ses amis disent : « Il ne pleut pas ! » Ben l’ouvre et s’assoit à l’ombre. Bientôt, ses amis s’assoient avec lui. « Bonne idée », disent-ils. Puis un petit nuage apporte la pluie.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Quel temps fait-il au début ?",
+     "options": [
+      "Il fait chaud et beau",
+      "Il neige et il fait froid",
+      "Il y a du vent et il fait noir"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que prend Ben ?",
+     "options": [
+      "Un parapluie",
+      "Un manteau",
+      "Un cerf-volant"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Pourquoi ses amis s’assoient-ils avec lui ?",
+     "options": [
+      "Pour être à l’ombre",
+      "Pour déjeuner",
+      "Pour chanter"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que se passe-t-il à la fin ?",
+     "options": [
+      "Il pleut",
+      "Il neige",
+      "Le soleil disparaît pour toujours"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🐢 La grande journée de Titi",
+   "text": "Titi la tortue veut voir son amie. Son amie habite près d’un grand arbre. Titi marche toute la matinée. À midi, elle voit l’arbre. « Je suis là ! » dit-elle. Son amie sort. C’est une autre tortue. « Tu es en avance », dit son amie. « En avance, moi ? » Titi rit.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Titi est quel animal ?",
+     "options": [
+      "Une tortue",
+      "Un lapin",
+      "Un poisson"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où habite son amie ?",
+     "options": [
+      "Près d’un grand arbre",
+      "Dans une école",
+      "Sous un pont"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Quand Titi voit-elle l’arbre ?",
+     "options": [
+      "À midi",
+      "La nuit",
+      "Au petit déjeuner"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que dit son amie ?",
+     "options": [
+      "Tu es en avance",
+      "Tu es en retard",
+      "Rentre chez toi"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🎂 Le gâteau surprise",
+   "text": "C’est l’anniversaire de Jo. Sa sœur prépare un petit gâteau. Elle met cinq bougies dessus. Jo ferme les yeux et fait un vœu. Quand il ouvre les yeux, le chat est près du gâteau. Il n’y a plus de crème dessus. Le chat a de la crème sur le nez. « Joyeux anniversaire, chat ! » dit Jo.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "C’est l’anniversaire de qui ?",
+     "options": [
+      "Jo",
+      "Sa sœur",
+      "Le chat"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Combien de bougies y a-t-il ?",
+     "options": [
+      "Cinq",
+      "Quatre",
+      "Six"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que manque-t-il sur le gâteau ?",
+     "options": [
+      "La crème",
+      "Les bougies",
+      "Le chocolat"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où est la crème ?",
+     "options": [
+      "Sur le nez du chat",
+      "Par terre",
+      "Sur le chapeau de Jo"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🐘 Les chaussures de l’éléphant",
+   "text": "Eli l’éléphant a quatre nouvelles chaussures. Elles sont jaune vif. Il va à la rivière pour les montrer à ses amis. Un poisson regarde ses pieds et dit : « Belles chaussures ! » Eli sourit. Puis il entre dans l’eau. Ses chaussures flottent et partent. Le poisson dit : « Beaux bateaux ! »",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Combien de chaussures Eli a-t-il ?",
+     "options": [
+      "Quatre",
+      "Deux",
+      "Six"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "De quelle couleur sont-elles ?",
+     "options": [
+      "Jaunes",
+      "Rouges",
+      "Bleues"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où va Eli ?",
+     "options": [
+      "À la rivière",
+      "À l’école",
+      "Dans un magasin"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que font les chaussures ?",
+     "options": [
+      "Elles flottent et partent",
+      "Elles grandissent",
+      "Elles vont dans un sac"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🥕 Le roi carotte",
+   "text": "Un lapin trouve une très grosse carotte dans le jardin. Elle est plus grande que sa tête. Il la met sur sa tête comme une couronne. « Je suis le roi carotte ! » dit-il. Sa sœur rit. « Un roi doit partager », dit-elle. Le lapin coupe la carotte en deux. Ils mangent ensemble.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Que trouve le lapin ?",
+     "options": [
+      "Une grosse carotte",
+      "Une petite pomme",
+      "Un chapeau bleu"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où met-il la carotte ?",
+     "options": [
+      "Sur sa tête",
+      "Dans une boîte",
+      "Sous le lit"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qui lui parle ?",
+     "options": [
+      "Sa sœur",
+      "Sa maîtresse",
+      "Un canard"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que font-ils à la fin ?",
+     "options": [
+      "Ils partagent la carotte",
+      "Ils la vendent",
+      "Ils la plantent"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🚌 Le mauvais bus",
+   "text": "Maya veut aller à la bibliothèque. Elle monte dans un bus avec l’image d’un livre. Mais ce n’est pas un bus pour la bibliothèque. Il va à une librairie ! Le chauffeur sourit. « La bibliothèque est de l’autre côté de la rue. » Maya n’achète pas de livre. Elle traverse la rue et trouve la bibliothèque.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Où Maya veut-elle aller ?",
+     "options": [
+      "À la bibliothèque",
+      "À la plage",
+      "Au zoo"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Quelle image est sur le bus ?",
+     "options": [
+      "Un livre",
+      "Un chat",
+      "Une étoile"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où va le bus ?",
+     "options": [
+      "À une librairie",
+      "À un hôpital",
+      "À une école"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où est la bibliothèque ?",
+     "options": [
+      "De l’autre côté de la rue",
+      "Derrière le parc",
+      "Dans le bus"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🌙 La lune est en retard",
+   "text": "Sam regarde par la fenêtre la nuit. Il ne voit pas la lune. « La lune est en retard ? » demande-t-il à papa. Papa regarde le ciel. Un gros nuage est devant la lune. Le vent pousse le nuage. Maintenant, la lune est là. « Bonjour, lune ! Tu es à l’heure », dit Sam.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Quand Sam regarde-t-il dehors ?",
+     "options": [
+      "La nuit",
+      "À midi",
+      "Le matin"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que ne voit-il pas ?",
+     "options": [
+      "La lune",
+      "Un arbre",
+      "Une voiture"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qu’y a-t-il devant la lune ?",
+     "options": [
+      "Un nuage",
+      "Un oiseau",
+      "Une maison"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qu’est-ce qui pousse le nuage ?",
+     "options": [
+      "Le vent",
+      "Papa",
+      "Sam"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🐟 Un poisson nommé Oiseau",
+   "text": "Nora a un petit poisson. Il s’appelle Oiseau. Oiseau vit dans un bocal rond. Nora dit : « Oiseau, tu peux voler ? » Oiseau nage en haut et en bas. « Non, mais tu peux danser », dit Nora. Son frère dit : « Pourquoi ce poisson s’appelle Oiseau ? » Nora répond : « Parce que c’est drôle ! »",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Quel animal Nora a-t-elle ?",
+     "options": [
+      "Un poisson",
+      "Un oiseau",
+      "Un chat"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Comment s’appelle-t-il ?",
+     "options": [
+      "Oiseau",
+      "Danse",
+      "Bleu"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où vit-il ?",
+     "options": [
+      "Dans un bocal rond",
+      "Dans un arbre",
+      "Dans une boîte"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que peut faire le poisson ?",
+     "options": [
+      "Nager en haut et en bas",
+      "Voler au-dessus d’une maison",
+      "Parler au frère de Nora"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "👟 Deux chaussures différentes",
+   "text": "Paul s’habille très vite. Il va à l’école. Son ami montre ses pieds. Une chaussure est noire. L’autre est blanche. Paul regarde et rit. « Mes chaussures jouent à un jeu », dit-il. Après l’école, il trouve les deux autres chaussures à la maison.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Où va Paul ?",
+     "options": [
+      "À l’école",
+      "Au zoo",
+      "Au marché"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "De quelle couleur est une chaussure ?",
+     "options": [
+      "Noire",
+      "Verte",
+      "Jaune"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "De quelle couleur est l’autre ?",
+     "options": [
+      "Blanche",
+      "Rouge",
+      "Bleue"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où sont les autres chaussures ?",
+     "options": [
+      "À la maison",
+      "Dans un bus",
+      "Dans un arbre"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🍉 Le chapeau pastèque",
+   "text": "Il fait chaud. Papa coupe une pastèque. Amir mange une grosse part. La peau verte ressemble à un petit bateau. Amir la met sur sa tête. « Regarde ! Un chapeau pastèque ! » Papa rit. « Enlève-le avant d’aller au magasin. » Amir dit : « Mais tout le monde va en vouloir un ! »",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Que coupe papa ?",
+     "options": [
+      "Une pastèque",
+      "Une orange",
+      "Un gâteau"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Quel temps fait-il ?",
+     "options": [
+      "Il fait chaud",
+      "Il fait froid",
+      "Il pleut"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que met Amir sur sa tête ?",
+     "options": [
+      "La peau verte",
+      "Une assiette",
+      "Un petit bateau"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où veulent-ils aller ?",
+     "options": [
+      "Au magasin",
+      "À l’école",
+      "À la rivière"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🦜 Le perroquet dit non",
+   "text": "Un perroquet vit avec Ana. Chaque jour, Ana dit : « Bonjour ! » Le perroquet dit : « Non ! » Ana demande : « Tu veux une pomme ? » Le perroquet dit : « Non ! » Mais il mange la pomme. Un jour, Ana dit : « Tu veux nettoyer ta cage ? » Le perroquet dit : « Bonjour ! »",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Qui vit avec Ana ?",
+     "options": [
+      "Un perroquet",
+      "Un lapin",
+      "Un cheval"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Quel mot dit-il souvent ?",
+     "options": [
+      "Non",
+      "Oui",
+      "Merci"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Quel fruit mange-t-il ?",
+     "options": [
+      "Une pomme",
+      "Une banane",
+      "Une poire"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qu’est-ce qu’Ana lui demande de nettoyer ?",
+     "options": [
+      "Sa cage",
+      "La cuisine",
+      "Une fenêtre"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🎒 Un sac plein de chaussettes",
+   "text": "Ema est prête pour l’école. Son sac est très lourd. Elle l’ouvre en classe. Il y a dix chaussettes dedans ! Il n’y a pas de livre. Son petit frère a mis les chaussettes dans le sac. Ema rit. La maîtresse lui donne du papier. À la maison, Ema rend les chaussettes à son frère.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Où va Ema ?",
+     "options": [
+      "À l’école",
+      "À la plage",
+      "Au parc"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Combien de chaussettes sont dans le sac ?",
+     "options": [
+      "Dix",
+      "Deux",
+      "Cinq"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qu’est-ce qui manque dans le sac ?",
+     "options": [
+      "Un livre",
+      "Des chaussettes",
+      "Son repas"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qui a mis les chaussettes dedans ?",
+     "options": [
+      "Son petit frère",
+      "Sa maîtresse",
+      "Son amie"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🐓 Le coq fatigué",
+   "text": "Un coq vit dans une ferme. Chaque matin, il chante : « Cocorico ! » Aujourd’hui, il a sommeil. Il ne chante pas. Le fermier se réveille tard. Les vaches attendent leur repas. À midi, le coq ouvre un œil et chante. Les vaches disent : « Bon après-midi ! »",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Où vit le coq ?",
+     "options": [
+      "Dans une ferme",
+      "Dans un appartement",
+      "À la plage"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Comment se sent-il aujourd’hui ?",
+     "options": [
+      "Il a sommeil",
+      "Il est en colère",
+      "Il a faim"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qui se réveille tard ?",
+     "options": [
+      "Le fermier",
+      "Les vaches",
+      "Un enfant"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Quand le coq chante-t-il ?",
+     "options": [
+      "À midi",
+      "À minuit",
+      "Au petit déjeuner"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🍦 Une glace pour le chien",
+   "text": "C’est un après-midi chaud. Sira achète une glace à la fraise. Son chien regarde la glace. « Elle est pour moi », dit Sira. Elle achète un petit gobelet d’eau pour le chien. Le chien boit avec plaisir. Sira mange un peu de sa glace. Oh non ! La glace tombe sur sa chaussure.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Quel est le parfum de la glace ?",
+     "options": [
+      "Fraise",
+      "Vanille",
+      "Chocolat"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que boit le chien ?",
+     "options": [
+      "De l’eau",
+      "Du lait",
+      "Du jus"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que fait Sira avec sa glace ?",
+     "options": [
+      "Elle en mange un peu",
+      "Elle donne tout au chien",
+      "Elle la met dans un sac"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où tombe la glace ?",
+     "options": [
+      "Sur sa chaussure",
+      "Sur le chien",
+      "Dans le gobelet"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🦒 L’écharpe de la girafe",
+   "text": "Zaza la girafe a un long cou. Son amie fait une écharpe bleue pour elle. Elle est très longue. Zaza la met, mais un petit oiseau se pose sur l’écharpe. « C’est un nouveau nid ? » demande l’oiseau. « Non, c’est mon écharpe », dit Zaza. « Tu peux rester ici une minute. »",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Zaza est quel animal ?",
+     "options": [
+      "Une girafe",
+      "Un zèbre",
+      "Une chèvre"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "De quelle couleur est l’écharpe ?",
+     "options": [
+      "Bleue",
+      "Jaune",
+      "Rose"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qui se pose sur l’écharpe ?",
+     "options": [
+      "Un petit oiseau",
+      "Un chat",
+      "Une grenouille"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Combien de temps peut-il rester ?",
+     "options": [
+      "Une minute",
+      "Un jour",
+      "Une semaine"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🪥 La chanson de la brosse à dents",
+   "text": "Kai se brosse les dents chaque matin. Aujourd’hui, il chante en se brossant les dents. Sa sœur l’entend. « Pourquoi tu chantes ? » demande-t-elle. Kai dit : « Ma brosse à dents est un micro ! » Il chante si fort que papa arrive à la porte. Papa dit : « Belle chanson. Maintenant, rince-toi la bouche. »",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Que fait Kai chaque matin ?",
+     "options": [
+      "Il se brosse les dents",
+      "Il lave la voiture",
+      "Il nourrit un chat"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que prend-il pour un micro ?",
+     "options": [
+      "Sa brosse à dents",
+      "Une cuillère",
+      "Un crayon"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qui l’entend en premier ?",
+     "options": [
+      "Sa sœur",
+      "Son papa",
+      "Sa maîtresse"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que lui dit papa de faire ?",
+     "options": [
+      "De se rincer la bouche",
+      "D’aller dormir",
+      "De manger un gâteau"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🪁 Le cerf-volant se repose",
+   "text": "Ruby a un cerf-volant vert. Elle court dans le parc. Le cerf-volant vole haut. Puis le vent s’arrête. Le cerf-volant descend et tombe sur un banc. Ruby s’assoit près de lui. « Tu es fatigué ? » demande-t-elle. Le vent revient. Le cerf-volant vole encore. Ruby court derrière lui.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "De quelle couleur est le cerf-volant ?",
+     "options": [
+      "Vert",
+      "Orange",
+      "Violet"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où court Ruby ?",
+     "options": [
+      "Dans le parc",
+      "À l’école",
+      "Dans une ferme"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où tombe le cerf-volant ?",
+     "options": [
+      "Sur un banc",
+      "Dans un lac",
+      "Sur un bus"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Pourquoi descend-il ?",
+     "options": [
+      "Le vent s’arrête",
+      "Il fait noir",
+      "Ruby coupe la ficelle"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🥚 L’œuf sur la chaise",
+   "text": "Nico voit un œuf sur une chaise dans la cuisine. « Qui l’a mis là ? » demande-t-il. Sa mère dit : « Pas moi. » Son frère dit : « Pas moi. » La poule entre par la porte ouverte. Elle s’assoit sur la chaise. « Ah », dit Nico. « C’est ta chaise ! »",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Qu’y a-t-il sur la chaise ?",
+     "options": [
+      "Un œuf",
+      "Un livre",
+      "Une banane"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Où est la chaise ?",
+     "options": [
+      "Dans la cuisine",
+      "Dans le jardin",
+      "À l’école"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qui entre par la porte ?",
+     "options": [
+      "Une poule",
+      "Un chien",
+      "Un canard"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qui s’assoit sur la chaise ?",
+     "options": [
+      "La poule",
+      "Nico",
+      "Son frère"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🎨 Le soleil bleu",
+   "text": "À l’école, Mia dessine un soleil bleu. Son ami demande : « Pourquoi le soleil est bleu ? » Mia dit : « Je n’ai qu’un crayon bleu. » La maîtresse lui donne un crayon jaune. Mia dessine un oiseau jaune à côté du soleil bleu. « Maintenant, l’oiseau a la couleur du soleil », dit-elle. Tout le monde rit.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Que dessine Mia d’abord ?",
+     "options": [
+      "Un soleil bleu",
+      "Un arbre jaune",
+      "Un oiseau rouge"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Pourquoi est-il bleu ?",
+     "options": [
+      "Elle n’a qu’un crayon bleu",
+      "Le ciel est bleu",
+      "Elle aime la pluie"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que lui donne la maîtresse ?",
+     "options": [
+      "Un crayon jaune",
+      "Un stylo rouge",
+      "Un livre"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Que dessine-t-elle ensuite ?",
+     "options": [
+      "Un oiseau jaune",
+      "Une maison verte",
+      "Un chien bleu"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🐒 Le jeu du silence",
+   "text": "Momo le singe joue au jeu du silence avec ses amis. Personne ne doit faire de bruit. Un oiseau chante. Momo sourit, mais reste silencieux. Une feuille tombe sur son nez. Il veut rire. Puis son ami lui donne une banane. « Merci ! » dit Momo. Ses amis applaudissent. Il perd le jeu, mais gagne un goûter.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Momo est quel animal ?",
+     "options": [
+      "Un singe",
+      "Un oiseau",
+      "Un lion"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "À quel jeu jouent-ils ?",
+     "options": [
+      "Au jeu du silence",
+      "À la course",
+      "Au ballon"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Qu’est-ce qui tombe sur son nez ?",
+     "options": [
+      "Une feuille",
+      "Une banane",
+      "Un chapeau"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Pourquoi perd-il ?",
+     "options": [
+      "Il dit merci",
+      "Il tombe",
+      "Il mange la feuille"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  }
+ ]
+}

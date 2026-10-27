@@ -1,0 +1,1247 @@
+{
+ "template": "reading",
+ "title": "Reading Quest",
+ "subtitle": "Short stories to read, then answer.",
+ "emoji": "📖",
+ "tint": "sage",
+ "settings": {
+  "round": 8,
+  "timer": 0,
+  "lives": 0,
+  "instant": true,
+  "fresh": true,
+  "speech": "en-GB",
+  "ui": "en",
+  "sound": true
+ },
+ "activities": [
+  "questions",
+  "cloze",
+  "sequence",
+  "truefalse"
+ ],
+ "passages": [
+  {
+   "title": "🐱 The Cat in the Hat",
+   "text": "Milo is a small cat. He finds a big red hat on the sofa. The hat is too big. Milo walks into the kitchen, but he cannot see. He walks into a chair. The chair is fine. Milo is fine. His hat is on the floor. Now the dog wears it!",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What animal is Milo?",
+     "options": [
+      "A cat",
+      "A dog",
+      "A bird"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What color is the hat?",
+     "options": [
+      "Red",
+      "Blue",
+      "Green"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where does Milo walk?",
+     "options": [
+      "Into the kitchen",
+      "Into the garden",
+      "Into the school"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Who wears the hat at the end?",
+     "options": [
+      "The dog",
+      "The chair",
+      "Milo’s mother"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🍌 The Banana Phone",
+   "text": "Lina has a yellow banana. She puts it next to her ear. “Hello, Grandma!” she says. Grandma is in the room and laughs. “That is a banana, not a phone!” Lina smiles. “I know. But this phone is delicious.” Then she eats it.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What does Lina put by her ear?",
+     "options": [
+      "A banana",
+      "An apple",
+      "A shoe"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Who is in the room?",
+     "options": [
+      "Grandma",
+      "The teacher",
+      "A doctor"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does Grandma do?",
+     "options": [
+      "She laughs",
+      "She sleeps",
+      "She sings"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does Lina do at the end?",
+     "options": [
+      "She eats the banana",
+      "She calls a friend",
+      "She goes outside"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🐸 A Frog at School",
+   "text": "A green frog sits on Tom’s desk. Tom says, “Good morning!” The frog jumps onto his book. The teacher comes in. Everyone is quiet. Then the frog says, “Ribbit!” The class laughs. The teacher says, “Our new student is very good at jumping.”",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What color is the frog?",
+     "options": [
+      "Green",
+      "Pink",
+      "Black"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where does it sit first?",
+     "options": [
+      "On Tom’s desk",
+      "Under a tree",
+      "On a bus"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does it jump onto?",
+     "options": [
+      "A book",
+      "A chair",
+      "A bag"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What is the frog good at?",
+     "options": [
+      "Jumping",
+      "Reading",
+      "Singing"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🧦 The Missing Sock",
+   "text": "Omar has two blue socks. In the morning, he sees only one. He looks under his bed. No sock. He looks in his bag. No sock. His little dog runs into the room. The dog has the blue sock on its head. Omar laughs and takes his sock back.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "How many socks does Omar have?",
+     "options": [
+      "Two",
+      "Three",
+      "One"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where does he look first?",
+     "options": [
+      "Under his bed",
+      "In the garden",
+      "In the kitchen"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Who has the sock?",
+     "options": [
+      "His dog",
+      "His sister",
+      "His teacher"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where is the sock on the dog?",
+     "options": [
+      "On its head",
+      "On its tail",
+      "On its foot"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🍕 Pizza for Breakfast",
+   "text": "It is Saturday. Dad makes a pizza for breakfast. It has tomato and cheese. Ava puts a little banana on her piece. Dad says, “Banana on pizza?” Ava takes a bite. “Yes! It is sweet and good.” Dad tries it too. He smiles, but Mum wants bread.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What day is it?",
+     "options": [
+      "Saturday",
+      "Monday",
+      "Friday"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Who makes the pizza?",
+     "options": [
+      "Dad",
+      "Ava",
+      "Mum"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does Ava add?",
+     "options": [
+      "Banana",
+      "Carrot",
+      "Fish"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does Mum want?",
+     "options": [
+      "Bread",
+      "Rice",
+      "Soup"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🚲 The Slow Race",
+   "text": "Nina and Leo ride their bikes in the park. “Let’s race!” says Leo. Nina rides fast. Leo rides slowly because a duck family crosses the path. Nina stops and waits with him. The ducks go to the pond. Leo and Nina start again. The ducks win the race!",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Where do they ride?",
+     "options": [
+      "In the park",
+      "At school",
+      "At the beach"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Who rides slowly?",
+     "options": [
+      "Leo",
+      "Nina",
+      "A duck"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What crosses the path?",
+     "options": [
+      "A duck family",
+      "A bus",
+      "A cat"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where do the ducks go?",
+     "options": [
+      "To the pond",
+      "To a shop",
+      "To a house"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "☔ An Umbrella for the Sun",
+   "text": "The sky is blue. The sun is hot. Ben takes an umbrella to the park. His friends say, “There is no rain!” Ben opens it and sits in the shade. Soon his friends sit with him. “Good idea,” they say. Then one small cloud brings rain.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What is the weather like first?",
+     "options": [
+      "Hot and sunny",
+      "Cold and snowy",
+      "Windy and dark"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does Ben take?",
+     "options": [
+      "An umbrella",
+      "A coat",
+      "A kite"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Why do his friends sit with him?",
+     "options": [
+      "For shade",
+      "For lunch",
+      "For a song"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What happens at the end?",
+     "options": [
+      "It rains",
+      "It snows",
+      "The sun goes away forever"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🐢 Turtle’s Big Day",
+   "text": "Titi the turtle wants to visit her friend. Her friend lives next to a big tree. Titi walks all morning. At lunch, she sees the tree. “I am here!” she says. Her friend comes out. It is another turtle. “You are early,” says her friend. “I am early?” Titi laughs.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What animal is Titi?",
+     "options": [
+      "A turtle",
+      "A rabbit",
+      "A fish"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where does her friend live?",
+     "options": [
+      "Next to a big tree",
+      "In a school",
+      "Under a bridge"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "When does Titi see the tree?",
+     "options": [
+      "At lunch",
+      "At night",
+      "At breakfast"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does her friend say?",
+     "options": [
+      "You are early",
+      "You are late",
+      "Go home"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🎂 The Surprise Cake",
+   "text": "It is Jo’s birthday. His sister makes a small cake. She puts five candles on it. Jo closes his eyes and makes a wish. When he opens his eyes, the cat is near the cake. There is no cream on top. The cat has cream on its nose. “Happy birthday, cat!” says Jo.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Whose birthday is it?",
+     "options": [
+      "Jo’s",
+      "His sister’s",
+      "The cat’s"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "How many candles are there?",
+     "options": [
+      "Five",
+      "Four",
+      "Six"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What is missing from the cake?",
+     "options": [
+      "Cream",
+      "Candles",
+      "Chocolate"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where is the cream?",
+     "options": [
+      "On the cat’s nose",
+      "On the floor",
+      "On Jo’s hat"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🐘 The Elephant’s Shoes",
+   "text": "Eli the elephant has four new shoes. They are bright yellow. He walks to the river to show his friends. A fish looks at his feet and says, “Nice shoes!” Eli smiles. Then he steps into the water. His shoes float away. The fish says, “Nice boats!”",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "How many shoes does Eli have?",
+     "options": [
+      "Four",
+      "Two",
+      "Six"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What color are they?",
+     "options": [
+      "Yellow",
+      "Red",
+      "Blue"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where does Eli go?",
+     "options": [
+      "To the river",
+      "To school",
+      "To a shop"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What happens to the shoes?",
+     "options": [
+      "They float away",
+      "They grow",
+      "They disappear in a bag"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🥕 The Carrot King",
+   "text": "A rabbit finds a very big carrot in the garden. It is bigger than his head. He puts it on his head like a crown. “I am the carrot king!” he says. His sister laughs. “A king must share,” she says. The rabbit cuts the carrot in two. They eat together.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What does the rabbit find?",
+     "options": [
+      "A big carrot",
+      "A small apple",
+      "A blue hat"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where does he put it?",
+     "options": [
+      "On his head",
+      "In a box",
+      "Under the bed"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Who speaks to him?",
+     "options": [
+      "His sister",
+      "His teacher",
+      "A duck"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What do they do at the end?",
+     "options": [
+      "They share the carrot",
+      "They sell it",
+      "They plant it"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🚌 The Wrong Bus",
+   "text": "Maya wants to go to the library. She gets on a bus with a picture of a book. But it is not a library bus. It is a bus for a book shop! The driver smiles. “The library is across the street.” Maya buys no books. She crosses the street and finds the library.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Where does Maya want to go?",
+     "options": [
+      "To the library",
+      "To the beach",
+      "To the zoo"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What picture is on the bus?",
+     "options": [
+      "A book",
+      "A cat",
+      "A star"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where does the bus go?",
+     "options": [
+      "To a book shop",
+      "To a hospital",
+      "To a school"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where is the library?",
+     "options": [
+      "Across the street",
+      "Behind the park",
+      "On the bus"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🌙 The Moon Is Late",
+   "text": "Sam looks out of the window at night. He cannot see the moon. “Is the moon late?” he asks his dad. Dad looks up. A big cloud is in front of the moon. The wind moves the cloud. Now the moon is there. “Hello, moon! You are on time,” says Sam.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "When does Sam look outside?",
+     "options": [
+      "At night",
+      "At lunch",
+      "In the morning"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What can he not see?",
+     "options": [
+      "The moon",
+      "A tree",
+      "A car"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What is in front of the moon?",
+     "options": [
+      "A cloud",
+      "A bird",
+      "A house"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What moves the cloud?",
+     "options": [
+      "The wind",
+      "Dad",
+      "Sam"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🐟 A Fish Named Bird",
+   "text": "Nora has a little fish. Its name is Bird. Bird lives in a round bowl. Nora says, “Bird, can you fly?” Bird swims up and down. “No, but you can dance,” says Nora. Her brother says, “Why is a fish called Bird?” Nora says, “Because it is funny!”",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What pet does Nora have?",
+     "options": [
+      "A fish",
+      "A bird",
+      "A cat"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What is its name?",
+     "options": [
+      "Bird",
+      "Dance",
+      "Blue"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where does it live?",
+     "options": [
+      "In a round bowl",
+      "In a tree",
+      "In a box"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What can the fish do?",
+     "options": [
+      "Swim up and down",
+      "Fly over a house",
+      "Talk to her brother"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "👟 Two Different Shoes",
+   "text": "Paul gets dressed very fast. He goes to school. His friend points at his feet. One shoe is black. The other shoe is white. Paul looks down and laughs. “My shoes are playing a game,” he says. After school, he finds the other two shoes at home.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Where does Paul go?",
+     "options": [
+      "To school",
+      "To the zoo",
+      "To the market"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What color is one shoe?",
+     "options": [
+      "Black",
+      "Green",
+      "Yellow"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What color is the other shoe?",
+     "options": [
+      "White",
+      "Red",
+      "Blue"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where are the other shoes?",
+     "options": [
+      "At home",
+      "In a bus",
+      "In a tree"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🍉 The Watermelon Hat",
+   "text": "It is a hot day. Dad cuts a watermelon. Amir eats a big piece. The green skin is like a little boat. Amir puts it on his head. “Look! A watermelon hat!” Dad laughs. “Take it off before we go to the shop.” Amir says, “But everyone will want one!”",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What does Dad cut?",
+     "options": [
+      "A watermelon",
+      "An orange",
+      "A cake"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What is the weather like?",
+     "options": [
+      "Hot",
+      "Cold",
+      "Rainy"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does Amir put on his head?",
+     "options": [
+      "The green skin",
+      "A plate",
+      "A toy boat"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where do they plan to go?",
+     "options": [
+      "To the shop",
+      "To school",
+      "To the river"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🦜 The Parrot Says No",
+   "text": "A parrot lives with Ana. Every day Ana says, “Good morning!” The parrot says, “No!” Ana asks, “Do you want an apple?” The parrot says, “No!” But it eats the apple. One day Ana says, “Do you want to clean your cage?” The parrot says, “Good morning!”",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Who lives with Ana?",
+     "options": [
+      "A parrot",
+      "A rabbit",
+      "A horse"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What word does it often say?",
+     "options": [
+      "No",
+      "Yes",
+      "Please"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What fruit does it eat?",
+     "options": [
+      "An apple",
+      "A banana",
+      "A pear"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does Ana ask it to clean?",
+     "options": [
+      "Its cage",
+      "The kitchen",
+      "A window"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🎒 A Bag Full of Socks",
+   "text": "Ema is ready for school. Her bag is very heavy. She opens it in class. There are ten socks inside! There is no book. Her little brother put the socks in the bag. Ema laughs. The teacher gives her paper. At home, Ema gives the socks back to her brother.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Where is Ema going?",
+     "options": [
+      "To school",
+      "To the beach",
+      "To the park"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "How many socks are in the bag?",
+     "options": [
+      "Ten",
+      "Two",
+      "Five"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What is not in the bag?",
+     "options": [
+      "A book",
+      "Socks",
+      "Her lunch"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Who put the socks there?",
+     "options": [
+      "Her little brother",
+      "Her teacher",
+      "Her friend"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🐓 The Sleepy Rooster",
+   "text": "A rooster lives on a farm. Every morning, he calls, “Cock-a-doodle-doo!” Today he is sleepy. He says nothing. The farmer wakes up late. The cows wait for breakfast. At noon, the rooster opens one eye and calls. The cows say, “Good afternoon!”",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "Where does the rooster live?",
+     "options": [
+      "On a farm",
+      "In a city flat",
+      "At the beach"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "How does he feel today?",
+     "options": [
+      "Sleepy",
+      "Angry",
+      "Hungry"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Who wakes up late?",
+     "options": [
+      "The farmer",
+      "The cows",
+      "A child"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "When does the rooster call?",
+     "options": [
+      "At noon",
+      "At midnight",
+      "At breakfast"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🍦 Ice Cream for a Dog",
+   "text": "It is a warm afternoon. Sira buys strawberry ice cream. Her dog looks at it. “This is mine,” says Sira. She buys a small cup of water for the dog. The dog drinks it happily. Sira takes one bite of her ice cream. Oh no! It falls on her shoe.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What flavor is the ice cream?",
+     "options": [
+      "Strawberry",
+      "Vanilla",
+      "Chocolate"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does the dog drink?",
+     "options": [
+      "Water",
+      "Milk",
+      "Juice"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does Sira do with the ice cream?",
+     "options": [
+      "She takes one bite",
+      "She gives it all to the dog",
+      "She puts it in a bag"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where does it fall?",
+     "options": [
+      "On her shoe",
+      "On the dog",
+      "In the cup"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🦒 The Giraffe’s Scarf",
+   "text": "Zaza the giraffe has a long neck. Her friend makes a blue scarf for her. It is very long. Zaza puts it on, but a little bird sits on the scarf. “Is this a new nest?” asks the bird. “No, it is my scarf,” says Zaza. “You can sit here for one minute.”",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What animal is Zaza?",
+     "options": [
+      "A giraffe",
+      "A zebra",
+      "A goat"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What color is the scarf?",
+     "options": [
+      "Blue",
+      "Yellow",
+      "Pink"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Who sits on the scarf?",
+     "options": [
+      "A little bird",
+      "A cat",
+      "A frog"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "How long may the bird sit there?",
+     "options": [
+      "One minute",
+      "One day",
+      "One week"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🪥 The Toothbrush Song",
+   "text": "Kai brushes his teeth every morning. Today he sings a song while he brushes. His sister hears him. “Why are you singing?” she asks. Kai says, “My toothbrush is a microphone!” He sings so loudly that Dad comes to the door. Dad says, “Good song. Now rinse your mouth.”",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What does Kai do every morning?",
+     "options": [
+      "Brush his teeth",
+      "Wash the car",
+      "Feed a cat"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does he use as a microphone?",
+     "options": [
+      "His toothbrush",
+      "A spoon",
+      "A pencil"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Who hears him first?",
+     "options": [
+      "His sister",
+      "His dad",
+      "His teacher"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does Dad tell him to do?",
+     "options": [
+      "Rinse his mouth",
+      "Go to bed",
+      "Eat cake"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🪁 The Kite That Sat Down",
+   "text": "Ruby has a green kite. She runs in the park. The kite flies high. Then the wind stops. The kite comes down and lands on a bench. Ruby sits next to it. “Are you tired?” she asks. The wind comes back. The kite flies again. Ruby runs after it.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What color is the kite?",
+     "options": [
+      "Green",
+      "Orange",
+      "Purple"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where does Ruby run?",
+     "options": [
+      "In the park",
+      "At school",
+      "On a farm"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where does the kite land?",
+     "options": [
+      "On a bench",
+      "In a lake",
+      "On a bus"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Why does it come down?",
+     "options": [
+      "The wind stops",
+      "It is dark",
+      "Ruby cuts the string"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🥚 The Egg on the Chair",
+   "text": "Nico sees an egg on a chair in the kitchen. “Who put it there?” he asks. His mother says, “Not me.” His brother says, “Not me.” The chicken walks in through the open door. She sits on the chair. “Oh,” says Nico. “It is your chair!”",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What is on the chair?",
+     "options": [
+      "An egg",
+      "A book",
+      "A banana"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Where is the chair?",
+     "options": [
+      "In the kitchen",
+      "In the garden",
+      "At school"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Who comes through the door?",
+     "options": [
+      "A chicken",
+      "A dog",
+      "A duck"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Who sits on the chair?",
+     "options": [
+      "The chicken",
+      "Nico",
+      "His brother"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🎨 The Blue Sun",
+   "text": "At school, Mia draws a blue sun. Her friend asks, “Why is the sun blue?” Mia says, “I only have a blue pencil.” The teacher gives her a yellow pencil. Mia draws a yellow bird next to the blue sun. “Now the bird has the sun’s color,” she says. Everyone laughs.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What does Mia draw first?",
+     "options": [
+      "A blue sun",
+      "A yellow tree",
+      "A red bird"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Why is it blue?",
+     "options": [
+      "She has only a blue pencil",
+      "The sky is blue",
+      "She likes rain"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does the teacher give her?",
+     "options": [
+      "A yellow pencil",
+      "A red pen",
+      "A book"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What does she draw next?",
+     "options": [
+      "A yellow bird",
+      "A green house",
+      "A blue dog"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  },
+  {
+   "title": "🐒 Monkey’s Quiet Game",
+   "text": "Momo the monkey plays a quiet game with his friends. No one can make a sound. A bird sings. Momo smiles but stays quiet. A leaf falls on his nose. He wants to laugh. Then his friend gives him a banana. “Thank you!” says Momo. His friends clap. He loses the game, but wins a snack.",
+   "questions": [
+    {
+     "type": "mcq",
+     "q": "What animal is Momo?",
+     "options": [
+      "A monkey",
+      "A bird",
+      "A lion"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What kind of game do they play?",
+     "options": [
+      "A quiet game",
+      "A running game",
+      "A ball game"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "What falls on his nose?",
+     "options": [
+      "A leaf",
+      "A banana",
+      "A hat"
+     ],
+     "answer": 0
+    },
+    {
+     "type": "mcq",
+     "q": "Why does he lose?",
+     "options": [
+      "He says thank you",
+      "He falls down",
+      "He eats the leaf"
+     ],
+     "answer": 0
+    }
+   ],
+   "glossary": []
+  }
+ ]
+}
