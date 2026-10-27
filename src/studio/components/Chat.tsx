@@ -125,7 +125,7 @@ export function Chat({ game, onGame, storageKey, initial, draft, placeholder, su
       <div className="chat chat-connect">
         <Critter kind="octopus" color="lemon" size={96} mood="happy" wave />
         <h2>Connect the free AI</h2>
-        <p className="muted">Sign in or sign up at OpenRouter and come straight back. Free models are used, and your key stays in this browser.</p>
+        <p className="muted">Sign in or sign up for free at OpenRouter and come straight back. Free models are used, and your key stays in this browser.</p>
         <ConnectAi />
       </div>
     );

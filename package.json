@@ -1,7 +1,7 @@
 {
   "name": "decentralschool",
   "private": true,
-  "description": "Offline-first, open-source studio where students make games and teachers supervise; Game Lab built on Scratch's block language.",
+  "description": "Free, open-source tool for making learning games that work offline. The Game Lab uses Scratch's block language.",
   "homepage": "https://decentralschool.org",
   "license": "AGPL-3.0-or-later",
   "type": "module",

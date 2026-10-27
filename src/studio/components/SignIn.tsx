@@ -76,7 +76,7 @@ export function SignInPage() {
           </>
         ) : (
           <>
-            <h1>Sign in or create a free account</h1>
+            <h1>Sign in or sign up for free</h1>
             <SignInButtons />
             <p className="signin-small">
               We keep your name and email, nothing else. <a href="#/privacy">Privacy</a> · <a href="#/terms">Terms</a>

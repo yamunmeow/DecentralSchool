@@ -30,7 +30,7 @@ export function TermsPage() {
         </div>
         <div className="prose">
           <p>
-            DecentralSchool is free. The studio opens once you sign in with a Google account, and Google's own rules for that account apply too,
+            DecentralSchool is free. The studio opens once you sign in for free with a Google account, and Google's own rules for that account apply too,
             including its minimum age. Shared game links, downloaded games and apps play without signing in. By using decentralschool.org you agree to
             these terms.
           </p>
@@ -84,7 +84,7 @@ export function TermsPage() {
         </div>
         <div className="prose">
           <p>
-            One account per person. Keep your Google account safe, since that's how you sign in here. You can delete your account any time
+            One account per person. Keep your Google account safe, since that's how you sign in here (for free). You can delete your account any time
             in <strong>Settings → Account</strong>. We may close an account that breaks these terms.
           </p>
           <p>

@@ -22,8 +22,8 @@ export function RoleHome() {
 
 const FEATURES = [
   { href: "#/play", title: "Play now", text: "Games from the CAEB in Porto-Novo, random quizzes and examples. Nothing to install.", zo: "student", pose: "cheer" },
-  { href: "#/code", title: "Game Lab", text: "Make games with blocks built on Scratch, then see the same game as real JavaScript.", zo: "artist", pose: "wave" },
-  { href: "#/learn", title: "Zo Wants to Learn", text: "Sort, clean and test real data, train a model and find its biases.", zo: "scientist", pose: "stand" },
+  { href: "#/code", title: "Game Lab", text: "Make games with Scratch's blocks and see the same game as JavaScript.", zo: "artist", pose: "wave" },
+  { href: "#/learn", title: "Zo Wants to Learn", text: "Fix mistakes in a set of data, train a small model and test it.", zo: "scientist", pose: "stand" },
   { href: "#/games", title: "Quick games", text: "Quizzes, maths, grammar, words and reading, ready as a link, a file or an app.", zo: "teacher", pose: "wave" },
 ] as const;
 
@@ -34,7 +34,7 @@ export function Welcome() {
     <div className="page welcome">
       <section className="hero welcome-hero">
         <div className="hero-text">
-          <h1>{account ? `Welcome, ${account.name.split(" ")[0] || "friend"}! Who are you here as?` : "Make learning games. Play them anywhere, even offline."}</h1>
+          <h1>{account ? `Welcome, ${account.name.split(" ")[0] || "friend"}! Who are you here as?` : "Make learning games that work offline."}</h1>
           {account ? (
             <div className="toolbar role-buttons">
               <button className="btn btn-ghost btn-big" onClick={() => setRole("student")}>
@@ -46,7 +46,7 @@ export function Welcome() {
             </div>
           ) : (
             <>
-              <p className="hero-lede">A free, open-source studio for students and teachers. Sign in with Google to start; after that it works without the internet.</p>
+              <p className="hero-lede">A free, open-source tool for students and teachers. Sign in for free with Google to start. After that, it works without the internet.</p>
               <SignInButtons />
             </>
           )}
@@ -57,9 +57,9 @@ export function Welcome() {
       </section>
 
       <section className="split">
-        <h2 className="section-title">Create, don't just consume</h2>
+        <h2 className="section-title">What you can do</h2>
         <ul className="check-list">
-          {["Students make their own games; teachers set challenges and give feedback", "Every game works offline: a link, an .html file or an Android app", "Learn how AI learns, and where its data goes wrong", "Free and open source (AGPL-3.0)"].map((t) => (
+          {["Students make their own games; teachers set challenges and give feedback", "Share games as a link, an .html file or an Android app. They all work offline.", "Train a small AI model and see where its data has mistakes", "Free and open source (AGPL-3.0)"].map((t) => (
             <li key={t}>
               <Icon name="checkCircle" size={22} />
               <span>{t}</span>
@@ -77,7 +77,7 @@ export function Welcome() {
             <span className="feature-body">
               <strong>{f.title}</strong>
               <span>{f.text}</span>
-              <span className="btn btn-primary btn-sm">{account ? "Open" : "Sign in to open"}</span>
+              <span className="btn btn-primary btn-sm">{account ? "Open" : "Sign in for free"}</span>
             </span>
           </a>
         ))}
@@ -85,11 +85,11 @@ export function Welcome() {
 
       <section className="band welcome-band">
         <div className="band-grid">
-          <h2>Inspired by a teacher who wanted to make his own games</h2>
+          <h2>How we started</h2>
           <div className="band-text">
-            <p>An English teacher at the CAEB in Porto-Novo, Benin, wanted games his students could install at school and keep practising at home, with no internet. DecentralSchool grew from that.</p>
+            <p>We started DecentralSchool after meeting an English teacher at the CAEB in Porto-Novo, Benin. He wanted to make games that his students could install in the classroom and use to practise English at home, without the internet.</p>
             <a className="btn btn-primary" href="#/mission">
-              Read our mission
+              About DecentralSchool
             </a>
           </div>
         </div>

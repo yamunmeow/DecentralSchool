@@ -82,7 +82,7 @@ export function PrivacyPage() {
         </div>
         <div className="prose">
           <p>
-            The studio opens once you sign in with Google. We only ask Google for your basic profile and email address, and we keep:
+            The studio opens once you sign in for free with Google. We only ask Google for your basic profile and email address, and we keep:
           </p>
           <div className="table-scroll">
             <table className="credits">
@@ -225,7 +225,7 @@ export function PrivacyPage() {
         </div>
         <div className="prose">
           <p>
-            Students sign in with a Google account, such as one from their school or one a parent manages; Google sets its own minimum age. Shared
+            Students sign in for free with a Google account, such as one from their school or one a parent manages; Google sets its own minimum age. Shared
             game links, downloaded games and apps play without signing in. A parent or school that
             wants a child's account removed can write to us.
           </p>

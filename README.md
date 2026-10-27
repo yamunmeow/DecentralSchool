@@ -1,40 +1,34 @@
 # DecentralSchool
 
-**[decentralschool.org](https://decentralschool.org)** · free, open-source and offline-first
+**[decentralschool.org](https://decentralschool.org)** · free, open source, works offline
 
-DecentralSchool is a studio where students make their own learning games and teachers
-supervise and scaffold them, with nothing in the middle: a free Google sign-in opens the
-studio (keeping only a name and email), games and class work never touch a server, and no
-internet is needed once it has loaded. Games travel as a link, a
-single `.html` file, an Android app, or a Scratch project.
+DecentralSchool is a free tool for making learning games. Students make games, and
+teachers set challenges and give feedback. You sign in with Google, which keeps only a
+name and an email. Games and class work are saved in the browser, not on a server. After
+the first visit, it works without the internet. Games can be shared as a link, a single
+`.html` file, an Android app, or a Scratch project.
 
-## Mission
+## How we started
 
-Every classroom should be able to make its own games and learn without a connection.
-
-DecentralSchool was inspired by the English teacher at the **CAEB** (*Conseil des
+We started DecentralSchool after meeting an English teacher at the **CAEB** (*Conseil des
 Activités Éducatives du Bénin*, the Benin Council for Educational Activities) in
-**Porto-Novo, Benin**. He did not want to use games someone else had already put on the
-internet; he wanted the agency to create his own games and quizzes for his own lessons,
-and he wanted them to work offline, so his students could download and install them at
-the CAEB and keep practising at home without worrying about an internet connection. His
-games (Word Quest, Reading Quest and Math Quest) ship with DecentralSchool as templates.
+**Porto-Novo, Benin**. He wanted to make his own games and quizzes for his lessons. He
+wanted his students to install the games at the CAEB and practise English at home,
+without needing the internet. Three games from the CAEB (Word Quest, Reading Quest and
+Math Quest) are included as templates.
 
-- **Games work.** Quick feedback, a reason to try again and small wins turn practice into
-  something students choose to do, and the best learning game is the one a teacher shaped
-  for their own class.
-- **AI makes making easier, and needs understanding.** AI now lets any educator describe a
-  game and get a first version. But AI learns from data, data carries biases, and it has to
-  be sorted, cleaned and moderated. **Zo Wants to Learn** lets students do exactly that with
-  their own data, hands on, as collateral learning while they play.
-- **Blocks, then real code.** The **Game Lab** is built on top of Scratch's block language,
-  with the JavaScript, HTML and CSS of every game shown beside its blocks, so learning
-  doesn't stop at blocks for students who want to see the real syntax and logic.
-- **Sustainable, offline-first, decentralised.** Small models that run on the device, files
-  that keep working without a network, and work that stays with the people who made it.
+What it has:
 
-We advocate for a world where young people get their gratification from creation, not
-consumption.
+- **Quick games.** Quiz, maths, grammar, vocabulary and reading templates. A teacher can
+  start from a template, upload a lesson file, or describe a game to the optional AI
+  assistant and edit what it makes.
+- **Zo Wants to Learn.** AI models learn from data, and data can have mistakes and gaps.
+  Students add their own data, fix it, train a small model in the browser and see where
+  it is wrong.
+- **Game Lab.** Uses Scratch's block language, and shows the JavaScript, HTML and CSS of
+  each game beside its blocks.
+- **Works offline.** Zo's models run on the device, game files work without a network,
+  and work stays on the device of the person who made it.
 
 ## What's inside
 
@@ -45,7 +39,7 @@ consumption.
 | Zo Wants to Learn | `#/learn` | Feed, clean, split, train, test and use a real model in the browser |
 | Quick games | `#/games` | Quiz, maths, grammar, vocabulary, reading and own-HTML templates, with the randomizer |
 | Class | `#/class` | Challenges, hand-ins, feedback and a class gallery, all as files and links |
-| Mission | `#/mission` | Why this exists, the license and credits |
+| About | `#/mission` | How we started, the license and credits |
 | Sign in | `#/signin` | Free account with Google; Settings has sign out and delete |
 | Privacy | `#/privacy` (also `/privacy`) | Exactly what is collected, and what isn't |
 | Terms | `#/terms` (also `/terms`) | Terms of use, in plain words |
@@ -325,7 +319,7 @@ game, so a rebuilt app installs as an update.
   the Game Lab, Zo and the library open with no connection.
 - Teachers' games, class work, Zo's models and the app-signing key live in the browser's
   IndexedDB. Nothing is sent to a server.
-- The studio needs a signed-in account (Google; Microsoft once its secrets are set). Mission,
+- The studio needs a signed-in account (Google; Microsoft once its secrets are set). About,
   Privacy, Terms, the players at `/p/` and `/c/`, downloads and APKs stay open. The gate is
   in the browser (`PUBLIC` in `App.tsx`): there is nothing on the server to protect, since
   games stay on the device. The server keeps a name, an email, the provider account id

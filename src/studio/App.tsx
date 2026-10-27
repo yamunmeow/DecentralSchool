@@ -182,7 +182,7 @@ function useNav(current: string[]) {
     { href: "class", label: role === "teacher" ? "Class" : "My class", icon: "book", on: head === "class" || head === "join" || head === "feedback" },
   ];
   if (role === "teacher") items.push({ href: "assistant", label: "Assistant", icon: "sparkle", on: head === "assistant" });
-  items.push({ href: "mission", label: "Mission", icon: "heart", on: head === "mission" });
+  items.push({ href: "mission", label: "About", icon: "heart", on: head === "mission" });
   return items;
 }
 
@@ -200,7 +200,7 @@ function NavLinks({ current }: { current: string[] }) {
 
 function AccountButton({ current }: { current?: string }) {
   const account = useAccount();
-  const label = account ? `Signed in as ${account.name || account.email}` : "Sign in";
+  const label = account ? `Signed in as ${account.name || account.email}` : "Sign in for free";
   return (
     <a href={account ? "#/settings" : "#/signin"} className={`icon-btn head-account${current === "signin" ? " on" : ""}`} aria-label={label} title={label}>
       {account ? <span className="account-initial">{(account.name || account.email).trim().charAt(0).toUpperCase()}</span> : <Icon name="user" size={21} />}
@@ -305,7 +305,7 @@ function SiteFoot({ locked }: { locked: boolean }) {
             <LogoMark size={36} />
             <Wordmark />
           </a>
-          <p>Offline-first tools for making, playing and sharing learning games. Free and open source.</p>
+          <p>A free, open-source tool for making learning games that work offline.</p>
         </div>
         {!locked && (
           <>
@@ -325,7 +325,7 @@ function SiteFoot({ locked }: { locked: boolean }) {
         )}
         <div className="foot-col">
           <h2>About</h2>
-          <a href="#/mission">Our mission</a>
+          <a href="#/mission">About</a>
           <a href="#/mission/license">License (AGPL-3.0)</a>
           <a href="#/privacy">Privacy</a>
           <a href="#/terms">Terms</a>

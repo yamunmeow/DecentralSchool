@@ -163,7 +163,7 @@ function AiCard() {
         </>
       ) : (
         <>
-          <p className="muted">Sign in with OpenRouter. Free models are used by default, and your key stays in this browser.</p>
+          <p className="muted">Sign in for free with OpenRouter. Free models are used by default, and your key stays in this browser.</p>
           <ConnectAi />
         </>
       )}

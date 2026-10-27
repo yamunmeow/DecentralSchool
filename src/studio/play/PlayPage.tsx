@@ -116,7 +116,7 @@ export function PlayPage({ id }: { id?: string }) {
       <section className="hero play-hero">
         <div className="hero-text">
           <h1>Play now</h1>
-          <p className="hero-lede">Nothing to install and no sign-up. Every game here keeps working without the internet.</p>
+          <p className="hero-lede">Free, with nothing to install and no sign-up. Every game here keeps working without the internet.</p>
         </div>
         <ul className="hero-points" aria-label="What you can do here">
           <li>

@@ -4,11 +4,10 @@ import { useRoute } from "../store";
 import { Icon } from "../ui";
 
 const BELIEFS = [
-  ["Offline first", "Everything works without the internet once it has loaded: games, the Game Lab, Zo's models, even building Android apps."],
-  ["Sustainable AI", "Small models that train and run on the student's own device, in seconds, with no data centre behind them."],
-  ["Decentralised", "A free Google sign-in keeps only a name and an email. Games, class work and models stay on the devices of the people who made them."],
-  ["Free and open source", "Released under the GNU AGPL-3.0, so anyone can run it, study it, change it and share it."],
-  ["Creation over consumption", "Young people should get their gratification from making things, not from scrolling through what others made."],
+  ["Works offline", "After the first visit, the games, the Game Lab, Zo and the Android app builder work without the internet."],
+  ["Small models", "Zo's models are small. They train and run in the browser, on the student's own device."],
+  ["Work stays on your device", "Signing in with Google is free and keeps only your name and email. Games, class work and models are saved in your browser, not on our server."],
+  ["Free and open source", "The code is under the GNU AGPL-3.0. Anyone can run it, read it, change it and share it."],
 ] as const;
 
 const THIRD_PARTY = [
@@ -36,11 +35,10 @@ export function MissionPage() {
     <div className="page mission">
       <section className="hero mission-hero">
         <div className="hero-text">
-          <p className="kicker">Our mission</p>
-          <h1>Every classroom should be able to make its own games and learn without a connection.</h1>
+          <p className="kicker">About</p>
+          <h1>DecentralSchool is a free tool for making learning games that work offline.</h1>
           <p className="hero-lede">
-            DecentralSchool is a free, open-source and offline-first studio where teachers and students create learning games, play them anywhere, and
-            share them without a server in the middle.
+            Teachers and students use it to make quizzes and small games, play them in a browser, and share them as a link, a file or an Android app.
           </p>
           <div className="toolbar">
             <a className="btn btn-primary" href="#/code">
@@ -59,22 +57,21 @@ export function MissionPage() {
       <section className="story" aria-labelledby="start">
         <div>
           <h2 id="start" className="section-title">
-            Where it started
+            How we started
           </h2>
         </div>
         <div className="prose">
           <p>
-            DecentralSchool was inspired by the English teacher at the <strong>CAEB</strong>, the <em>Conseil des Activités Éducatives du Bénin</em>{" "}
-            (Benin Council for Educational Activities), in <strong>Porto-Novo, Benin</strong>.
+            We started DecentralSchool after meeting an English teacher at the <strong>CAEB</strong>, the{" "}
+            <em>Conseil des Activités Éducatives du Bénin</em> (Benin Council for Educational Activities), in <strong>Porto-Novo, Benin</strong>.
           </p>
           <p>
-            He did not want to hand his students games that someone else had already made for the internet. He wanted the agency to create his own games
-            and quizzes, built around his own lessons. And he wanted them to work offline: his students download and install them at the CAEB, then keep
-            practising at home without worrying about an internet connection.
+            He wanted to make his own games and quizzes for his lessons. He wanted his students to install the games at the CAEB and practise English at
+            home, without needing the internet.
           </p>
           <p>
-            His games are here as templates. <strong>Word Quest</strong>, <strong>Reading Quest</strong> and <strong>Math Quest</strong> can be played
-            straight away without installing anything, copied and changed, or turned into an Android app for a class.
+            Three games from the CAEB are included: <strong>Word Quest</strong>, <strong>Reading Quest</strong> and <strong>Math Quest</strong>. You
+            can play them in the browser, copy and change them, or turn them into an Android app.
           </p>
           <a className="btn btn-soft btn-sm" href="#/play">
             Play the CAEB games <Icon name="arrowR" size={16} />
@@ -85,17 +82,13 @@ export function MissionPage() {
       <section className="story" aria-labelledby="games">
         <div>
           <h2 id="games" className="section-title">
-            The power of games
+            Making a game
           </h2>
         </div>
         <div className="prose">
           <p>
-            Games turn practice into something students choose to do. They give feedback in a second instead of a week, a reason to try again, and
-            small wins that add up. The best learning game is the one a teacher shaped for their own class, in their own language, at their own level.
-          </p>
-          <p>
-            AI is making that far more accessible: a teacher can describe a game and get a first version to adjust, instead of needing to be a
-            programmer. DecentralSchool's assistant is optional, and every game it helps make is an ordinary file the teacher owns.
+            A teacher can start from a template, upload a lesson file, or describe a game to the AI assistant and edit the first version it makes. The
+            assistant is optional. Every game is a normal file that the teacher keeps.
           </p>
         </div>
       </section>
@@ -103,18 +96,16 @@ export function MissionPage() {
       <section className="story" aria-labelledby="data">
         <div>
           <h2 id="data" className="section-title">
-            AI learns from data, and data has biases
+            Zo Wants to Learn
           </h2>
         </div>
         <div className="prose">
           <p>
-            The same AI is only as fair as the data it learned from. Data carries the gaps and habits of whoever collected it, and it has to be sorted,
-            cleaned and moderated before a model learns from it. Students and teachers need to understand this to use AI well, and to question it.
+            AI models learn from data. If the data has mistakes or gaps, the model learns those too.
           </p>
           <p>
-            That is why we made <strong>Zo Wants to Learn</strong>. Students feed Zo their own data, find and fix the mistakes in it, split it into
-            practice and test, train a real model in the browser, and look at exactly where Zo gets things wrong. Sorting, cleaning and bias are learned
-            hands on, as collateral learning that happens while they play.
+            In <strong>Zo Wants to Learn</strong>, students add their own data, fix the mistakes in it, split it into practice and test sets, train a
+            small model in the browser, and see where the model gets things wrong.
           </p>
           <a className="btn btn-soft btn-sm" href="#/learn">
             Teach Zo <Icon name="arrowR" size={16} />
@@ -125,21 +116,20 @@ export function MissionPage() {
       <section className="story" aria-labelledby="code">
         <div>
           <h2 id="code" className="section-title">
-            Blocks first, real code when you want it
+            Game Lab
           </h2>
         </div>
         <div className="prose">
           <p>
-            Our <strong>Game Lab</strong> is built on top of Scratch's block language, so students start with blocks they may already know, and Scratch
-            projects (.sb3) open here and save back. It also adds what Scratch does not have:
+            The <strong>Game Lab</strong> uses Scratch's block language. Scratch projects (.sb3) open here and can be saved back as .sb3. It also has:
           </p>
           <ul className="check-list">
             {[
-              "Every project shown as JavaScript, HTML and CSS, linked line by line to its blocks, so learning doesn't stop at the blocks for students who want to see the real syntax and logic.",
-              "A mind map of the whole game: characters, scripts, loops and decisions laid out like an algorithm, so nothing gets lost under other blocks.",
-              "Slow-motion and step-by-step debugging.",
-              "Offline app files, web projects and Android apps made in the browser.",
-              "Teacher challenges, hand-ins and feedback without accounts.",
+              "The JavaScript, HTML and CSS for each project, linked line by line to its blocks.",
+              "A mind map of the game that shows its characters, scripts, loops and decisions.",
+              "Slow and step-by-step debugging.",
+              "Export as an offline .html file, a web project or an Android app.",
+              "Teacher challenges, hand-ins and feedback, sent as files and links.",
             ].map((t) => (
               <li key={t}>
                 <Icon name="checkCircle" size={22} />
@@ -153,7 +143,7 @@ export function MissionPage() {
       <section className="story" aria-labelledby="believe">
         <div>
           <h2 id="believe" className="section-title">
-            What we believe
+            How it works
           </h2>
         </div>
         <ul className="belief-grid">
@@ -176,12 +166,12 @@ export function MissionPage() {
         <div className="prose">
           <p>
             DecentralSchool is free software under the <strong>GNU Affero General Public License v3.0</strong>, the same license as Scratch's editor,
-            virtual machine and renderer. You may run, study, change and share it; if you run a changed version for others, share your changes under the
+            virtual machine and renderer. You may run, study, change and share it. If you run a changed version for others, share your changes under the
             same license.
           </p>
           <p>
             The Game Lab is based on Scratch, made by the Lifelong Kindergarten Group at the MIT Media Lab and the Scratch Foundation. Scratch is a
-            trademark of the Scratch Foundation; DecentralSchool is an independent project and is not endorsed by it.
+            trademark of the Scratch Foundation. DecentralSchool is an independent project and is not endorsed by it.
           </p>
           <div className="table-scroll">
             <table className="credits">
@@ -207,10 +197,10 @@ export function MissionPage() {
       </section>
 
       <section className="band mission-band">
-        <h2>We advocate for a world where young people get their gratification from creation, not consumption.</h2>
+        <h2>Make a game and share it with your class.</h2>
         <div className="toolbar">
           <a className="btn btn-primary" href="#/code">
-            Start making
+            Open the Game Lab
           </a>
           <a className="btn btn-ghost" href="https://decentralschool.org" rel="noopener">
             decentralschool.org

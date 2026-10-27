@@ -92,7 +92,7 @@ export function NewGame({ template }: { template?: string }) {
               </button>
               <span className="create-ai">
                 <span className={`ai-dot${ai.connected ? " on" : ""}`} aria-hidden />
-                {ai.connected ? `AI connected · ${modelName(ai.model)}` : "Free AI through OpenRouter: you sign in once"}
+                {ai.connected ? `AI connected · ${modelName(ai.model)}` : "Free AI through OpenRouter: sign in once, for free"}
               </span>
               <span className="spacer" />
               <button className="btn btn-primary" disabled={!idea.trim()}>
