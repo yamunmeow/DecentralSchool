@@ -27,13 +27,10 @@
 	"vars": {
 		"BETTER_AUTH_URL": "https://decentralschool.org"
 	},
+	// www.decentralschool.org is the decentralschool-www Worker (wrangler.www.jsonc), a 301 to here.
 	"routes": [
 		{
 			"pattern": "decentralschool.org",
-			"custom_domain": true
-		},
-		{
-			"pattern": "www.decentralschool.org",
 			"custom_domain": true
 		}
 	],
