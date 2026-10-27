@@ -3,9 +3,9 @@
 **[decentralschool.org](https://decentralschool.org)** · free, open-source and offline-first
 
 DecentralSchool is a studio where students make their own learning games and teachers
-supervise and scaffold them, with nothing in the middle: accounts are optional (Google or
-Microsoft sign-in, keeping only a name and email), games and class work never touch a
-server, and no internet is needed once the page has loaded. Games travel as a link, a
+supervise and scaffold them, with nothing in the middle: a free Google sign-in opens the
+studio (keeping only a name and email), games and class work never touch a server, and no
+internet is needed once it has loaded. Games travel as a link, a
 single `.html` file, an Android app, or a Scratch project.
 
 ## Mission
@@ -46,10 +46,11 @@ consumption.
 | Quick games | `#/games` | Quiz, maths, grammar, vocabulary, reading and own-HTML templates, with the randomizer |
 | Class | `#/class` | Challenges, hand-ins, feedback and a class gallery, all as files and links |
 | Mission | `#/mission` | Why this exists, the license and credits |
-| Sign in | `#/signin` | Free account with Google or Microsoft; Settings has sign out and delete |
+| Sign in | `#/signin` | Free account with Google; Settings has sign out and delete |
 | Privacy | `#/privacy` (also `/privacy`) | Exactly what is collected, and what isn't |
+| Terms | `#/terms` (also `/terms`) | Terms of use, in plain words |
 
-The first visit asks "I'm a student" or "I'm a teacher" (switch any time in Settings). It
+After signing in, the first visit asks "I'm a student" or "I'm a teacher" (switch any time in Settings). It
 only changes what's in front; nothing is locked away.
 
 ## Play without installing
@@ -324,7 +325,10 @@ game, so a rebuilt app installs as an update.
   the Game Lab, Zo and the library open with no connection.
 - Teachers' games, class work, Zo's models and the app-signing key live in the browser's
   IndexedDB. Nothing is sent to a server.
-- Accounts are optional. The server keeps a name, an email, the Google/Microsoft account id
+- The studio needs a signed-in account (Google; Microsoft once its secrets are set). Mission,
+  Privacy, Terms, the players at `/p/` and `/c/`, downloads and APKs stay open. The gate is
+  in the browser (`PUBLIC` in `App.tsx`): there is nothing on the server to protect, since
+  games stay on the device. The server keeps a name, an email, the provider account id
   and session tokens; photos, provider access tokens, IP addresses and user agents are
   dropped before they reach the database (`databaseHooks` in `worker/auth.ts`). Keep
   `src/studio/pages/PrivacyPage.tsx` in step with that file.
@@ -351,7 +355,9 @@ npm run deploy       # build + D1 migrations + wrangler deploy to decentralschoo
 
 Sign-in runs in the same Worker that serves the site, with [Better Auth](https://better-auth.com)
 (MIT) and a D1 database called `decentralschool`, all on Cloudflare's free plan. The Worker
-only runs for `/api/*`; every other path is a static file. Sign-in is Google or Microsoft
+only runs for `/api/*`; every other path is a static file. Sign-in is Google (Microsoft is
+wired up and switches on when its two secrets exist; add it back to `PROVIDERS` in
+`SignIn.tsx`)
 only: there are no passwords, so nothing needs a "forgot password" email (Cloudflare's free
 plan can't send email to arbitrary addresses).
 
@@ -367,7 +373,8 @@ plan can't send email to arbitrary addresses).
 
 1. [console.cloud.google.com](https://console.cloud.google.com): create a project.
 2. **Google Auth Platform → Branding**: app name, support email, home page
-   `https://decentralschool.org`, privacy policy `https://decentralschool.org/privacy`,
+   `https://decentralschool.org`, privacy policy `https://decentralschool.org/privacy`, terms
+   `https://decentralschool.org/terms`,
    authorised domain `decentralschool.org`.
 3. **Audience**: External, then **Publish app**. While it says "Testing", only listed test
    users (at most 100) can sign in. Only `openid`, `email` and `profile` are requested, so
@@ -391,7 +398,7 @@ plan can't send email to arbitrary addresses).
    don't let users approve such apps; Google sign-in still works for them.
 6. Keep the **Application (client) ID** from the Overview page.
 
-### Cloudflare
+### Cloudflare (all from the terminal)
 
 ```bash
 openssl rand -base64 32 | npx wrangler secret put BETTER_AUTH_SECRET
@@ -399,14 +406,21 @@ npx wrangler secret put GOOGLE_CLIENT_ID
 npx wrangler secret put GOOGLE_CLIENT_SECRET
 npx wrangler secret put MICROSOFT_CLIENT_ID
 npx wrangler secret put MICROSOFT_CLIENT_SECRET
-npm run deploy
+npm run deploy                                   # or push to main if Workers Builds is connected
+npx wrangler deploy -c wrangler.www.jsonc        # www → bare domain, once
 ```
 
-- **www → root redirect** (dashboard → decentralschool.org → Rules → Redirect Rules →
-  "Redirect from WWW to root"). Sign-in cookies belong to `decentralschool.org`, so a
-  sign-in started on `www.` can't finish.
-- **Privacy contact**: the privacy page gives `privacy@decentralschool.org`. Create it in
-  Email Routing (free, receiving only) and forward it to a real inbox.
+- **www**: `wrangler.www.jsonc` is a separate one-file Worker that answers
+  `www.decentralschool.org` with a 301 to `decentralschool.org`. Sign-in cookies belong to
+  the bare domain, so a sign-in started on `www.` couldn't finish.
+- **Privacy contact** (`privacy@decentralschool.org` on the privacy page), receiving only:
+  ```bash
+  npx wrangler email routing enable decentralschool.org
+  npx wrangler email routing addresses create you@example.com   # click the link it emails you
+  npx wrangler email routing rules create decentralschool.org --name privacy \
+    --match-type literal --match-field to --match-value privacy@decentralschool.org \
+    --action-type forward --action-value you@example.com
+  ```
 - **Local dev**: copy `.dev.vars.example` to `.dev.vars` and fill it in, then run
   `npm run dev:api` beside `npm run dev`.
 
@@ -439,7 +453,7 @@ src/studio/     the studio (React)
   code/         Game Lab editor, mind map (mindmap.ts, MapTab.tsx)
   learn/        Zo Wants to Learn
   class/        challenges, hand-ins, feedback, gallery
-  pages/        home, mission, privacy, quick games, assistant, settings
+  pages/        home, mission, privacy, terms, quick games, assistant, settings
   apk/          zip, binary manifest, v2 signing, keys
 public/library/ games that play without installing (scripts/import-games.mjs)
 shell/          Android WebView shell; build_shell.sh makes shell-template.apk

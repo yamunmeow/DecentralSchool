@@ -2,12 +2,9 @@ import { useState } from "react";
 import { signIn, useAccount, type Provider } from "../account";
 import { ZoPic } from "../learn/Zo";
 import { useApp } from "../store";
-import { Icon } from "../ui";
 
-const PROVIDERS: { id: Provider; label: string }[] = [
-  { id: "google", label: "Continue with Google" },
-  { id: "microsoft", label: "Continue with Microsoft" },
-];
+// Microsoft works too once its secrets are set on the Worker; add it back here then.
+const PROVIDERS: { id: Provider; label: string }[] = [{ id: "google", label: "Continue with Google" }];
 
 /** Google's and Microsoft's own marks, as their sign-in guidelines ask. */
 function ProviderMark({ id }: { id: Provider }) {
@@ -81,11 +78,8 @@ export function SignInPage() {
           <>
             <h1>Sign in or create a free account</h1>
             <SignInButtons />
-            <a className="btn btn-ghost btn-sm" href="#/">
-              Continue without an account <Icon name="arrowR" size={16} />
-            </a>
             <p className="signin-small">
-              We keep your name and email, nothing else. <a href="#/privacy">Privacy</a>
+              We keep your name and email, nothing else. <a href="#/privacy">Privacy</a> · <a href="#/terms">Terms</a>
             </p>
           </>
         )}

@@ -8,8 +8,8 @@ import { App } from "./App";
 import "./styles.css";
 import "./studio.css";
 
-// decentralschool.org/privacy is the address given to Google and Microsoft; the studio routes by #.
-if (window.location.pathname === "/privacy") history.replaceState(null, "", "/#/privacy");
+// decentralschool.org/privacy and /terms are the addresses given to Google and Microsoft; the studio routes by #.
+if (window.location.pathname === "/privacy" || window.location.pathname === "/terms") history.replaceState(null, "", `/#${window.location.pathname}`);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

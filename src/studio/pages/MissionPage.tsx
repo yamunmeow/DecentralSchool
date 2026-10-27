@@ -6,7 +6,7 @@ import { Icon } from "../ui";
 const BELIEFS = [
   ["Offline first", "Everything works without the internet once it has loaded: games, the Game Lab, Zo's models, even building Android apps."],
   ["Sustainable AI", "Small models that train and run on the student's own device, in seconds, with no data centre behind them."],
-  ["Decentralised", "Accounts are optional and hold only a name and an email. Games, class work and models stay on the devices of the people who made them."],
+  ["Decentralised", "A free Google sign-in keeps only a name and an email. Games, class work and models stay on the devices of the people who made them."],
   ["Free and open source", "Released under the GNU AGPL-3.0, so anyone can run it, study it, change it and share it."],
   ["Creation over consumption", "Young people should get their gratification from making things, not from scrolling through what others made."],
 ] as const;

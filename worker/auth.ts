@@ -6,12 +6,12 @@ export interface AuthEnv {
   BETTER_AUTH_SECRET: string;
   GOOGLE_CLIENT_ID: string;
   GOOGLE_CLIENT_SECRET: string;
-  MICROSOFT_CLIENT_ID: string;
-  MICROSOFT_CLIENT_SECRET: string;
+  MICROSOFT_CLIENT_ID?: string;
+  MICROSOFT_CLIENT_SECRET?: string;
 }
 
 /**
- * Sign-in with Google or Microsoft, nothing else: no passwords to store or reset, so no
+ * Sign-in with Google (and Microsoft once set up), nothing else: no passwords to store or reset, so no
  * email has to be sent. The database keeps only what the privacy page promises: a name,
  * an email, which provider it came from, and a session token while signed in.
  */
@@ -29,18 +29,21 @@ export function options(env: AuthEnv): BetterAuthOptions {
         clientSecret: env.GOOGLE_CLIENT_SECRET,
         prompt: "select_account",
       },
-      microsoft: {
-        clientId: env.MICROSOFT_CLIENT_ID,
-        clientSecret: env.MICROSOFT_CLIENT_SECRET,
-        tenantId: "common",
-        prompt: "select_account",
-        // Only "sign you in and read your basic profile", without Graph access or a stored photo.
-        disableDefaultScope: true,
-        scope: ["openid", "profile", "email"],
-        disableProfilePhoto: true,
-        // Some work and school accounts have no email claim; their sign-in name is the next best thing.
-        mapProfileToUser: (p) => (!p.email && p.preferred_username?.includes("@") ? { email: p.preferred_username, emailVerified: false } : {}),
-      },
+      // Only once both Microsoft secrets are set: until then Google is the one way in.
+      ...(env.MICROSOFT_CLIENT_ID && env.MICROSOFT_CLIENT_SECRET && {
+        microsoft: {
+          clientId: env.MICROSOFT_CLIENT_ID,
+          clientSecret: env.MICROSOFT_CLIENT_SECRET,
+          tenantId: "common",
+          prompt: "select_account",
+          // Only "sign you in and read your basic profile", without Graph access or a stored photo.
+          disableDefaultScope: true,
+          scope: ["openid", "profile", "email"],
+          disableProfilePhoto: true,
+          // Some work and school accounts have no email claim; their sign-in name is the next best thing.
+          mapProfileToUser: (p) => (!p.email && p.preferred_username?.includes("@") ? { email: p.preferred_username, emailVerified: false } : {}),
+        },
+      }),
     },
     session: {
       expiresIn: 60 * 60 * 24 * 30,

@@ -27,31 +27,29 @@ const FEATURES = [
   { href: "#/games", title: "Quick games", text: "Quizzes, maths, grammar, words and reading, ready as a link, a file or an app.", zo: "teacher", pose: "wave" },
 ] as const;
 
-function Welcome() {
+/** Signed out, this is the front door (App.tsx shows it for every studio page); signed in, it asks student or teacher. */
+export function Welcome() {
   const account = useAccount();
-  const roles = (
-    <div className={`toolbar role-buttons${account ? "" : " is-quiet"}`}>
-      {!account && <span className="role-or">Or try it first:</span>}
-      <button className={`btn btn-ghost${account ? " btn-big" : " btn-sm"}`} onClick={() => setRole("student")}>
-        I'm a student
-      </button>
-      <button className={`btn${account ? " btn-primary btn-big" : " btn-ghost btn-sm"}`} onClick={() => setRole("teacher")}>
-        I'm a teacher
-      </button>
-    </div>
-  );
   return (
     <div className="page welcome">
       <section className="hero welcome-hero">
         <div className="hero-text">
           <h1>{account ? `Welcome, ${account.name.split(" ")[0] || "friend"}! Who are you here as?` : "Make learning games. Play them anywhere, even offline."}</h1>
-          {!account && (
+          {account ? (
+            <div className="toolbar role-buttons">
+              <button className="btn btn-ghost btn-big" onClick={() => setRole("student")}>
+                I'm a student
+              </button>
+              <button className="btn btn-primary btn-big" onClick={() => setRole("teacher")}>
+                I'm a teacher
+              </button>
+            </div>
+          ) : (
             <>
-              <p className="hero-lede">A free, open-source studio for students and teachers. Make a free account, or just start: no internet needed once it has loaded.</p>
+              <p className="hero-lede">A free, open-source studio for students and teachers. Sign in with Google to start; after that it works without the internet.</p>
               <SignInButtons />
             </>
           )}
-          {roles}
         </div>
         <div className="hero-critters" aria-hidden>
           <ZoPic outfit="zo" pose="wave" size={170} />
@@ -72,14 +70,14 @@ function Welcome() {
 
       <section className="feature-grid" aria-label="What's inside">
         {FEATURES.map((f) => (
-          <a key={f.href} href={f.href} className="feature-card">
+          <a key={f.href} href={account ? f.href : "#/signin"} className="feature-card">
             <span className="feature-cover">
               <ZoPic outfit={f.zo} pose={f.pose} size={96} />
             </span>
             <span className="feature-body">
               <strong>{f.title}</strong>
               <span>{f.text}</span>
-              <span className="btn btn-primary btn-sm">Open</span>
+              <span className="btn btn-primary btn-sm">{account ? "Open" : "Sign in to open"}</span>
             </span>
           </a>
         ))}

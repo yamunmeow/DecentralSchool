@@ -5,7 +5,7 @@ import { SignInPage } from "./components/SignIn";
 import { AssistantPage } from "./pages/AssistantPage";
 import { Editor } from "./pages/Editor";
 import { Home } from "./pages/Home";
-import { RoleHome } from "./pages/RoleHome";
+import { RoleHome, Welcome } from "./pages/RoleHome";
 import { useRole } from "./role";
 import { NewGame } from "./pages/NewGame";
 import { Settings } from "./pages/Settings";
@@ -26,6 +26,7 @@ const FeedbackPage = lazy(() => import("./class/ClassPage").then((m) => ({ defau
 const PlayPage = lazy(() => import("./play/PlayPage").then((m) => ({ default: m.PlayPage })));
 const MissionPage = lazy(() => import("./pages/MissionPage").then((m) => ({ default: m.MissionPage })));
 const PrivacyPage = lazy(() => import("./pages/PrivacyPage").then((m) => ({ default: m.PrivacyPage })));
+const TermsPage = lazy(() => import("./pages/TermsPage").then((m) => ({ default: m.TermsPage })));
 const ChallengeEditorPage = lazy(() => import("./class/ChallengeEditor").then((m) => ({ default: m.ChallengeEditorPage })));
 
 export function App() {
@@ -36,9 +37,14 @@ export function App() {
   );
 }
 
+/** Pages anyone can open. Everything else in the studio needs a signed-in account. */
+const PUBLIC = new Set(["privacy", "terms", "mission", "signin"]);
+
 function Shell() {
   const route = useRoute();
   const { ready, toast } = useApp();
+  const account = useAccount();
+  const locked = !account;
   const [menu, setMenu] = useState(false);
   const compact = useFit(ready);
   useEffect(() => setMenu(false), [route.join("/")]);
@@ -67,7 +73,8 @@ function Shell() {
 
   const [head, id, tab] = route;
   let page: ReactNode;
-  if (head === "game" && id) page = <Editor key={id} id={id} tab={tab} />;
+  if (locked && !PUBLIC.has(head)) page = <Welcome />;
+  else if (head === "game" && id) page = <Editor key={id} id={id} tab={tab} />;
   else if (head === "new") page = <NewGame template={id} />;
   else if (head === "assistant") page = <AssistantPage />;
   else if (head === "code" && id) page = <CodeEditor key={id} id={id} />;
@@ -82,6 +89,7 @@ function Shell() {
   else if (head === "play") page = <PlayPage id={id} />;
   else if (head === "mission") page = <MissionPage />;
   else if (head === "privacy") page = <PrivacyPage />;
+  else if (head === "terms") page = <TermsPage />;
   else if (head === "signin") page = <SignInPage />;
   else if (head === "settings") page = <Settings />;
   else page = <RoleHome />;
@@ -97,29 +105,35 @@ function Shell() {
             <LogoMark size={40} />
             <Wordmark />
           </a>
-          <nav className="site-nav" aria-label="Main" aria-hidden={compact.on || undefined} ref={compact.nav}>
-            <NavLinks current={route} />
-          </nav>
+          {!locked && (
+            <nav className="site-nav" aria-label="Main" aria-hidden={compact.on || undefined} ref={compact.nav}>
+              <NavLinks current={route} />
+            </nav>
+          )}
           <span className="spacer" />
           <div className="head-tools" ref={compact.tools}>
             <ThemeToggle />
             <AccountButton current={head} />
-            <a href="#/settings" className={`icon-btn head-settings${head === "settings" ? " on" : ""}`} aria-label="Settings" title="Settings">
-              <Icon name="gear" size={21} />
-            </a>
-            <HeadCta />
-            <button className="icon-btn menu-btn" onClick={() => setMenu(true)} aria-label="Open menu" aria-expanded={menu}>
-              <Icon name="menu" />
-            </button>
+            {!locked && (
+              <>
+                <a href="#/settings" className={`icon-btn head-settings${head === "settings" ? " on" : ""}`} aria-label="Settings" title="Settings">
+                  <Icon name="gear" size={21} />
+                </a>
+                <HeadCta />
+                <button className="icon-btn menu-btn" onClick={() => setMenu(true)} aria-label="Open menu" aria-expanded={menu}>
+                  <Icon name="menu" />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
       <div className={`scrim${menu ? " on" : ""}`} onClick={() => setMenu(false)} aria-hidden />
-      <Drawer current={route} open={menu} onClose={() => setMenu(false)} />
+      {!locked && <Drawer current={route} open={menu} onClose={() => setMenu(false)} />}
       <main className="main" id="main" tabIndex={-1}>
         <Suspense fallback={<div className="splash" aria-busy />}>{page}</Suspense>
       </main>
-      <SiteFoot />
+      <SiteFoot locked={locked} />
     </div>
   );
 }
@@ -213,7 +227,6 @@ function Drawer({ current, open, onClose }: { current: string[]; open: boolean; 
   const { games } = useApp();
   const ai = useAi();
   const { role, name } = useRole();
-  const account = useAccount();
   const recent = role === "teacher" ? games.slice(0, 6) : [];
 
   return (
@@ -248,14 +261,6 @@ function Drawer({ current, open, onClose }: { current: string[]; open: boolean; 
           </span>
           Settings
         </a>
-        {!account && (
-          <a href="#/signin" className={`drawer-link${current[0] === "signin" ? " on" : ""}`}>
-            <span className="nav-icon">
-              <Icon name="user" />
-            </span>
-            Sign in
-          </a>
-        )}
         {recent.length > 0 && (
           <>
             <h2 className="nav-title">Recent quick games</h2>
@@ -291,7 +296,7 @@ function Drawer({ current, open, onClose }: { current: string[]; open: boolean; 
   );
 }
 
-function SiteFoot() {
+function SiteFoot({ locked }: { locked: boolean }) {
   return (
     <footer className="site-foot">
       <div className="site-foot-in">
@@ -302,23 +307,28 @@ function SiteFoot() {
           </a>
           <p>Offline-first tools for making, playing and sharing learning games. Free and open source.</p>
         </div>
-        <div className="foot-col">
-          <h2>Make</h2>
-          <a href="#/code">Game Lab</a>
-          <a href="#/games">Quick games</a>
-          <a href="#/learn">Zo Wants to Learn</a>
-        </div>
-        <div className="foot-col">
-          <h2>Play</h2>
-          <a href="#/play">All games</a>
-          <a href="#/class">Class</a>
-          <a href="#/settings">Settings</a>
-        </div>
+        {!locked && (
+          <>
+            <div className="foot-col">
+              <h2>Make</h2>
+              <a href="#/code">Game Lab</a>
+              <a href="#/games">Quick games</a>
+              <a href="#/learn">Zo Wants to Learn</a>
+            </div>
+            <div className="foot-col">
+              <h2>Play</h2>
+              <a href="#/play">All games</a>
+              <a href="#/class">Class</a>
+              <a href="#/settings">Settings</a>
+            </div>
+          </>
+        )}
         <div className="foot-col">
           <h2>About</h2>
           <a href="#/mission">Our mission</a>
           <a href="#/mission/license">License (AGPL-3.0)</a>
           <a href="#/privacy">Privacy</a>
+          <a href="#/terms">Terms</a>
           <a href="https://decentralschool.org" rel="noopener">decentralschool.org</a>
         </div>
       </div>

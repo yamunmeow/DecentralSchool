@@ -4,26 +4,26 @@ export const PRIVACY_CONTACT = "privacy@decentralschool.org";
 const UPDATED = "27 October 2026";
 
 const ACCOUNT_DATA = [
-  ["Your name", "To greet you and to put on your hand-ins and feedback", "Google or Microsoft"],
-  ["Your email address", "To recognise your account when you sign in again", "Google or Microsoft"],
-  ["Whether that email is confirmed", "So nobody can take over your account through the other sign-in", "Google or Microsoft"],
-  ["Which of the two you used, and the account number it gives us", "To know it's you next time", "Google or Microsoft"],
+  ["Your name", "To greet you and to put on your hand-ins and feedback", "Google"],
+  ["Your email address", "To recognise your account when you sign in again", "Google"],
+  ["Whether Google has confirmed that email", "So nobody can take over your account with someone else's address", "Google"],
+  ["The account number Google gives us for you", "To know it's you next time", "Google"],
   ["When the account was made and last changed", "Housekeeping", "Us"],
   ["A sign-in session: a random code and when it runs out", "To keep you signed in on this device", "Us"],
 ] as const;
 
 const NOT_KEPT = [
-  "Passwords. There are none: Google or Microsoft check who you are.",
+  "Passwords. There are none: Google checks who you are.",
   "Your profile photo.",
   "Your IP address or what device you use, in our database.",
-  "Google or Microsoft access keys. They're thrown away at sign-in, so we can't read your email, files, calendar or contacts.",
+  "Google access keys. They're thrown away at sign-in, so we can't read your email, files, calendar or contacts.",
   "Your games, projects, class work or Zo's models. Those stay on your device.",
 ];
 
 const COOKIES = [
   ["better-auth.session_token", "Keeps you signed in", "30 days, or until you sign out"],
   ["better-auth.session_data", "A signed copy of your session, so the site doesn't ask the database on every visit", "5 minutes"],
-  ["better-auth.oauth_state", "Only while you're on the Google or Microsoft page, to finish signing in safely", "Minutes"],
+  ["better-auth.oauth_state", "Only while you're on Google's sign-in page, to finish signing in safely", "Minutes"],
 ] as const;
 
 const SERVICES = [
@@ -32,7 +32,7 @@ const SERVICES = [
     "Hosts this website and the account database, which is kept in Western Europe. Like any web host it handles your IP address to deliver pages and block attacks. We haven't switched on Cloudflare's visitor analytics.",
     "Always",
   ],
-  ["Google or Microsoft", "Learn that you signed in to DecentralSchool, and send us your name and email.", "Only if you sign in with them"],
+  ["Google", "Learns that you signed in to DecentralSchool, and sends us your name and email.", "When you sign in"],
   [
     "OpenRouter and the AI model it picks",
     "Receive what a teacher types to the assistant and the game being made. The AI key is kept in the teacher's browser; we never see it.",
@@ -58,12 +58,12 @@ export function PrivacyPage() {
       <section className="story" aria-labelledby="device">
         <div>
           <h2 id="device" className="section-title">
-            Without an account
+            On your device
           </h2>
         </div>
         <div className="prose">
           <p>
-            You don't need an account to use DecentralSchool. Your games, Game Lab projects, Zo's models, challenges, hand-ins and feedback are saved in
+            Your games, Game Lab projects, Zo's models, challenges, hand-ins and feedback are saved in
             this browser, on your device. So are your settings: student or teacher, your name, the theme, the AI key and the app signing key. We never see
             any of it.
           </p>
@@ -77,12 +77,12 @@ export function PrivacyPage() {
       <section className="story" aria-labelledby="account">
         <div>
           <h2 id="account" className="section-title">
-            If you make an account
+            Your account
           </h2>
         </div>
         <div className="prose">
           <p>
-            You sign in with Google or Microsoft. We only ask them for your basic profile and email address, and we keep:
+            The studio opens once you sign in with Google. We only ask Google for your basic profile and email address, and we keep:
           </p>
           <div className="table-scroll">
             <table className="credits">
@@ -225,7 +225,8 @@ export function PrivacyPage() {
         </div>
         <div className="prose">
           <p>
-            Students can use everything without an account. Google and Microsoft set their own minimum ages for their accounts. A parent or school that
+            Students sign in with a Google account, such as one from their school or one a parent manages; Google sets its own minimum age. Shared
+            game links, downloaded games and apps play without signing in. A parent or school that
             wants a child's account removed can write to us.
           </p>
         </div>
