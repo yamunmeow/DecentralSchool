@@ -332,7 +332,7 @@ function SiteFoot({ locked }: { locked: boolean }) {
           <a href="https://decentralschool.org" rel="noopener">decentralschool.org</a>
         </div>
       </div>
-      <p className="foot-small">Built on Scratch's block language. Works without the internet once it has loaded.</p>
+      <p className="foot-small">© {new Date().getFullYear()} DecentralSchool</p>
     </footer>
   );
 }
