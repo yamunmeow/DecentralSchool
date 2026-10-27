@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { Game, Template } from "../../shared/types";
-import { modelName } from "../ai/openrouter";
+import { modelName, signIn } from "../ai/openrouter";
 import { Critter } from "../Critter";
 import { ACCEPT_TEXT, textFromFile } from "../importText";
 import { PALETTE, TEMPLATE_CRITTER } from "../palette";
@@ -91,8 +91,19 @@ export function NewGame({ template }: { template?: string }) {
                 <Icon name="upload" size={16} /> {reading ? "Reading…" : "Upload your lesson file or a pre-existing HTML game file"}
               </button>
               <span className="create-ai">
-                <span className={`ai-dot${ai.connected ? " on" : ""}`} aria-hidden />
-                {ai.connected ? `AI connected · ${modelName(ai.model)}` : "Free AI through OpenRouter: sign in once, for free"}
+                {ai.connected ? (
+                  <>
+                    <span className="ai-dot on" aria-hidden />
+                    AI connected · {modelName(ai.model)}
+                  </>
+                ) : (
+                  <>
+                    <button type="button" className="btn btn-sm btn-ai" onClick={() => signIn()} title="Sign in or sign up for free at OpenRouter">
+                      AI
+                    </button>
+                    Free AI through OpenRouter: sign in once, for free
+                  </>
+                )}
               </span>
               <span className="spacer" />
               <button className="btn btn-primary" disabled={!idea.trim()}>

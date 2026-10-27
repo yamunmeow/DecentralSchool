@@ -2576,6 +2576,20 @@
   box-shadow: 0 0 0 4px var(--ok-tint);
 }
 
+.btn-ai {
+  background: var(--ok);
+  color: var(--paper);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--ok) 70%, black);
+}
+
+.btn-ai:not(:disabled):hover {
+  box-shadow: 0 6px 0 color-mix(in srgb, var(--ok) 70%, black);
+}
+
+.btn-ai:not(:disabled):active {
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ok) 70%, black);
+}
+
 .idea-chips .chip-btn {
   background: var(--brand-soft);
   border-color: transparent;
