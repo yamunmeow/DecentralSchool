@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { boxOf, emptyDoc, fitShape, moveShape, NONE, pathD, shapeSvg, thin, type Box, type PaintDoc, type Shape } from "../../code/paint";
 import { uid } from "../../shared/random";
+import { t } from "../i18n";
 import { Icon } from "../ui";
 
 /**
@@ -14,6 +15,7 @@ type Handle = "nw" | "ne" | "sw" | "se";
 
 const COLOURS = ["#262b45", "#ffffff", "#8d9fd8", "#e8423c", "#f39c12", "#f6d33c", "#3fbf6b", "#17a3a3", "#3a86e0", "#6c5fcf", "#e45aa5", "#8a5a2b", "#a3a8b8", "#f6c9a4"];
 
+// Labels are English; shown through t().
 const TOOLS: { id: Tool; label: string; key: string; icon: ReactNode }[] = [
   { id: "select", label: "Select and move", key: "v", icon: <path d="M6 4l12 7-5.5 1.5L10 18z" fill="currentColor" /> },
   { id: "brush", label: "Brush", key: "b", icon: <path d="M4 18c3 0 4-2 5-4s3-6 6-8 4.5 0 3 2-5 4-7 6-3 4-7 4z" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" /> },
@@ -294,37 +296,37 @@ export function PaintEditor({ title, initial, stage, onDone, onCancel }: { title
       <header className="paint-bar">
         <strong className="paint-title">{title}</strong>
         <div className="paint-history">
-          <button className="icon-btn icon-btn-sm" disabled={!undo.length} onClick={back} aria-label="Undo" title="Undo (Ctrl+Z)">
+          <button className="icon-btn icon-btn-sm" disabled={!undo.length} onClick={back} aria-label={t("Undo")} title={t("Undo (Ctrl+Z)")}>
             <Icon name="undo" size={18} />
           </button>
-          <button className="icon-btn icon-btn-sm flip" disabled={!redo.length} onClick={forward} aria-label="Redo" title="Redo">
+          <button className="icon-btn icon-btn-sm flip" disabled={!redo.length} onClick={forward} aria-label={t("Redo")} title={t("Redo")}>
             <Icon name="undo" size={18} />
           </button>
-          <button className="icon-btn icon-btn-sm" onClick={() => setZoom((z) => Math.max(0.3, z / 1.25))} aria-label="Zoom out">
+          <button className="icon-btn icon-btn-sm" onClick={() => setZoom((z) => Math.max(0.3, z / 1.25))} aria-label={t("Zoom out")}>
             −
           </button>
           <button className="btn btn-ghost btn-sm" onClick={fit}>
             {Math.round(zoom * 100)}%
           </button>
-          <button className="icon-btn icon-btn-sm" onClick={() => setZoom((z) => Math.min(6, z * 1.25))} aria-label="Zoom in">
+          <button className="icon-btn icon-btn-sm" onClick={() => setZoom((z) => Math.min(6, z * 1.25))} aria-label={t("Zoom in")}>
             +
           </button>
         </div>
         <span className="spacer" />
         <button className="btn btn-ghost btn-sm" onClick={onCancel}>
-          Cancel
+          {t("Cancel")}
         </button>
         <button className="btn btn-primary btn-sm" onClick={() => (finishText(), onDone(docRef.current))}>
-          <Icon name="check" size={16} /> Done
+          <Icon name="check" size={16} /> {t("Done")}
         </button>
       </header>
 
       <div className="paint-body">
-        <nav className="paint-tools" aria-label="Tools">
-          {TOOLS.filter((t) => !(stage && t.id === "centre")).map((t) => (
-            <button key={t.id} className={tool === t.id ? "on" : ""} aria-pressed={tool === t.id} title={`${t.label} (${t.key.toUpperCase()})`} aria-label={t.label} onClick={() => (setTool(t.id), t.id !== "select" && setSelected(null))}>
+        <nav className="paint-tools" aria-label={t("Tools")}>
+          {TOOLS.filter((x) => !(stage && x.id === "centre")).map((x) => (
+            <button key={x.id} className={tool === x.id ? "on" : ""} aria-pressed={tool === x.id} title={`${t(x.label)} (${x.key.toUpperCase()})`} aria-label={t(x.label)} onClick={() => (setTool(x.id), x.id !== "select" && setSelected(null))}>
               <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden>
-                {t.icon}
+                {x.icon}
               </svg>
             </button>
           ))}
@@ -379,54 +381,54 @@ export function PaintEditor({ title, initial, stage, onDone, onCancel }: { title
               onChange={(e) => setTyping({ ...typing, text: e.target.value })}
               onKeyDown={(e) => (e.key === "Enter" ? finishText() : e.key === "Escape" && setTyping(null))}
               onBlur={finishText}
-              aria-label="Words"
+              aria-label={t("Words")}
             />
           )}
         </div>
       </div>
 
       <footer className="paint-props">
-        <div className="seg seg-small" role="radiogroup" aria-label="Colour for">
+        <div className="seg seg-small" role="radiogroup" aria-label={t("Colour for")}>
           <button className={target === "fill" ? "on" : ""} aria-pressed={target === "fill"} onClick={() => setTarget("fill")}>
-            <span className={`swatch${fill === NONE ? " is-none" : ""}`} style={{ background: fill === NONE ? undefined : fill }} /> Fill
+            <span className={`swatch${fill === NONE ? " is-none" : ""}`} style={{ background: fill === NONE ? undefined : fill }} /> {t("Fill")}
           </button>
           <button className={target === "stroke" ? "on" : ""} aria-pressed={target === "stroke"} onClick={() => setTarget("stroke")}>
-            <span className={`swatch is-ring${stroke === NONE ? " is-none" : ""}`} style={{ borderColor: stroke === NONE ? undefined : stroke }} /> Outline
+            <span className={`swatch is-ring${stroke === NONE ? " is-none" : ""}`} style={{ borderColor: stroke === NONE ? undefined : stroke }} /> {t("Outline")}
           </button>
         </div>
-        <div className="paint-colours" role="group" aria-label="Colours">
-          <button className={`swatch-btn is-none${(target === "fill" ? fill : stroke) === NONE ? " on" : ""}`} aria-label="No colour" title="No colour" onClick={() => setColour(NONE)} />
+        <div className="paint-colours" role="group" aria-label={t("Colours")}>
+          <button className={`swatch-btn is-none${(target === "fill" ? fill : stroke) === NONE ? " on" : ""}`} aria-label={t("No colour")} title={t("No colour")} onClick={() => setColour(NONE)} />
           {COLOURS.map((c) => (
             <button key={c} className={`swatch-btn${(target === "fill" ? fill : stroke) === c ? " on" : ""}`} style={{ background: c }} aria-label={c} onClick={() => setColour(c)} />
           ))}
-          <label className="swatch-btn is-custom" title="Any colour">
-            <input type="color" value={(target === "fill" ? fill : stroke) === NONE ? "#000000" : target === "fill" ? fill : stroke} onChange={(e) => setColour(e.target.value)} aria-label="Any colour" />
+          <label className="swatch-btn is-custom" title={t("Any colour")}>
+            <input type="color" value={(target === "fill" ? fill : stroke) === NONE ? "#000000" : target === "fill" ? fill : stroke} onChange={(e) => setColour(e.target.value)} aria-label={t("Any colour")} />
           </label>
         </div>
         {tool === "text" || sel?.kind === "text" ? (
           <label className="paint-range">
-            <span>Size</span>
+            <span>{t("Size")}</span>
             <input type="range" min={10} max={120} value={sel?.kind === "text" ? Math.round(sel.size) : fontSize} onChange={(e) => (setFontSize(Number(e.target.value)), sel?.kind === "text" && setDoc(replace(doc, { ...sel, size: Number(e.target.value) })))} />
           </label>
         ) : (
           <label className="paint-range">
-            <span>Line</span>
+            <span>{t("Line")}</span>
             <input type="range" min={1} max={40} value={sel && "sw" in sel ? sel.sw : width} onChange={(e) => setLineWidth(Number(e.target.value))} />
           </label>
         )}
         {sel && (
           <div className="paint-shape-tools">
-            <button className="btn btn-ghost btn-sm" onClick={() => reorder(1)} title="Bring forward">
-              <Icon name="up" size={16} /> Forward
+            <button className="btn btn-ghost btn-sm" onClick={() => reorder(1)} title={t("Bring forward")}>
+              <Icon name="up" size={16} /> {t("Forward")}
             </button>
-            <button className="btn btn-ghost btn-sm" onClick={() => reorder(-1)} title="Send back">
-              <Icon name="down" size={16} /> Back
+            <button className="btn btn-ghost btn-sm" onClick={() => reorder(-1)} title={t("Send back")}>
+              <Icon name="down" size={16} /> {t("Back")}
             </button>
             <button className="btn btn-ghost btn-sm" onClick={duplicate}>
-              <Icon name="copy" size={16} /> Copy
+              <Icon name="copy" size={16} /> {t("Copy")}
             </button>
             <button className="btn btn-ghost btn-sm danger-hover" onClick={remove}>
-              <Icon name="trash" size={16} /> Delete
+              <Icon name="trash" size={16} /> {t("Delete")}
             </button>
           </div>
         )}

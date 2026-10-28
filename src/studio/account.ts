@@ -1,5 +1,6 @@
 import { createAuthClient } from "better-auth/client";
 import { useEffect, useState } from "react";
+import { getLang, t } from "./i18n";
 import { getName, setName } from "./role";
 
 /**
@@ -72,21 +73,24 @@ export const signIn = (provider: Provider, back = "#/") => {
   return client.signIn.social({ provider, callbackURL: `/${back}`, errorCallbackURL: "/#/signin" }).then(({ error }) => {
     if (!error) return;
     pending(false);
-    throw new Error(error.message || "Couldn't reach the sign-in server. Check your connection.");
+    throw new Error(why(error.message, "Couldn't reach the sign-in server. Check your connection."));
   });
 };
 
 export const signOut = async () => {
   const { error } = await client.signOut();
-  if (error && error.status) throw new Error(error.message || "Couldn't sign out.");
+  if (error && error.status) throw new Error(why(error.message, "Couldn't sign out."));
   write(null);
 };
 
 export const deleteAccount = async () => {
   const { error } = await client.deleteUser();
-  if (error) throw new Error(error.message || "Couldn't delete the account. Sign in again, then try once more.");
+  if (error) throw new Error(why(error.message, "Couldn't delete the account. Sign in again, then try once more."));
   write(null);
 };
+
+/** The server's own message reads well in English; otherwise the translated fallback. */
+const why = (message: string | undefined, fallback: string) => (message && getLang() === "en" ? message : t(fallback));
 
 const MESSAGES: Record<string, string> = {
   access_denied: "Sign-in was cancelled.",
@@ -100,7 +104,7 @@ export function takeSignInError(): string | null {
   const code = params.get("error");
   if (!code) return null;
   history.replaceState(null, "", window.location.pathname + window.location.hash);
-  return MESSAGES[code] || "Sign-in didn't work. Please try again.";
+  return t(MESSAGES[code] || "Sign-in didn't work. Please try again.");
 }
 
 export function useAccount(): Account | null {

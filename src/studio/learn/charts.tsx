@@ -1,4 +1,5 @@
 import { useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { t, tn } from "../i18n";
 
 /**
  * Charts for Zo Wants to Learn, drawn at the size they are shown (not scaled), so
@@ -62,7 +63,7 @@ export function ChartCard({ title, children, table, note }: { title: string; chi
       {note}
       {table && (
         <details className="viz-table">
-          <summary>Show the numbers</summary>
+          <summary>{t("Show the numbers")}</summary>
           <div className="viz-table-scroll">{table}</div>
         </details>
       )}
@@ -165,7 +166,7 @@ export function LineChart({
       {series.length > 1 && <Legend items={series.map((s) => ({ name: s.name, slot: s.slot }))} />}
       <div className="viz-plot" ref={ref}>
         {width > 0 && (
-          <svg width={w} height={H} role="img" aria-label={`${title}: ${series.map((s) => `${s.name} ${isFinite(s.values[len - 1]) ? format(s.values[len - 1]) : "none yet"}`).join(", ")}`} onPointerMove={move} onPointerLeave={() => setHover(null)}>
+          <svg width={w} height={H} role="img" aria-label={`${title}: ${series.map((s) => `${s.name} ${isFinite(s.values[len - 1]) ? format(s.values[len - 1]) : t("none yet")}`).join(", ")}`} onPointerMove={move} onPointerLeave={() => setHover(null)}>
             {yt.map((t) => (
               <g key={t}>
                 <line className="viz-grid" x1={M.l} x2={M.l + iw} y1={Y(t)} y2={Y(t)} />
@@ -250,10 +251,10 @@ export function Scatter({ title, dots, line, xName, yName, legend = true }: { ti
     : "";
   const slots = new Set(dots.map((d) => d.slot));
   const items = [
-    ...(slots.has(1) ? [{ name: slots.has(2) ? "Practice" : "Examples", slot: 1 as const, mark: "dot" as const }] : []),
-    ...(slots.has(2) ? [{ name: "Test", slot: 2 as const, mark: "dot" as const }] : []),
-    ...(dots.some((d) => d.flagged) ? [{ name: "Far from the rest", mark: "ring" as const }] : []),
-    ...(line ? [{ name: "Zo's line", mark: "ink" as const }] : []),
+    ...(slots.has(1) ? [{ name: slots.has(2) ? t("Practice") : t("Examples"), slot: 1 as const, mark: "dot" as const }] : []),
+    ...(slots.has(2) ? [{ name: t("Test"), slot: 2 as const, mark: "dot" as const }] : []),
+    ...(dots.some((d) => d.flagged) ? [{ name: t("Far from the rest"), mark: "ring" as const }] : []),
+    ...(line ? [{ name: t("Zo's line"), mark: "ink" as const }] : []),
   ];
   const near = (e: React.PointerEvent) => {
     const r = (e.currentTarget as SVGElement).getBoundingClientRect();
@@ -278,7 +279,7 @@ export function Scatter({ title, dots, line, xName, yName, legend = true }: { ti
               <th>{xName}</th>
               <th>{yName}</th>
               <th />
-              {line && <th>Zo's guess</th>}
+              {line && <th>{t("Zo's guess")}</th>}
             </tr>
           </thead>
           <tbody>
@@ -329,7 +330,7 @@ export function Scatter({ title, dots, line, xName, yName, legend = true }: { ti
         )}
         {hd && (
           <div className="viz-tip" style={{ left: Math.min(X(hd.x) + 12, w - 160), top: Math.max(0, Y(hd.y) - 50) }}>
-            <strong>{hd.label || (hd.slot === 2 ? "Test" : "Practice")}</strong>
+            <strong>{hd.label || (hd.slot === 2 ? t("Test") : t("Practice"))}</strong>
             <span>
               {xName}: {hd.x}
             </span>
@@ -370,14 +371,14 @@ export function Confusion({ labels, cells }: { labels: string[]; cells: number[]
   const top = Math.max(1, ...cells.flat());
   const [tip, setTip] = useState<string | null>(null);
   return (
-    <ChartCard title="Real label vs Zo's guess" note={<p className="viz-note">{tip || "Right answers are on the diagonal."}</p>}>
+    <ChartCard title={t("Real label vs Zo's guess")} note={<p className="viz-note">{tip || t("Right answers are on the diagonal.")}</p>}>
       <div className="viz-table-scroll">
         <table className="confusion">
           <thead>
             <tr>
               <th className="confusion-corner">
-                <span>Zo said →</span>
-                <span>Real ↓</span>
+                <span>{t("Zo said →")}</span>
+                <span>{t("Real ↓")}</span>
               </th>
               {labels.map((l) => (
                 <th key={l} scope="col">
@@ -393,7 +394,7 @@ export function Confusion({ labels, cells }: { labels: string[]; cells: number[]
                 {labels.map((said, c) => {
                   const n = cells[r][c];
                   const step = n ? Math.min(6, 1 + Math.floor((n / top) * 5.999)) : 0;
-                  const text = `${n} “${real}” ${n === 1 ? "example" : "examples"}: Zo said “${said}”${r === c ? " (right)" : ""}`;
+                  const text = `${tn(n, "{n} “{real}” example: Zo said “{said}”", "{n} “{real}” examples: Zo said “{said}”", { real, said })}${r === c ? ` ${t("(right)")}` : ""}`;
                   return (
                     <td key={said} className={`cell-${step}${r === c ? " is-diag" : ""}`} title={text} onPointerEnter={() => setTip(text)} onPointerLeave={() => setTip(null)}>
                       {n}
@@ -412,7 +413,7 @@ export function Confusion({ labels, cells }: { labels: string[]; cells: number[]
 /** One square per example: practice or test. */
 export function SplitStrip({ train, test }: { train: number; test: number }) {
   return (
-    <div className="split-strip" role="img" aria-label={`${train} practice examples and ${test} test examples`}>
+    <div className="split-strip" role="img" aria-label={t("{train} practice examples and {test} test examples", { train, test })}>
       {Array.from({ length: train }, (_, i) => (
         <span key={`a${i}`} className="is-s1" />
       ))}

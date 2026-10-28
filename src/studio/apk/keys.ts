@@ -1,5 +1,6 @@
 import { kv } from "../db";
 import { createSigningKey, importSigningKey, type SigningKey } from "./sign";
+import { t } from "../i18n";
 
 /**
  * The teacher's app-signing key. Android only installs an update over an existing app
@@ -50,10 +51,10 @@ export async function importKeyFile(file: File): Promise<void> {
   try {
     body = JSON.parse(await file.text());
   } catch {
-    throw new Error("That file isn't a signing key backup.");
+    throw new Error(t("That file isn't a signing key backup."));
   }
   if (body.type !== FILE_TYPE || typeof body.pkcs8 !== "string" || typeof body.cert !== "string" || typeof body.spki !== "string")
-    throw new Error("That file isn't a signing key backup.");
+    throw new Error(t("That file isn't a signing key backup."));
   const stored: Stored = { pkcs8: unb64(body.pkcs8), spki: unb64(body.spki), cert: unb64(body.cert), created: Number(body.created) || Date.now() };
   await importSigningKey(stored); // throws if the key is unusable
   await kv.set(KEY, stored);

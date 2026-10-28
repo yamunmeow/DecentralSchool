@@ -14,6 +14,8 @@ import { ThemeToggle } from "./Theme";
 import { Icon } from "./ui";
 import { LogoMark, Wordmark } from "./Brand";
 import { useAi } from "./useAi";
+import { t, useLang } from "./i18n";
+import { LangToggle } from "./components/LangToggle";
 
 // Game Lab (Blockly, the stage runtime) loads only when it is opened.
 const CodeEditor = lazy(() => import("./code/CodeEditor").then((m) => ({ default: m.CodeEditor })));
@@ -31,9 +33,11 @@ const TermsPage = lazy(() => import("./pages/TermsPage").then((m) => ({ default:
 const ChallengeEditorPage = lazy(() => import("./class/ChallengeEditor").then((m) => ({ default: m.ChallengeEditorPage })));
 
 export function App() {
+  // A new language remounts every page, so nothing keeps text from the old one.
+  const lang = useLang();
   return (
     <AppProvider>
-      <Shell />
+      <Shell key={lang} />
     </AppProvider>
   );
 }
@@ -54,7 +58,7 @@ function Shell() {
   }, [menu]);
   useEffect(() => {
     finishSignIn().then((r) => {
-      if (r === "ok") toast("OpenRouter connected");
+      if (r === "ok") toast(t("OpenRouter connected"));
       else if (r !== "none") toast(r, "error");
     });
     const failed = takeSignInError();
@@ -99,30 +103,31 @@ function Shell() {
   return (
     <div className="shell">
       <a className="skip-link" href="#main" onClick={(e) => (e.preventDefault(), document.getElementById("main")?.focus())}>
-        Skip to content
+        {t("Skip to content")}
       </a>
       <header className="site-head">
         <div className={`site-head-in${compact.on ? " is-compact" : ""}`} ref={compact.box}>
-          <a href="#/" className="brand" aria-label="DecentralSchool home">
+          <a href="#/" className="brand" aria-label={t("DecentralSchool home")}>
             <LogoMark size={40} />
             <Wordmark />
           </a>
           {!locked && (
-            <nav className="site-nav" aria-label="Main" aria-hidden={compact.on || undefined} ref={compact.nav}>
+            <nav className="site-nav" aria-label={t("Main")} aria-hidden={compact.on || undefined} ref={compact.nav}>
               <NavLinks current={route} />
             </nav>
           )}
           <span className="spacer" />
           <div className="head-tools" ref={compact.tools}>
+            <LangToggle className={locked ? "" : "head-lang"} />
             <ThemeToggle />
             <AccountButton current={head} />
             {!locked && (
               <>
-                <a href="#/settings" className={`icon-btn head-settings${head === "settings" ? " on" : ""}`} aria-label="Settings" title="Settings">
+                <a href="#/settings" className={`icon-btn head-settings${head === "settings" ? " on" : ""}`} aria-label={t("Settings")} title={t("Settings")}>
                   <Icon name="gear" size={21} />
                 </a>
                 <HeadCta />
-                <button className="icon-btn menu-btn" onClick={() => setMenu(true)} aria-label="Open menu" aria-expanded={menu}>
+                <button className="icon-btn menu-btn" onClick={() => setMenu(true)} aria-label={t("Open menu")} aria-expanded={menu}>
                   <Icon name="menu" />
                 </button>
               </>
@@ -177,15 +182,15 @@ function useNav(current: string[]) {
   const { role } = useRole();
   const [head] = current;
   const items: { href: string; label: string; icon: Parameters<typeof Icon>[0]["name"]; on: boolean }[] = [
-    { href: "play", label: "Play", icon: "play", on: head === "play" },
-    { href: "fame", label: "Wall of Fame", icon: "star", on: head === "fame" },
-    { href: "code", label: "Game Lab", icon: "code", on: head === "code" },
-    { href: "learn", label: "Zo Wants to Learn", icon: "cap", on: head === "learn" },
-    { href: "games", label: "Quick games", icon: "game", on: head === "games" || head === "new" || head === "game" },
-    { href: "class", label: role === "teacher" ? "Class" : "My class", icon: "book", on: head === "class" || head === "join" || head === "feedback" },
+    { href: "play", label: t("Play"), icon: "play", on: head === "play" },
+    { href: "fame", label: t("Wall of Fame"), icon: "star", on: head === "fame" },
+    { href: "code", label: t("Game Lab"), icon: "code", on: head === "code" },
+    { href: "learn", label: t("Zo Wants to Learn"), icon: "cap", on: head === "learn" },
+    { href: "games", label: t("Quick games"), icon: "game", on: head === "games" || head === "new" || head === "game" },
+    { href: "class", label: role === "teacher" ? t("Class") : t("My class"), icon: "book", on: head === "class" || head === "join" || head === "feedback" },
   ];
-  if (role === "teacher") items.push({ href: "assistant", label: "Assistant", icon: "sparkle", on: head === "assistant" });
-  items.push({ href: "mission", label: "About", icon: "heart", on: head === "mission" });
+  if (role === "teacher") items.push({ href: "assistant", label: t("Assistant"), icon: "sparkle", on: head === "assistant" });
+  items.push({ href: "mission", label: t("About"), icon: "heart", on: head === "mission" });
   return items;
 }
 
@@ -203,7 +208,7 @@ function NavLinks({ current }: { current: string[] }) {
 
 function AccountButton({ current }: { current?: string }) {
   const account = useAccount();
-  const label = account ? `Signed in as ${account.name || account.email}` : "Sign in for free";
+  const label = account ? t("Signed in as {name}", { name: account.name || account.email }) : t("Sign in for free");
   return (
     <a href={account ? "#/settings" : "#/signin"} className={`icon-btn head-account${current === "signin" ? " on" : ""}`} aria-label={label} title={label}>
       {account ? <span className="account-initial">{(account.name || account.email).trim().charAt(0).toUpperCase()}</span> : <Icon name="user" size={21} />}
@@ -216,12 +221,12 @@ function HeadCta() {
   if (role === "teacher")
     return (
       <a className="btn btn-primary btn-sm head-cta" href="#/new">
-        <Icon name="plus" size={18} /> Create a game
+        <Icon name="plus" size={18} /> {t("Create a game")}
       </a>
     );
   return (
     <a className="btn btn-primary btn-sm head-cta" href="#/code">
-      <Icon name="plus" size={18} /> Make a game
+      <Icon name="plus" size={18} /> {t("Make a game")}
     </a>
   );
 }
@@ -233,13 +238,13 @@ function Drawer({ current, open, onClose }: { current: string[]; open: boolean; 
   const recent = role === "teacher" ? games.slice(0, 6) : [];
 
   return (
-    <nav className={`drawer${open ? " open" : ""}`} aria-label="Menu" aria-hidden={!open} inert={!open}>
+    <nav className={`drawer${open ? " open" : ""}`} aria-label={t("Menu")} aria-hidden={!open} inert={!open}>
       <div className="drawer-head">
         <a href="#/" className="brand">
           <LogoMark size={36} />
           <Wordmark />
         </a>
-        <button className="icon-btn" onClick={onClose} aria-label="Close menu">
+        <button className="icon-btn" onClick={onClose} aria-label={t("Close menu")}>
           <Icon name="close" size={22} />
         </button>
       </div>
@@ -248,7 +253,7 @@ function Drawer({ current, open, onClose }: { current: string[]; open: boolean; 
           <span className="nav-icon">
             <Icon name="home" />
           </span>
-          Home
+          {t("Home")}
         </a>
         {useNav(current).map((l) => (
           <a key={l.href} href={`#/${l.href}`} className={`drawer-link${l.on ? " on" : ""}`} aria-current={l.on ? "page" : undefined}>
@@ -262,11 +267,14 @@ function Drawer({ current, open, onClose }: { current: string[]; open: boolean; 
           <span className="nav-icon">
             <Icon name="gear" />
           </span>
-          Settings
+          {t("Settings")}
         </a>
+        <div className="drawer-lang">
+          <LangToggle />
+        </div>
         {recent.length > 0 && (
           <>
-            <h2 className="nav-title">Recent quick games</h2>
+            <h2 className="nav-title">{t("Recent quick games")}</h2>
             {recent.map((g) => (
               <a key={g.id} href={`#/game/${g.id}`} className="drawer-link">
                 <span className="nav-icon nav-emoji">{g.emoji}</span>
@@ -281,16 +289,16 @@ function Drawer({ current, open, onClose }: { current: string[]; open: boolean; 
           <a href="#/settings" className={`ai-chip${ai.connected ? " on" : ""}`}>
             <span className="ai-dot" aria-hidden />
             <span>
-              <strong>{ai.connected ? "AI connected" : "Connect AI"}</strong>
-              <small>{ai.connected ? modelName(ai.model) : "Optional, free models"}</small>
+              <strong>{ai.connected ? t("AI connected") : t("Connect AI")}</strong>
+              <small>{ai.connected ? modelName(ai.model) : t("Optional, free models")}</small>
             </span>
           </a>
         ) : (
           <a href="#/settings" className="ai-chip">
             <span className="ai-dot" aria-hidden />
             <span>
-              <strong>{name || "Student"}</strong>
-              <small>{role ? "Student" : "Pick student or teacher"}</small>
+              <strong>{name || t("Student")}</strong>
+              <small>{role ? t("Student") : t("Pick student or teacher")}</small>
             </span>
           </a>
         )}
@@ -308,30 +316,30 @@ function SiteFoot({ locked }: { locked: boolean }) {
             <LogoMark size={36} />
             <Wordmark />
           </a>
-          <p>A free, open-source tool for making learning games that work offline.</p>
+          <p>{t("A free, open-source tool for making learning games that work offline.")}</p>
         </div>
         {!locked && (
           <>
             <div className="foot-col">
-              <h2>Make</h2>
-              <a href="#/code">Game Lab</a>
-              <a href="#/games">Quick games</a>
-              <a href="#/learn">Zo Wants to Learn</a>
+              <h2>{t("Make")}</h2>
+              <a href="#/code">{t("Game Lab")}</a>
+              <a href="#/games">{t("Quick games")}</a>
+              <a href="#/learn">{t("Zo Wants to Learn")}</a>
             </div>
             <div className="foot-col">
-              <h2>Play</h2>
-              <a href="#/play">All games</a>
-              <a href="#/class">Class</a>
-              <a href="#/settings">Settings</a>
+              <h2>{t("Play")}</h2>
+              <a href="#/play">{t("All games")}</a>
+              <a href="#/class">{t("Class")}</a>
+              <a href="#/settings">{t("Settings")}</a>
             </div>
           </>
         )}
         <div className="foot-col">
-          <h2>About</h2>
-          <a href="#/mission">About</a>
-          <a href="#/mission/license">License (AGPL-3.0)</a>
-          <a href="#/privacy">Privacy</a>
-          <a href="#/terms">Terms</a>
+          <h2>{t("About")}</h2>
+          <a href="#/mission">{t("About")}</a>
+          <a href="#/mission/license">{t("License (AGPL-3.0)")}</a>
+          <a href="#/privacy">{t("Privacy")}</a>
+          <a href="#/terms">{t("Terms")}</a>
           <a href="https://decentralschool.org" rel="noopener">decentralschool.org</a>
         </div>
       </div>

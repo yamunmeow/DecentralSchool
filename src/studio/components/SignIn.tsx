@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { signIn, useAccount, type Provider } from "../account";
 import { ZoPic } from "../learn/Zo";
+import { t } from "../i18n";
 import { useApp } from "../store";
 
 // Microsoft works too once its secrets are set on the Worker; add it back here then.
@@ -48,7 +49,7 @@ export function SignInButtons({ back = "#/" }: { back?: string }) {
           }}
         >
           <ProviderMark id={p.id} />
-          {p.label}
+          {t(p.label)}
         </button>
       ))}
     </div>
@@ -63,23 +64,23 @@ export function SignInPage() {
         <ZoPic outfit="zo" pose="wave" size={88} />
         {account ? (
           <>
-            <h1>You're signed in</h1>
+            <h1>{t("You're signed in")}</h1>
             <p className="muted">{account.email}</p>
             <div className="toolbar">
               <a className="btn btn-primary" href="#/">
-                Start making
+                {t("Start making")}
               </a>
               <a className="btn btn-ghost" href="#/settings">
-                Account settings
+                {t("Account settings")}
               </a>
             </div>
           </>
         ) : (
           <>
-            <h1>Sign in or sign up for free</h1>
+            <h1>{t("Sign in or sign up for free")}</h1>
             <SignInButtons />
             <p className="signin-small">
-              We keep your name and email, nothing else. <a href="#/privacy">Privacy</a> · <a href="#/terms">Terms</a>
+              {t("We keep your name and email, nothing else.")} <a href="#/privacy">{t("Privacy")}</a> · <a href="#/terms">{t("Terms")}</a>
             </p>
           </>
         )}

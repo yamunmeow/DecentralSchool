@@ -1,14 +1,16 @@
 import type * as Blockly from "blockly/core";
+import { t } from "../i18n";
 
 /** The block palette, category by category, with starting values. */
 
 type Item = Record<string, unknown>;
 const num = (v: number, type = "math_number") => ({ shadow: { type, fields: { NUM: v } } });
-const txt = (v: string) => ({ shadow: { type: "text", fields: { TEXT: v } } });
+/** Starting text, in the studio's language. */
+const txt = (v: string) => ({ shadow: { type: "text", fields: { TEXT: v && t(v) } } });
 const menu = (type: string, field: string, v: string) => ({ shadow: { type, fields: { [field]: v } } });
 const colour = (c: string) => ({ shadow: { type: "colour_picker", fields: { COLOUR: c } } });
 const b = (type: string, inputs: Record<string, unknown> = {}, fields: Record<string, unknown> = {}): Item => ({ kind: "block", type, inputs, fields });
-const label = (text: string): Item => ({ kind: "label", text });
+const label = (text: string): Item => ({ kind: "label", text: t(text) });
 const gap = (n = 24): Item => ({ kind: "sep", gap: n });
 
 function motion(): Item[] {
@@ -162,9 +164,9 @@ function operators(): Item[] {
     gap(),
     b("operator_random", { FROM: num(1), TO: num(10) }),
     gap(),
-    b("operator_gt", { OPERAND1: txt(""), OPERAND2: txt("50") }),
-    b("operator_lt", { OPERAND1: txt(""), OPERAND2: txt("50") }),
-    b("operator_equals", { OPERAND1: txt(""), OPERAND2: txt("50") }),
+    b("operator_gt", { OPERAND1: txt(""), OPERAND2: { shadow: { type: "text", fields: { TEXT: "50" } } } }),
+    b("operator_lt", { OPERAND1: txt(""), OPERAND2: { shadow: { type: "text", fields: { TEXT: "50" } } } }),
+    b("operator_equals", { OPERAND1: txt(""), OPERAND2: { shadow: { type: "text", fields: { TEXT: "50" } } } }),
     gap(),
     b("operator_and"),
     b("operator_or"),
@@ -197,14 +199,17 @@ function pen(stage: boolean): Item[] {
   ];
 }
 
-const cat = (name: string, style: string, contents: Item[] | string): Item =>
-  typeof contents === "string" ? { kind: "category", name, categorystyle: `${style}_category`, custom: contents } : { kind: "category", name, categorystyle: `${style}_category`, contents };
+const cat = (english: string, style: string, contents: Item[] | string): Item => {
+  const name = t(english);
+  return typeof contents === "string" ? { kind: "category", name, categorystyle: `${style}_category`, custom: contents } : { kind: "category", name, categorystyle: `${style}_category`, contents };
+};
 
 /**
  * The palette follows the parts of an algorithm: when it starts, what it does, how it
  * decides and repeats, what it checks, and what it remembers. The editor draws these
  * groups as branches beside the categories.
  */
+// Names are English; show them through t().
 export const GROUPS: { name: string; cats: string[] }[] = [
   { name: "When", cats: ["events"] },
   { name: "Do", cats: ["motion", "looks", "sound", "pen"] },
@@ -234,19 +239,19 @@ export function toolboxFor(stage: boolean, only: string[] | null = null): Blockl
 
 /** Variables and lists you can use here: the stage's and this sprite's, with their blocks. */
 export function variablesFlyout(vars: { id: string; name: string }[], lists: { id: string; name: string }[]): Blockly.utils.toolbox.FlyoutItemInfoArray {
-  const out: Item[] = [{ kind: "button", text: "+ New memory box", callbackkey: "MAKE_VARIABLE" }];
+  const out: Item[] = [{ kind: "button", text: t("+ New memory box"), callbackkey: "MAKE_VARIABLE" }];
   for (const v of vars) out.push(b("data_variable", {}, { VARIABLE: { id: v.id } }));
   if (vars.length) {
     const first = { VARIABLE: { id: vars[0].id } };
     out.push(
       gap(),
-      b("data_setvariableto", { VALUE: txt("0") }, first),
+      b("data_setvariableto", { VALUE: { shadow: { type: "text", fields: { TEXT: "0" } } } }, first),
       b("data_changevariableby", { VALUE: num(1) }, first),
       b("data_showvariable", {}, first),
       b("data_hidevariable", {}, first),
     );
   }
-  out.push(gap(), { kind: "button", text: "+ New list", callbackkey: "MAKE_LIST" });
+  out.push(gap(), { kind: "button", text: t("+ New list"), callbackkey: "MAKE_LIST" });
   for (const l of lists) out.push(b("data_listcontents", {}, { LIST: { id: l.id } }));
   if (lists.length) {
     const first = { LIST: { id: lists[0].id } };

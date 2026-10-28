@@ -1,4 +1,5 @@
 import { strFromU8, unzipSync } from "fflate";
+import { t, tn } from "../i18n";
 
 /**
  * A finished HTML game, as one file the studio can play, share and pack into an APK.
@@ -57,9 +58,9 @@ export async function htmlGameFromFile(file: File): Promise<HtmlGame> {
   const html = await file.text();
   const warnings: string[] = [];
   const lost = missing(html);
-  if (lost.length) warnings.push(`It uses ${lost.length} file${lost.length === 1 ? "" : "s"} that weren't uploaded (${lost.slice(0, 3).join(", ")}${lost.length > 3 ? "…" : ""}). Upload the game's folder as a .zip to include them.`);
+  if (lost.length) warnings.push(`${tn(lost.length, "It uses {n} file that wasn't uploaded", "It uses {n} files that weren't uploaded")} (${lost.slice(0, 3).join(", ")}${lost.length > 3 ? "…" : ""}). ${t("Upload the game's folder as a .zip to include them.")}`);
   const web = remote(html);
-  if (web.length) warnings.push(`It loads from the internet (${web.slice(0, 3).join(", ")}), which is switched off in offline games.`);
+  if (web.length) warnings.push(t("It loads from the internet ({sites}), which is switched off in offline games.", { sites: web.slice(0, 3).join(", ") }));
   return { html, title: titleOf(html, name), warnings };
 }
 
@@ -67,7 +68,7 @@ function fromZip(bytes: Uint8Array, fallback: string): HtmlGame {
   const files = unzipSync(bytes, { filter: (f) => !f.name.startsWith("__MACOSX/") && !f.name.endsWith("/") });
   const pages = Object.keys(files).filter((f) => /\.html?$/i.test(f)).sort((a, b) => a.split("/").length - b.split("/").length || Number(!/index\.html?$/i.test(a)) - Number(!/index\.html?$/i.test(b)));
   const page = pages[0];
-  if (!page) throw new Error("There's no .html page in that .zip.");
+  if (!page) throw new Error(t("There's no .html page in that .zip."));
   const dir = page.includes("/") ? page.slice(0, page.lastIndexOf("/") + 1) : "";
 
   const resolve = (from: string, ref: string): string | null => {
@@ -127,8 +128,8 @@ function fromZip(bytes: Uint8Array, fallback: string): HtmlGame {
   }
 
   const warnings: string[] = [];
-  if (pages.length > 1) warnings.push(`The .zip has ${pages.length} pages; “${page}” was used.`);
+  if (pages.length > 1) warnings.push(t("The .zip has {n} pages; “{page}” was used.", { n: pages.length, page }));
   const web = remote(html);
-  if (web.length) warnings.push(`It loads from the internet (${web.slice(0, 3).join(", ")}), which is switched off in offline games.`);
+  if (web.length) warnings.push(t("It loads from the internet ({sites}), which is switched off in offline games.", { sites: web.slice(0, 3).join(", ") }));
   return { html, title: titleOf(html, fallback), warnings };
 }

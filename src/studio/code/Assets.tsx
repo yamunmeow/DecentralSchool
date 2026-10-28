@@ -1,10 +1,12 @@
 import { lazy, Suspense, useMemo, useRef, useState } from "react";
 import { docToSvg, emptyDoc, svgSize, type PaintDoc } from "../../code/paint";
 import { BACKDROP_LIBRARY, costumeChoices, costumeSvg, SPRITE_LIBRARY, svgUrl } from "../../code/art";
+import { POSE_NAMES } from "../../code/art/zo";
 import { SOUND_IDS, SOUNDS, soundUrl } from "../../code/sounds";
 import type { CostumeAsset, SoundAsset, Target } from "../../code/types";
 import { uid } from "../../shared/random";
 import { useApp } from "../store";
+import { t, tc } from "../i18n";
 import { Icon, Modal } from "../ui";
 
 // The paint editor loads the first time someone draws.
@@ -28,7 +30,7 @@ export function LibraryModal<T>({ title, items, onPick, onClose }: { title: stri
   const shown = items.filter((i) => i.name.toLowerCase().includes(q.trim().toLowerCase()));
   return (
     <Modal title={title} wide onClose={onClose}>
-      <input className="lib-search" placeholder="Search" aria-label="Search" value={q} onChange={(e) => setQ(e.target.value)} autoFocus />
+      <input className="lib-search" placeholder={t("Search")} aria-label={t("Search")} value={q} onChange={(e) => setQ(e.target.value)} autoFocus />
       <div className="lib-grid">
         {shown.map((i) => (
           <button
@@ -48,8 +50,16 @@ export function LibraryModal<T>({ title, items, onPick, onClose }: { title: stri
   );
 }
 
-export const spriteItems = () => SPRITE_LIBRARY.map((s) => ({ key: s.id, name: s.name, thumb: s.thumb, value: () => s }));
-export const backdropItems = () => BACKDROP_LIBRARY.map((b) => ({ key: b.id, name: b.name, thumb: b.thumb, value: b.costume }));
+/** A library picture's name in the studio's language: "Zo Chef wave" is an outfit and a pose. */
+const artName = (name: string) => {
+  const pose = Object.values(POSE_NAMES).find((p) => name.endsWith(` ${p}`));
+  return pose ? `${t(name.slice(0, -pose.length - 1))} ${t(pose)}` : t(name);
+};
+
+// Library names are English; pictures added while the studio is in French get French names.
+export const spriteItems = () =>
+  SPRITE_LIBRARY.map((s) => ({ key: s.id, name: t(s.name), thumb: s.thumb, value: () => ({ ...s, name: t(s.name), costumes: () => s.costumes().map((c) => ({ ...c, name: artName(c.name) })) }) }));
+export const backdropItems = () => BACKDROP_LIBRARY.map((b) => ({ key: b.id, name: t(b.name), thumb: b.thumb, value: () => ({ ...b.costume(), name: t(b.name) }) }));
 
 /** An uploaded picture as a costume: SVG stays SVG, other images are wrapped in an SVG. */
 export async function costumeFromFile(file: File): Promise<CostumeAsset> {
@@ -93,7 +103,7 @@ export function CostumesTab({ target, onChange }: { target: Target; onChange: (t
   /** The paint editor: a new drawing, or the outfit at this index. */
   const [painting, setPainting] = useState<"new" | number | null>(null);
   const file = useRef<HTMLInputElement>(null);
-  const choices = useMemo(() => (target.isStage ? backdropItems() : costumeChoices().map((c) => ({ key: c.name, name: c.name, thumb: c.thumb, group: c.group, value: c.costume }))), [target.isStage]);
+  const choices = useMemo(() => (target.isStage ? backdropItems() : costumeChoices().map((c) => ({ key: c.name, name: artName(c.name), thumb: c.thumb, group: t(c.group), value: () => ({ ...c.costume(), name: artName(c.name) }) }))), [target.isStage]);
   const list = target.costumes;
   const current = list[target.costume];
   const kind = target.isStage ? "backdrop" : "costume";
@@ -106,17 +116,17 @@ export function CostumesTab({ target, onChange }: { target: Target; onChange: (t
   };
 
   const i = target.costume;
-  const word = target.isStage ? "background" : "outfit";
+  const word = target.isStage ? t("background") : t("outfit");
   const tools = (
     <div className="toolbar asset-bar">
       <button className="btn btn-primary btn-sm" onClick={() => setPicking(true)}>
-        <Icon name="plus" size={16} /> Add {target.isStage ? "a background" : "an outfit"}
+        <Icon name="plus" size={16} /> {target.isStage ? t("Add a background") : t("Add an outfit")}
       </button>
       <button className="btn btn-soft btn-sm" onClick={() => setPainting("new")}>
-        <Icon name="edit" size={16} /> Draw
+        <Icon name="edit" size={16} /> {tc("paint", "Draw")}
       </button>
       <button className="btn btn-ghost btn-sm" onClick={() => file.current?.click()}>
-        <Icon name="upload" size={16} /> Upload a picture
+        <Icon name="upload" size={16} /> {t("Upload a picture")}
       </button>
       <input
         ref={file}
@@ -130,7 +140,7 @@ export function CostumesTab({ target, onChange }: { target: Target; onChange: (t
           try {
             add(await costumeFromFile(f));
           } catch {
-            toast("Couldn't read that picture.", "error");
+            toast(t("Couldn't read that picture."), "error");
           }
         }}
       />
@@ -140,7 +150,7 @@ export function CostumesTab({ target, onChange }: { target: Target; onChange: (t
   return (
     <div className="assets">
       {tools}
-      <ol className={`asset-grid${target.isStage ? " is-wide" : ""}`} aria-label={target.isStage ? "Backgrounds" : "Outfits"}>
+      <ol className={`asset-grid${target.isStage ? " is-wide" : ""}`} aria-label={target.isStage ? t("Backgrounds") : t("Outfits")}>
         {list.map((c, n) => (
           <li key={c.id}>
             <button className={`asset-card${n === i ? " on" : ""}`} aria-pressed={n === i} onClick={() => onChange({ ...target, costume: n })}>
@@ -159,7 +169,7 @@ export function CostumesTab({ target, onChange }: { target: Target; onChange: (t
             <img src={svgUrl(costumeSvg(current))} alt={current.name} />
           </div>
           <label className="field">
-            <span className="field-label">Name</span>
+            <span className="field-label">{t("Name")}</span>
             <input
               value={current.name}
               onChange={(e) => setList(list.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))}
@@ -168,34 +178,34 @@ export function CostumesTab({ target, onChange }: { target: Target; onChange: (t
           </label>
           <div className="toolbar">
             <button className="btn btn-soft btn-sm" onClick={() => setPainting(i)}>
-              <Icon name="edit" size={16} /> Change the drawing
+              <Icon name="edit" size={16} /> {t("Change the drawing")}
             </button>
             <button className="btn btn-ghost btn-sm" disabled={i === 0} onClick={() => setList(list.map((x, j) => (j === i - 1 ? list[i] : j === i ? list[i - 1] : x)), i - 1)}>
-              <Icon name="arrowL" size={16} /> Earlier
+              <Icon name="arrowL" size={16} /> {t("Earlier")}
             </button>
             <button className="btn btn-ghost btn-sm" disabled={i === list.length - 1} onClick={() => setList(list.map((x, j) => (j === i + 1 ? list[i] : j === i ? list[i + 1] : x)), i + 1)}>
-              Later <Icon name="arrowR" size={16} />
+              {t("Later")} <Icon name="arrowR" size={16} />
             </button>
             <button className="btn btn-ghost btn-sm" onClick={() => add({ ...current, id: uid() })}>
-              <Icon name="copy" size={16} /> Copy
+              <Icon name="copy" size={16} /> {t("Copy")}
             </button>
             <button className="btn btn-ghost btn-sm danger-hover" disabled={list.length < 2} onClick={() => setList(list.filter((_, j) => j !== i), i > 0 ? i - 1 : 0)}>
-              <Icon name="trash" size={16} /> Delete
+              <Icon name="trash" size={16} /> {t("Delete")}
             </button>
           </div>
         </section>
       )}
-      {picking && <LibraryModal title={target.isStage ? "Add a background" : `Add an ${word}`} items={choices} onPick={add} onClose={() => setPicking(false)} />}
+      {picking && <LibraryModal title={target.isStage ? t("Add a background") : t("Add an outfit")} items={choices} onPick={add} onClose={() => setPicking(false)} />}
       {painting !== null && (
         <Suspense fallback={<div className="paint" aria-busy />}>
           <PaintEditor
-            title={painting === "new" ? `New ${word}` : `${list[painting]?.name ?? word}`}
+            title={painting === "new" ? (target.isStage ? t("New background") : t("New outfit")) : `${list[painting]?.name ?? word}`}
             stage={target.isStage}
             initial={painting === "new" ? null : docFor(list[painting] ?? null, target.isStage)}
             onCancel={() => setPainting(null)}
             onDone={(doc) => {
               const { svg, cx, cy } = docToSvg(doc, !target.isStage);
-              if (painting === "new") add({ id: uid(), name: "drawing", svg, cx, cy, paint: doc });
+              if (painting === "new") add({ id: uid(), name: t("drawing"), svg, cx, cy, paint: doc });
               else setList(list.map((x, j) => (j === painting ? { id: x.id, name: x.name, svg, cx, cy, paint: doc } : x)), painting);
               setPainting(null);
             }}
@@ -243,17 +253,17 @@ export function SoundsTab({ target, onChange }: { target: Target; onChange: (t: 
       const chunks: Blob[] = [];
       rec.ondataavailable = (e) => chunks.push(e.data);
       rec.onstop = async () => {
-        stream.getTracks().forEach((t) => t.stop());
+        stream.getTracks().forEach((track) => track.stop());
         setRecording(null);
         const blob = new Blob(chunks, { type: rec.mimeType });
-        if (blob.size > 2_000_000) return toast("That recording is too long. Keep it under about a minute.", "error");
-        add({ id: uid(), name: "recording", data: await toData(blob) });
+        if (blob.size > 2_000_000) return toast(t("That recording is too long. Keep it under about a minute."), "error");
+        add({ id: uid(), name: t("recording"), data: await toData(blob) });
       };
       rec.start();
       setRecording(rec);
       setTimeout(() => rec.state === "recording" && rec.stop(), 30000);
     } catch {
-      toast("The microphone isn't available.", "error");
+      toast(t("The microphone isn't available."), "error");
     }
   };
 
@@ -261,13 +271,13 @@ export function SoundsTab({ target, onChange }: { target: Target; onChange: (t: 
     <div className="assets is-sounds">
       <div className="toolbar asset-bar">
         <button className="btn btn-primary btn-sm" onClick={() => setPicking(true)}>
-          <Icon name="plus" size={16} /> Add a sound
+          <Icon name="plus" size={16} /> {t("Add a sound")}
         </button>
         <button className={`btn btn-sm ${recording ? "btn-danger" : "btn-ghost"}`} onClick={record}>
-          {recording ? "■ Stop recording" : "● Record"}
+          {recording ? `■ ${t("Stop recording")}` : `● ${t("Record")}`}
         </button>
         <button className="btn btn-ghost btn-sm" onClick={() => file.current?.click()}>
-          <Icon name="upload" size={16} /> Upload a sound
+          <Icon name="upload" size={16} /> {t("Upload a sound")}
         </button>
         <input
           ref={file}
@@ -278,41 +288,41 @@ export function SoundsTab({ target, onChange }: { target: Target; onChange: (t: 
             const f = e.target.files?.[0];
             e.target.value = "";
             if (!f) return;
-            if (f.size > 2_000_000) return toast("That sound file is too big (2 MB at most).", "error");
+            if (f.size > 2_000_000) return toast(t("That sound file is too big (2 MB at most)."), "error");
             add({ id: uid(), name: f.name.replace(/\.[^.]+$/, "").slice(0, 40), data: await toData(f) });
           }}
         />
       </div>
-      <ol className="sound-list" aria-label="Sounds">
+      <ol className="sound-list" aria-label={t("Sounds")}>
         {list.map((s, i) => (
           <li key={s.id} className="sound-tile">
-            <button className="icon-btn" aria-label={`Play ${s.name}`} onClick={() => play(s)}>
+            <button className="icon-btn" aria-label={t("Play {title}", { title: s.name })} onClick={() => play(s)}>
               <Icon name="play" size={18} />
             </button>
-            <input className="sound-name" value={s.name} aria-label="Sound name" onChange={(e) => setList(list.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))} />
-            <button className="icon-btn icon-btn-sm danger-hover" aria-label="Delete" onClick={() => setList(list.filter((_, j) => j !== i))}>
+            <input className="sound-name" value={s.name} aria-label={t("Sound name")} onChange={(e) => setList(list.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))} />
+            <button className="icon-btn icon-btn-sm danger-hover" aria-label={t("Delete")} onClick={() => setList(list.filter((_, j) => j !== i))}>
               <Icon name="trash" size={16} />
             </button>
           </li>
         ))}
       </ol>
       {picking && (
-        <Modal title="Add a sound" onClose={() => setPicking(false)}>
+        <Modal title={t("Add a sound")} onClose={() => setPicking(false)}>
           <ul className="sound-lib">
             {SOUND_IDS.map((id) => (
               <li key={id}>
-                <button className="icon-btn" aria-label={`Listen to ${SOUNDS[id].name}`} onClick={() => play({ id, name: id, synth: id })}>
+                <button className="icon-btn" aria-label={t("Listen to {name}", { name: t(SOUNDS[id].name) })} onClick={() => play({ id, name: id, synth: id })}>
                   <Icon name="play" size={18} />
                 </button>
-                <span className="grow">{SOUNDS[id].name}</span>
+                <span className="grow">{t(SOUNDS[id].name)}</span>
                 <button
                   className="btn btn-soft btn-sm"
                   onClick={() => {
-                    add({ id: uid(), name: SOUNDS[id].name, synth: id });
+                    add({ id: uid(), name: t(SOUNDS[id].name), synth: id });
                     setPicking(false);
                   }}
                 >
-                  Add
+                  {t("Add")}
                 </button>
               </li>
             ))}

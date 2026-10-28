@@ -1,6 +1,7 @@
 import { registerContinuousToolbox } from "@blockly/continuous-toolbox";
 import * as Blockly from "blockly/core";
 import * as En from "blockly/msg/en";
+import * as Fr from "blockly/msg/fr";
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import type { CodeProject, Target } from "../../code/types";
 import { CATEGORIES, ctx, glyphSvg, registerBlocks, blockTheme } from "./blocks";
@@ -9,6 +10,7 @@ import { editProcedure, myBlocksFlyout, procCtx, registerProcedures, watchDefini
 import { searchBlocks } from "./search";
 import { GROUPS, toolboxFor, variablesFlyout } from "./toolbox";
 import type { DialogRequest } from "./Dialogs";
+import { getLang, t } from "../i18n";
 
 export interface Prefs {
   /** Size of the editor's text and buttons. */
@@ -52,13 +54,14 @@ interface Props {
 
 let setup = false;
 function setupBlockly() {
-  if (setup) return;
-  setup = true;
-  Blockly.setLocale(En as unknown as Record<string, string>);
-  registerContinuousToolbox();
-  registerRailRenderer();
+  // Blockly's own menus (duplicate, delete, undo…) in the studio's language; Game Lab's blocks follow.
+  Blockly.setLocale((getLang() === "fr" ? Fr : En) as unknown as Record<string, string>);
   registerBlocks();
   registerProcedures();
+  if (setup) return;
+  setup = true;
+  registerContinuousToolbox();
+  registerRailRenderer();
 }
 
 /**
@@ -93,8 +96,8 @@ function showScripts(w: Blockly.WorkspaceSvg) {
  * categories are hung on branches by algorithm step: When, Do, Decide & repeat,
  * Check, Remember.
  */
-const CATEGORY_BY_NAME = new Map(Object.entries(CATEGORIES).map(([key, c]) => [c.name, key]));
 function decorateToolbox(host: HTMLElement) {
+  const CATEGORY_BY_NAME = new Map(Object.entries(CATEGORIES).map(([key, c]) => [t(c.name), key]));
   host.querySelectorAll(".tb-group").forEach((g) => g.remove());
   const rows = [...host.querySelectorAll<HTMLElement>(".blocklyToolboxCategory")];
   rows.forEach((row) => {
@@ -113,7 +116,7 @@ function decorateToolbox(host: HTMLElement) {
     if (row === shown[0] && group >= 0) {
       const head = document.createElement("div");
       head.className = "tb-group";
-      head.textContent = `${group + 1} · ${GROUPS[group].name}`;
+      head.textContent = `${group + 1} · ${t(GROUPS[group].name)}`;
       head.setAttribute("aria-hidden", "true");
       (row.parentElement?.classList.contains("blocklyToolboxCategoryContainer") ? row.parentElement : row).before(head);
     }
@@ -258,7 +261,7 @@ export const BlocksPane = forwardRef<BlocksApi, Props>(function BlocksPane(props
       renderer: "rail",
       theme,
       // The real toolbox goes in once the Variables / My Blocks callbacks exist (load()).
-      toolbox: { kind: "categoryToolbox", contents: [{ kind: "category", name: "Move", categorystyle: "motion_category", contents: [] }] } as unknown as Blockly.utils.toolbox.ToolboxInfo,
+      toolbox: { kind: "categoryToolbox", contents: [{ kind: "category", name: t("Move"), categorystyle: "motion_category", contents: [] }] } as unknown as Blockly.utils.toolbox.ToolboxInfo,
       plugins: phone ? {} : { flyoutsVerticalToolbox: "ContinuousFlyout", metricsManager: "ContinuousMetrics", toolbox: "ContinuousToolbox" },
       horizontalLayout: phone,
       toolboxPosition: "start",
@@ -283,8 +286,8 @@ export const BlocksPane = forwardRef<BlocksApi, Props>(function BlocksPane(props
         new Promise((resolve) =>
           propsRef.current.ask({
             kind: "prompt",
-            title: "New message",
-            label: "Message name",
+            title: t("New message"),
+            label: t("Message name"),
             value: "",
             resolve: (name) => {
               if (name) propsRef.current.onBroadcast(name);
@@ -295,16 +298,16 @@ export const BlocksPane = forwardRef<BlocksApi, Props>(function BlocksPane(props
     };
     procCtx.edit = (proc) => new Promise((resolve) => propsRef.current.ask({ kind: "procedure", proc, resolve }));
     Blockly.dialog.setPrompt((message, defaultValue, callback) => propsRef.current.ask({ kind: "prompt", title: message, label: message, value: defaultValue, resolve: callback }));
-    Blockly.dialog.setConfirm((message, callback) => propsRef.current.ask({ kind: "confirm", title: "Are you sure?", text: message, resolve: callback }));
+    Blockly.dialog.setConfirm((message, callback) => propsRef.current.ask({ kind: "confirm", title: t("Are you sure?"), text: message, resolve: callback }));
 
     const makeVar = (list: boolean) => {
       const p = propsRef.current.project();
-      const t = propsRef.current.target;
-      const taken = [...p.stage.variables, ...p.stage.lists, ...t.variables, ...t.lists].map((v) => v.name);
+      const target = propsRef.current.target;
+      const taken = [...p.stage.variables, ...p.stage.lists, ...target.variables, ...target.lists].map((v) => v.name);
       propsRef.current.ask({
         kind: "variable",
         list,
-        stage: t.isStage,
+        stage: target.isStage,
         taken,
         resolve: (r) => {
           if (!r) return;
@@ -319,9 +322,9 @@ export const BlocksPane = forwardRef<BlocksApi, Props>(function BlocksPane(props
     w.registerButtonCallback("MAKE_BLOCK", () => editProcedure(w, null));
     w.registerToolboxCategoryCallback("SCRATCH_VARIABLES", () => {
       const p = propsRef.current.project();
-      const t = propsRef.current.target;
+      const target = propsRef.current.target;
       const sorted = <T extends { name: string }>(l: T[]) => [...l].sort((a, b) => a.name.localeCompare(b.name));
-      return variablesFlyout(sorted([...p.stage.variables, ...(t.isStage ? [] : t.variables)]), sorted([...p.stage.lists, ...(t.isStage ? [] : t.lists)]));
+      return variablesFlyout(sorted([...p.stage.variables, ...(target.isStage ? [] : target.variables)]), sorted([...p.stage.lists, ...(target.isStage ? [] : target.lists)]));
     });
     w.registerToolboxCategoryCallback("SCRATCH_PROCEDURES", () => myBlocksFlyout(w));
     watchDefinitions(w);
@@ -513,7 +516,7 @@ export const BlocksPane = forwardRef<BlocksApi, Props>(function BlocksPane(props
       const id = f?.VARIABLE?.id || f?.LIST?.id;
       return id ? names.get(id) || "" : "";
     });
-    flyout.show((found.length ? [{ kind: "label", text: `Blocks for “${q.trim()}”` }, ...found] : [{ kind: "label", text: `No blocks for “${q.trim()}”` }]) as unknown as Blockly.utils.toolbox.FlyoutItemInfoArray);
+    flyout.show((found.length ? [{ kind: "label", text: t("Blocks for “{query}”", { query: q.trim() }) }, ...found] : [{ kind: "label", text: t("No blocks for “{query}”", { query: q.trim() }) }]) as unknown as Blockly.utils.toolbox.FlyoutItemInfoArray);
   };
 
   // Keep the search box at the workspace's top-left corner, clear of the palette.
@@ -548,19 +551,19 @@ export const BlocksPane = forwardRef<BlocksApi, Props>(function BlocksPane(props
           <circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" strokeWidth="2.2" />
           <path d="M15.5 15.5L20 20" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
         </svg>
-        <input ref={searchBox} type="search" value={query} placeholder="Find a block" aria-label="Find a block" onChange={(e) => search(e.target.value)} onKeyDown={(e) => e.key === "Escape" && (search(""), e.currentTarget.blur())} />
+        <input ref={searchBox} type="search" value={query} placeholder={t("Find a block")} aria-label={t("Find a block")} onChange={(e) => search(e.target.value)} onKeyDown={(e) => e.key === "Escape" && (search(""), e.currentTarget.blur())} />
       </label>
       <button
         type="button"
         className="tidy-btn"
         style={phone ? { left: 200, bottom: 18 } : { left: corner.left + 10, bottom: 18 }}
         onClick={() => ws.current && tidy(ws.current)}
-        title="Put scripts in tidy columns, by what starts them"
+        title={t("Put scripts in tidy columns, by what starts them")}
       >
         <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden>
           <path d="M4.5 5h6v5h-6zM13.5 5h6v8h-6zM4.5 13h6v6h-6zM13.5 16h6v3h-6z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
         </svg>
-        Tidy
+        {t("Tidy")}
       </button>
       {bubble && (
         <div className="report-bubble" style={{ left: bubble.x, top: bubble.y }} role="status">

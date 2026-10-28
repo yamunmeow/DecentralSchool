@@ -6,6 +6,7 @@ import { uid } from "../../shared/random";
 import { Critter } from "../Critter";
 import { projects as table } from "../db";
 import { go, useApp } from "../store";
+import { dateText, t, tn } from "../i18n";
 import { Empty, Icon, Modal } from "../ui";
 import { GameCard } from "../components/GameCard";
 import { projectFromFile } from "./files";
@@ -35,7 +36,7 @@ export function CodeHome() {
       if (skipped.size) setReport({ project, skipped: [...skipped] });
       else go(`code/${project.id}`);
     } catch (e) {
-      toast((e as Error).message || "Couldn't open that Scratch project.", "error");
+      toast((e as Error).message || t("Couldn't open that Scratch project."), "error");
     }
   };
 
@@ -51,13 +52,13 @@ export function CodeHome() {
           <img src={svgUrl(costumeSvg({ id: "", name: "", ref: { lib: "zo", id: "zo", pose: "wave" }, cx: 0, cy: 0 }))} alt="" width={96} height={120} />
         </div>
         <div className="hero-text">
-          <h1>Game Lab</h1>
+          <h1>{t("Game Lab")}</h1>
           <div className="toolbar">
-            <button className="btn btn-primary" onClick={() => open(newProject("Untitled"))}>
-              <Icon name="plus" size={18} /> New game
+            <button className="btn btn-primary" onClick={() => open(newProject(t("Untitled")))}>
+              <Icon name="plus" size={18} /> {t("New game")}
             </button>
             <button className="btn btn-ghost" onClick={() => file.current?.click()}>
-              <Icon name="upload" size={18} /> Open a file
+              <Icon name="upload" size={18} /> {t("Open a file")}
             </button>
             <input
               ref={file}
@@ -72,9 +73,9 @@ export function CodeHome() {
                 try {
                   const p = await projectFromFile(f);
                   const taken = list?.some((x) => x.id === p.id);
-                  await open(taken ? { ...p, id: uid(), title: `${p.title} (copy)` } : p);
+                  await open(taken ? { ...p, id: uid(), title: t("{title} (copy)", { title: p.title }) } : p);
                 } catch {
-                  toast("That file isn't a Game Lab game.", "error");
+                  toast(t("That file isn't a Game Lab game."), "error");
                 }
               }}
             />
@@ -83,16 +84,16 @@ export function CodeHome() {
       </section>
 
       <div className="page-head">
-        <h2 className="section-title">Start from an example</h2>
+        <h2 className="section-title">{t("Start from an example")}</h2>
       </div>
       <div className="play-grid">
         {STARTERS.map((s) => (
-          <GameCard key={s.id} title={s.title} blurb={s.blurb} tags={["Example"]} cover={{ img: s.thumb(), framed: true }} tint="mint" badge={{ label: "Open", icon: "edit" }} onOpen={() => open(s.make())} />
+          <GameCard key={s.id} title={t(s.title)} blurb={t(s.blurb)} tags={[t("Example")]} cover={{ img: s.thumb(), framed: true }} tint="mint" badge={{ label: t("Open"), icon: "edit" }} onOpen={() => open(s.make())} />
         ))}
       </div>
 
       <div className="page-head">
-        <h2 className="section-title">My games</h2>
+        <h2 className="section-title">{t("My games")}</h2>
       </div>
       {list && list.length ? (
         <div className="play-grid">
@@ -103,16 +104,16 @@ export function CodeHome() {
               <GameCard
                 key={p.id}
                 title={p.title}
-                blurb={`${p.sprites.length} sprite${p.sprites.length === 1 ? "" : "s"} · ${new Date(p.updated).toLocaleDateString()}`}
-                tags={["Game Lab"]}
+                blurb={`${tn(p.sprites.length, "{n} sprite", "{n} sprites")} · ${dateText(p.updated)}`}
+                tags={[t("Game Lab")]}
                 cover={thumb ? { img: svgUrl(costumeSvg(thumb)), framed: true } : { emoji: "🎮" }}
                 tint="mint"
                 href={`#/code/${p.id}`}
-                badge={{ label: "Open", icon: "edit" }}
+                badge={{ label: t("Open"), icon: "edit" }}
                 actions={
                   <>
                     <span className="spacer" />
-                    <button className="icon-btn icon-btn-sm danger-hover" aria-label={`Delete ${p.title}`} onClick={() => setDeleting(p)}>
+                    <button className="icon-btn icon-btn-sm danger-hover" aria-label={t("Delete {name}", { name: p.title })} onClick={() => setDeleting(p)}>
                       <Icon name="trash" size={18} />
                     </button>
                   </>
@@ -123,24 +124,24 @@ export function CodeHome() {
         </div>
       ) : list ? (
         <div className="card is-quiet">
-          <Empty critter={<Critter kind="dino" color="mint" size={84} mood="happy" />}>No games yet.</Empty>
+          <Empty critter={<Critter kind="dino" color="mint" size={84} mood="happy" />}>{t("No games yet.")}</Empty>
         </div>
       ) : null}
 
       {report && (
         <Modal
-          title="Opened, with some blocks left out"
+          title={t("Opened, with some blocks left out")}
           onClose={() => go(`code/${report.project.id}`)}
           footer={
             <>
               <span className="spacer" />
               <button className="btn btn-primary" onClick={() => go(`code/${report.project.id}`)}>
-                Open it
+                {t("Open it")}
               </button>
             </>
           }
         >
-          <p>Game Lab doesn't have these Scratch blocks yet, so they were left out:</p>
+          <p>{t("Game Lab doesn't have these Scratch blocks yet, so they were left out:")}</p>
           <ul className="skipped-list">
             {report.skipped.map(([op, n]) => (
               <li key={op}>
@@ -153,13 +154,13 @@ export function CodeHome() {
 
       {deleting && (
         <Modal
-          title={`Delete “${deleting.title}”?`}
+          title={t("Delete “{title}”?", { title: deleting.title })}
           onClose={() => setDeleting(null)}
           footer={
             <>
               <span className="spacer" />
               <button className="btn btn-ghost" onClick={() => setDeleting(null)}>
-                Keep it
+                {t("Keep it")}
               </button>
               <button
                 className="btn btn-danger"
@@ -169,12 +170,12 @@ export function CodeHome() {
                   setDeleting(null);
                 }}
               >
-                Delete
+                {t("Delete")}
               </button>
             </>
           }
         >
-          <p>Files and apps you already shared keep working.</p>
+          <p>{t("Files and apps you already shared keep working.")}</p>
         </Modal>
       )}
     </div>

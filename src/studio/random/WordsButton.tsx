@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Word } from "../../shared/types";
 import { useApp } from "../store";
+import { t, tc, tn } from "../i18n";
 import { Field, Icon, Modal } from "../ui";
 import { fetchWords, WORD_TOPICS } from "./sources";
 
@@ -19,10 +20,10 @@ export function WordsButton({ onAdd }: { onAdd: (w: Word[]) => void }) {
     setError("");
     try {
       const w = await fetchWords(topic.trim(), count);
-      if (!w.length) throw new Error("No common words found for that topic. Try a simpler one.");
+      if (!w.length) throw new Error(t("No common words found for that topic. Try a simpler one."));
       setFound(w);
     } catch (e) {
-      setError(e instanceof Error && e.message !== "Failed to fetch" ? e.message : "Couldn't reach the word service. Check the internet connection.");
+      setError(e instanceof Error && e.message !== "Failed to fetch" ? e.message : t("Couldn't reach the word service. Check the internet connection."));
     } finally {
       setBusy(false);
     }
@@ -31,16 +32,16 @@ export function WordsButton({ onAdd }: { onAdd: (w: Word[]) => void }) {
   return (
     <>
       <button type="button" className="btn btn-ghost btn-sm" onClick={() => setOpen(true)}>
-        <Icon name="dice" size={16} /> Random words
+        <Icon name="dice" size={16} /> {t("Random words")}
       </button>
       {open && (
         <Modal
-          title="Random words"
+          title={tc("words", "Random words")}
           onClose={() => setOpen(false)}
           footer={
             <>
               <button type="button" className="btn btn-ghost" onClick={get} disabled={busy || !topic.trim()}>
-                <Icon name="shuffle" size={18} /> {busy ? "Getting…" : found ? "Other words" : "Get words"}
+                <Icon name="shuffle" size={18} /> {busy ? t("Getting…") : found ? t("Other words") : t("Get words")}
               </button>
               <span className="spacer" />
               <button
@@ -49,25 +50,25 @@ export function WordsButton({ onAdd }: { onAdd: (w: Word[]) => void }) {
                 disabled={!found?.length}
                 onClick={() => {
                   onAdd(found!);
-                  toast(`Added ${found!.length} words`);
+                  toast(tn(found!.length, "Added {n} word", "Added {n} words"));
                   setOpen(false);
                 }}
               >
-                Add {found?.length || ""} words
+                {found?.length ? tn(found.length, "Add {n} word", "Add {n} words") : t("Add words")}
               </button>
             </>
           }
         >
           <div className="form-grid">
-            <Field label="Topic">
+            <Field label={tc("words", "Topic")}>
               <input list="word-topics-v" value={topic} onChange={(e) => (setTopic(e.target.value), setFound(null))} />
               <datalist id="word-topics-v">
-                {WORD_TOPICS.map((t) => (
-                  <option key={t} value={t} />
+                {WORD_TOPICS.map((topic) => (
+                  <option key={topic} value={topic} />
                 ))}
               </datalist>
             </Field>
-            <Field label="How many">
+            <Field label={t("How many")}>
               <select value={count} onChange={(e) => setCount(Number(e.target.value))}>
                 {[8, 12, 20, 30].map((n) => (
                   <option key={n}>{n}</option>
@@ -86,7 +87,7 @@ export function WordsButton({ onAdd }: { onAdd: (w: Word[]) => void }) {
                   </li>
                 ))}
               </ol>
-              <p className="muted">From Datamuse; meanings from Wiktionary and WordNet. Check them before class.</p>
+              <p className="muted">{t("From Datamuse; meanings from Wiktionary and WordNet. Check them before class.")}</p>
             </div>
           )}
         </Modal>

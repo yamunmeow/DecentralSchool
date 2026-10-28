@@ -1,4 +1,5 @@
 import type { Question, Word } from "../../shared/types";
+import { getLang, locale, t } from "../i18n";
 import countries from "./countries.json";
 
 /**
@@ -22,6 +23,7 @@ export interface Fetched {
   offline?: boolean;
 }
 
+// Labels are English; show them through t(). Trivia questions themselves only come in English.
 export const TRIVIA_CATEGORIES: [number, string][] = [
   [9, "General knowledge"],
   [17, "Science & nature"],
@@ -103,10 +105,10 @@ async function trivia(src: Extract<Source, { kind: "trivia" }>, n: number): Prom
     res = await ask(token);
   }
   if (res.response_code === 1 && n > 10) return trivia(src, 10);
-  if (res.response_code !== 0) throw new Error("The trivia service has no more questions for that choice right now.");
+  if (res.response_code !== 0) throw new Error(t("The trivia service has no more questions for that choice right now."));
   const d = decodeURIComponent;
   return {
-    credit: "Questions from the Open Trivia Database (opentdb.com), CC BY-SA 4.0",
+    credit: t("Questions from the Open Trivia Database (opentdb.com), CC BY-SA 4.0"),
     questions: res.results.map((r) =>
       r.type === "boolean" ? { type: "tf", q: d(r.question), answer: d(r.correct_answer) === "True" } : mcq(d(r.question), d(r.correct_answer), r.incorrect_answers.map(d)),
     ),
@@ -118,6 +120,8 @@ async function trivia(src: Extract<Source, { kind: "trivia" }>, n: number): Prom
 interface Country {
   name: string;
   capital: string;
+  nameFr: string;
+  capitalFr: string;
   region: string;
   subregion: string;
   code: string;
@@ -126,9 +130,11 @@ interface Country {
   landlocked: boolean;
 }
 
-const COUNTRIES: Country[] = (countries.rows as unknown[][]).map(([name, capital, region, subregion, code, currency, , area, landlocked]) => ({
+const COUNTRIES: Country[] = (countries.rows as unknown[][]).map(([name, capital, region, subregion, code, currency, , area, landlocked, nameFr, capitalFr]) => ({
   name: String(name),
   capital: String(capital),
+  nameFr: String(nameFr || name),
+  capitalFr: String(capitalFr || capital),
   region: String(region),
   subregion: String(subregion),
   code: String(code),
@@ -140,30 +146,64 @@ const COUNTRIES: Country[] = (countries.rows as unknown[][]).map(([name, capital
 /** A country code as its flag emoji (two regional-indicator letters). */
 export const flag = (code: string) => String.fromCodePoint(...[...code.toUpperCase()].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65));
 
+/** English currency names → French ones, from the browser's own (CLDR) names. */
+let moneyFr: Map<string, string> | null = null;
+// The dataset's names that differ from the browser's English ones.
+const MONEY_CODES: Record<string, string> = {
+  "eastern caribbean dollar": "XCD", "bosnia and herzegovina convertible mark": "BAM", "botswana pula": "BWP", "united states dollar": "USD", dalasi: "GMD", lari: "GEL",
+  "guyanese dollar": "GYD", "kyrgyzstani som": "KGS", "lao kip": "LAK", "mongolian tögrög": "MNT", "burmese kyat": "MMK", denar: "MKD", "paraguayan guaraní": "PYG",
+  "polish złoty": "PLN", "samoan tālā": "WST", "são tomé and príncipe dobra": "STN", "trinidad and tobago dollar": "TTD", "turkmenistan manat": "TMT",
+  "uzbekistani soʻm": "UZS", "venezuelan bolívar soberano": "VES", "vietnamese đồng": "VND",
+};
+function frenchMoney(en: string): string {
+  if (!moneyFr) {
+    moneyFr = new Map();
+    try {
+      const enNames = new Intl.DisplayNames(["en"], { type: "currency" });
+      const frNames = new Intl.DisplayNames(["fr"], { type: "currency" });
+      for (const code of Intl.supportedValuesOf("currency")) moneyFr.set(String(enNames.of(code)).toLowerCase(), String(frNames.of(code)));
+      for (const [name, code] of Object.entries(MONEY_CODES)) moneyFr.set(name, String(frNames.of(code)));
+    } catch {
+      /* an older browser: currency questions are left out in French */
+    }
+  }
+  return moneyFr.get(en.toLowerCase()) || "";
+}
+
+/**
+ * In French the country's name comes first ("Bénin : …"), so no question needs the
+ * right article (du Bénin, de la France, des Comores).
+ */
 function countryQuestion(topic: Exclude<CountryTopic, "mixed">, c: Country, pool: Country[]): Question | null {
   const near = pool.filter((o) => o !== c && o.region === c.region);
   const others = (near.length >= 3 ? near : pool.filter((o) => o !== c)).map((o) => o);
+  const fr = getLang() === "fr";
+  const name = (x: Country) => (fr ? x.nameFr : x.name);
+  const capital = (x: Country) => (fr ? x.capitalFr : x.capital);
+  const money = (x: Country) => (fr ? (x.currency ? frenchMoney(x.currency) : "") : x.currency);
   switch (topic) {
     case "capital":
-      return mcq(`What is the capital of ${c.name}?`, c.capital, shuffle(others).map((o) => o.capital));
+      return mcq(fr ? `${name(c)} : quelle est la capitale de ce pays ?` : `What is the capital of ${c.name}?`, capital(c), shuffle(others).map(capital));
     case "country":
-      return mcq(`${c.capital} is the capital of which country?`, c.name, shuffle(others).map((o) => o.name));
+      return mcq(fr ? `${capital(c)} est la capitale de quel pays ?` : `${c.capital} is the capital of which country?`, name(c), shuffle(others).map(name));
     case "continent":
-      return mcq(`Which part of the world is ${c.name} in?`, c.region, REGIONS);
+      return mcq(fr ? `${name(c)} : dans quelle partie du monde se trouve ce pays ?` : `Which part of the world is ${c.name} in?`, t(c.region), REGIONS.map((r) => t(r)));
     case "flag":
-      return mcq(`Which country has this flag? ${flag(c.code)}`, c.name, shuffle(others).map((o) => o.name));
+      return mcq(fr ? `À quel pays appartient ce drapeau ? ${flag(c.code)}` : `Which country has this flag? ${flag(c.code)}`, name(c), shuffle(others).map(name));
     case "currency": {
-      if (!c.currency) return null;
-      const money = shuffle(pool.filter((o) => o.currency && o.currency !== c.currency).map((o) => o.currency));
-      return mcq(`Which money is used in ${c.name}?`, c.currency, money);
+      if (!money(c)) return null;
+      const wrong = shuffle(pool.map(money).filter((m) => m && m !== money(c)));
+      return mcq(fr ? `${name(c)} : quelle monnaie utilise-t-on dans ce pays ?` : `Which money is used in ${c.name}?`, money(c), wrong);
     }
     case "landlocked":
-      return { type: "tf", q: `${c.name} has a coast on the sea or ocean.`, answer: !c.landlocked, explain: c.landlocked ? `${c.name} is landlocked: it has no coast.` : undefined };
+      return fr
+        ? { type: "tf", q: `${name(c)} : ce pays a accès à la mer ou à l'océan.`, answer: !c.landlocked, explain: c.landlocked ? "Ce pays est enclavé : il n'a aucune côte." : undefined }
+        : { type: "tf", q: `${c.name} has a coast on the sea or ocean.`, answer: !c.landlocked, explain: c.landlocked ? `${c.name} is landlocked: it has no coast.` : undefined };
     case "bigger": {
       const o = pick(others);
       if (!o || o.area === c.area) return null;
       const big = c.area > o.area ? c : o;
-      return mcq(`Which country is bigger?`, big.name, [c === big ? o.name : c.name], `${big.name}: ${big.area.toLocaleString()} km²`);
+      return mcq(fr ? "Quel est le pays le plus grand ?" : `Which country is bigger?`, name(big), [name(c === big ? o : c)], `${name(big)} : ${big.area.toLocaleString(locale())} km²`.replace(/^([^:]+) :/, fr ? "$1 :" : "$1:"));
     }
   }
 }
@@ -177,7 +217,7 @@ function countryQuiz(src: Extract<Source, { kind: "countries" }>, n: number): Fe
     const q = countryQuestion(src.topic === "mixed" ? pick(topics) : src.topic, c, pool.length >= 4 ? pool : COUNTRIES);
     if (q) out.push(q);
   }
-  return { questions: out, credit: "Country facts from world-countries by Mohammed Le Doze, ODbL-1.0" };
+  return { questions: out, credit: t("Country facts from world-countries by Mohammed Le Doze, ODbL-1.0") };
 }
 
 /* ---------- words (Datamuse, definitions from Wiktionary/WordNet) ---------- */
@@ -210,8 +250,8 @@ function wordQuiz(words: Word[], n: number): Question[] {
     .slice(0, n)
     .map((w, i) =>
       i % 2
-        ? mcq(`What does “${w.word}” mean?`, w.meaning, words.map((o) => o.meaning))
-        : mcq(`Which word means “${w.meaning}”?`, w.word, words.map((o) => o.word)),
+        ? mcq(t("What does “{word}” mean?", { word: w.word }), w.meaning, words.map((o) => o.meaning))
+        : mcq(t("Which word means “{meaning}”?", { meaning: w.meaning }), w.word, words.map((o) => o.word)),
     );
 }
 
@@ -228,15 +268,15 @@ export async function fetchQuestions(src: Source, n = 20): Promise<Fetched> {
   try {
     const words = await fetchWords(src.topic, n + 4);
     if (words.length < 4) throw new Error("too few");
-    return { questions: wordQuiz(words, n), credit: "Words from Datamuse (datamuse.com), meanings from Wiktionary and WordNet" };
+    return { questions: wordQuiz(words, n), credit: t("Words from Datamuse (datamuse.com), meanings from Wiktionary and WordNet") };
   } catch {
-    return { questions: wordQuiz(await wordsOffline(), n), credit: "Words from Word Quest", offline: true };
+    return { questions: wordQuiz(await wordsOffline(), n), credit: t("Words from Word Quest"), offline: true };
   }
 }
 
 export const describe = (src: Source) =>
   src.kind === "trivia"
-    ? `${TRIVIA_CATEGORIES.find(([id]) => id === src.category)?.[1] || "Trivia"}${src.difficulty ? `, ${src.difficulty}` : ""}`
+    ? `${t(TRIVIA_CATEGORIES.find(([id]) => id === src.category)?.[1] || "Trivia")}${src.difficulty ? `, ${t(src.difficulty)}` : ""}`
     : src.kind === "countries"
-      ? `${COUNTRY_TOPICS.find(([t]) => t === src.topic)?.[1]}${src.region ? `, ${src.region}` : ""}`
-      : `Words: ${src.topic}`;
+      ? `${t(COUNTRY_TOPICS.find(([topic]) => topic === src.topic)?.[1] || "")}${src.region ? `, ${t(src.region)}` : ""}`
+      : t("Words: {topic}", { topic: t(src.topic) });

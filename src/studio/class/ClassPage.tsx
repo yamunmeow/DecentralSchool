@@ -6,6 +6,7 @@ import { challenges as challengeTable, handins as handinTable, projects } from "
 import { slug } from "../exporting";
 import { getRole, setName, setRole, useRole } from "../role";
 import { go, useApp } from "../store";
+import { dateText, t, tc, tn } from "../i18n";
 import { Empty, Field, Icon, Modal } from "../ui";
 import { ZoPic } from "../learn/Zo";
 import { galleryFile, thumbOf } from "./files";
@@ -52,8 +53,8 @@ function TeacherClass() {
       }
     }
     reload();
-    if (added) toast(`Added ${added} file${added === 1 ? "" : "s"}`);
-    if (skipped) toast(`${skipped} file${skipped === 1 ? " wasn't a hand-in" : "s weren't hand-ins"}.`, "error");
+    if (added) toast(tn(added, "Added {n} file", "Added {n} files"));
+    if (skipped) toast(tn(skipped, "{n} file wasn't a hand-in.", "{n} files weren't hand-ins."), "error");
     if (added) setTab("handins");
   };
 
@@ -75,28 +76,28 @@ function TeacherClass() {
           <ZoPic outfit="teacher" pose="wave" size={84} />
         </div>
         <div className="hero-text">
-          <h1>Class</h1>
+          <h1>{t("Class")}</h1>
           <div className="toolbar">
             <button className="btn btn-primary" onClick={() => go("class/challenge/new")}>
-              <Icon name="plus" size={18} /> New challenge
+              <Icon name="plus" size={18} /> {t("New challenge")}
             </button>
             <button className="btn btn-ghost" onClick={() => file.current?.click()}>
-              <Icon name="upload" size={18} /> Add hand-ins
+              <Icon name="upload" size={18} /> {t("Add hand-ins")}
             </button>
             <input ref={file} type="file" multiple accept=".html,.htm,.json" hidden onChange={(e) => (e.target.files && importFiles(e.target.files), (e.target.value = ""))} />
           </div>
         </div>
       </section>
 
-      <nav className="seg seg-tabs class-tabs" aria-label="Class">
+      <nav className="seg seg-tabs class-tabs" aria-label={t("Class")}>
         <button className={tab === "challenges" ? "on" : ""} aria-pressed={tab === "challenges"} onClick={() => setTab("challenges")}>
-          Challenges <span className="count">{list.length}</span>
+          {t("Challenges")} <span className="count">{list.length}</span>
         </button>
         <button className={tab === "handins" ? "on" : ""} aria-pressed={tab === "handins"} onClick={() => setTab("handins")}>
-          Hand-ins {waiting > 0 ? <span className="count is-new">{waiting} new</span> : <span className="count">{inbox.length}</span>}
+          {t("Hand-ins")} {waiting > 0 ? <span className="count is-new">{t("{n} new", { n: waiting })}</span> : <span className="count">{inbox.length}</span>}
         </button>
         <button className={tab === "gallery" ? "on" : ""} aria-pressed={tab === "gallery"} onClick={() => setTab("gallery")}>
-          Gallery
+          {t("Gallery")}
         </button>
       </nav>
 
@@ -114,16 +115,16 @@ function TeacherClass() {
                     <span className="game-card-text">
                       <strong>{c.title}</strong>
                       <small>
-                        {c.steps.length} step{c.steps.length === 1 ? "" : "s"} · {got.length} hand-in{got.length === 1 ? "" : "s"}
+                        {tn(c.steps.length, "{n} step", "{n} steps")} · {tn(got.length, "{n} hand-in", "{n} hand-ins")}
                       </small>
                     </span>
                   </a>
                   <div className="game-card-actions">
                     <a className="btn btn-soft btn-sm" href={`#/class/challenge/${c.id}`}>
-                      <Icon name="edit" size={16} /> Open
+                      <Icon name="edit" size={16} /> {t("Open")}
                     </a>
                     <span className="spacer" />
-                    <button className="icon-btn icon-btn-sm danger-hover" aria-label={`Delete ${c.title}`} onClick={() => setDeleting(c)}>
+                    <button className="icon-btn icon-btn-sm danger-hover" aria-label={t("Delete {name}", { name: c.title })} onClick={() => setDeleting(c)}>
                       <Icon name="trash" size={18} />
                     </button>
                   </div>
@@ -133,7 +134,7 @@ function TeacherClass() {
           </div>
         ) : (
           <div className="card is-quiet">
-            <Empty critter={<ZoPic outfit="teacher" size={64} />}>No challenges yet.</Empty>
+            <Empty critter={<ZoPic outfit="teacher" size={64} />}>{t("No challenges yet.")}</Empty>
           </div>
         ))}
 
@@ -142,21 +143,21 @@ function TeacherClass() {
 
       {deleting && (
         <Modal
-          title={`Delete “${deleting.title}”?`}
+          title={t("Delete “{title}”?", { title: deleting.title })}
           onClose={() => setDeleting(null)}
           footer={
             <>
               <span className="spacer" />
               <button className="btn btn-ghost" onClick={() => setDeleting(null)}>
-                Keep it
+                {t("Keep it")}
               </button>
               <button className="btn btn-danger" onClick={async () => (await challengeTable.remove(deleting.id), setDeleting(null), reload())}>
-                Delete
+                {t("Delete")}
               </button>
             </>
           }
         >
-          <p>Students who already started keep their copy, and hand-ins stay.</p>
+          <p>{t("Students who already started keep their copy, and hand-ins stay.")}</p>
         </Modal>
       )}
     </div>
@@ -170,7 +171,7 @@ function Inbox({ inbox, challenges, reload }: { inbox: HandIn[]; challenges: Cha
   const [reviewing, setReviewing] = useState<HandIn | null>(null);
   const groups = useMemo(() => {
     const ids = [...new Set(inbox.map((h) => h.challengeId || "none"))];
-    return ids.map((id) => ({ id, title: challenges.find((c) => c.id === id)?.title || inbox.find((h) => (h.challengeId || "none") === id)?.challengeTitle || "Other games" }));
+    return ids.map((id) => ({ id, title: challenges.find((c) => c.id === id)?.title || inbox.find((h) => (h.challengeId || "none") === id)?.challengeTitle || t("Other games") }));
   }, [inbox, challenges]);
   const shown = inbox.filter((h) => filter === "all" || (h.challengeId || "none") === filter);
 
@@ -183,7 +184,7 @@ function Inbox({ inbox, challenges, reload }: { inbox: HandIn[]; challenges: Cha
   if (!inbox.length)
     return (
       <div className="card is-quiet">
-        <Empty critter={<ZoPic outfit="postal" size={64} />}>No hand-ins yet. Drop the files students send you here.</Empty>
+        <Empty critter={<ZoPic outfit="postal" size={64} />}>{t("No hand-ins yet. Drop the files students send you here.")}</Empty>
       </div>
     );
 
@@ -192,7 +193,7 @@ function Inbox({ inbox, challenges, reload }: { inbox: HandIn[]; challenges: Cha
       {groups.length > 1 && (
         <div className="label-chips">
           <button className={`chip-btn${filter === "all" ? " on" : ""}`} onClick={() => setFilter("all")}>
-            All
+            {t("All")}
           </button>
           {groups.map((g) => (
             <button key={g.id} className={`chip-btn${filter === g.id ? " on" : ""}`} onClick={() => setFilter(g.id)}>
@@ -211,23 +212,23 @@ function Inbox({ inbox, challenges, reload }: { inbox: HandIn[]; challenges: Cha
                 <strong>{h.student}</strong>
                 <span>{h.project.title}</span>
                 <small className="muted">
-                  {h.challengeTitle} · {new Date(h.at).toLocaleDateString()}
-                  {total > 0 && ` · ${h.done.length}/${total} steps`}
+                  {h.challengeTitle} · {dateText(h.at)}
+                  {total > 0 && ` · ${t("{done}/{all} steps", { done: h.done.length, all: total })}`}
                 </small>
                 {h.note && <q className="handin-note">{h.note}</q>}
               </div>
-              <span className={`status status-${h.feedback ? h.feedback.status : "new"}`}>{h.feedback ? (h.feedback.status === "approved" ? "Approved" : "Try again") : "New"}</span>
+              <span className={`status status-${h.feedback ? h.feedback.status : "new"}`}>{h.feedback ? (h.feedback.status === "approved" ? t("Approved") : t("Try again")) : t("New")}</span>
               <div className="handin-actions">
                 <button className="btn btn-soft btn-sm" onClick={() => setPlaying(h)}>
-                  <Icon name="play" size={16} /> Play
+                  <Icon name="play" size={16} /> {t("Play")}
                 </button>
                 <button className="btn btn-ghost btn-sm" onClick={() => setReviewing(h)}>
-                  <Icon name="star" size={16} /> Feedback
+                  <Icon name="star" size={16} /> {t("Feedback")}
                 </button>
                 <button className="btn btn-ghost btn-sm" onClick={() => openCopy(h)}>
-                  <Icon name="code" size={16} /> Blocks
+                  <Icon name="code" size={16} /> {t("Blocks")}
                 </button>
-                <button className="icon-btn icon-btn-sm danger-hover" aria-label={`Remove ${h.student}'s hand-in`} onClick={async () => (await handinTable.remove(h.id), reload())}>
+                <button className="icon-btn icon-btn-sm danger-hover" aria-label={t("Remove the hand-in from {name}", { name: h.student })} onClick={async () => (await handinTable.remove(h.id), reload())}>
                   <Icon name="trash" size={16} />
                 </button>
               </div>
@@ -248,7 +249,7 @@ function Inbox({ inbox, challenges, reload }: { inbox: HandIn[]; challenges: Cha
             await handinTable.put({ ...reviewing, feedback: f });
             reload();
             setReviewing({ ...reviewing, feedback: f });
-            toast("Feedback saved");
+            toast(t("Feedback saved"));
           }}
         />
       )}
@@ -268,16 +269,16 @@ function FeedbackModal({ h, onClose, onSave }: { h: HandIn; onClose: () => void;
 
   return (
     <Modal
-      title={`Feedback for ${h.student}`}
+      title={t("Feedback for {name}", { name: h.student })}
       onClose={onClose}
       footer={
         <>
           <span className="spacer" />
           <button className="btn btn-ghost" onClick={onClose}>
-            Close
+            {t("Close")}
           </button>
           <button className="btn btn-primary" onClick={() => onSave({ kind: "feedback", v: 1, handInId: h.id, challengeId: h.challengeId || "", stars, status, comment: comment.trim(), teacher: name, at: Date.now() })}>
-            Save
+            {t("Save")}
           </button>
         </>
       }
@@ -293,20 +294,20 @@ function FeedbackModal({ h, onClose, onSave }: { h: HandIn; onClose: () => void;
       )}
       <div className="seg">
         <button className={status === "approved" ? "on" : ""} aria-pressed={status === "approved"} onClick={() => setStatus("approved")}>
-          Approved
+          {t("Approved")}
         </button>
         <button className={status === "try-again" ? "on" : ""} aria-pressed={status === "try-again"} onClick={() => setStatus("try-again")}>
-          Try again
+          {t("Try again")}
         </button>
       </div>
-      <div className="star-pick" role="radiogroup" aria-label="Stars">
+      <div className="star-pick" role="radiogroup" aria-label={t("Stars")}>
         {[0, 1, 2, 3].map((n) => (
           <button key={n} className={stars === n ? "on" : ""} aria-pressed={stars === n} onClick={() => setStars(n)}>
-            {n ? "★".repeat(n) : "No stars"}
+            {n ? "★".repeat(n) : t("No stars")}
           </button>
         ))}
       </div>
-      <Field label="Comment">
+      <Field label={t("Comment")}>
         <textarea rows={3} value={comment} onChange={(e) => setComment(e.target.value)} />
       </Field>
       {saved && (
@@ -315,16 +316,16 @@ function FeedbackModal({ h, onClose, onSave }: { h: HandIn; onClose: () => void;
             className="btn btn-soft btn-sm"
             onClick={() =>
               navigator.clipboard.writeText(link).then(
-                () => toast("Feedback link copied"),
-                () => toast("Couldn't copy the link.", "error"),
+                () => toast(t("Feedback link copied")),
+                () => toast(t("Couldn't copy the link."), "error"),
               )
             }
           >
-            <Icon name="link" size={16} /> Copy feedback link
+            <Icon name="link" size={16} /> {t("Copy feedback link")}
           </button>
           {"share" in navigator && (
-            <button className="btn btn-ghost btn-sm" onClick={() => navigator.share({ title: `Feedback: ${h.project.title}`, url: link }).catch(() => undefined)}>
-              <Icon name="share" size={16} /> Send
+            <button className="btn btn-ghost btn-sm" onClick={() => navigator.share({ title: t("Feedback: {title}", { title: h.project.title }), url: link }).catch(() => undefined)}>
+              <Icon name="share" size={16} /> {t("Send")}
             </button>
           )}
         </div>
@@ -336,17 +337,17 @@ function FeedbackModal({ h, onClose, onSave }: { h: HandIn; onClose: () => void;
 function Gallery({ inbox }: { inbox: HandIn[] }) {
   const approved = inbox.filter((h) => h.feedback?.status === "approved");
   const [picked, setPicked] = useState<Set<string>>(() => new Set(approved.map((h) => h.id)));
-  const [title, setTitle] = useState("Our class games");
+  const [title, setTitle] = useState(() => t("Our class games"));
   const items = approved.filter((h) => picked.has(h.id));
   if (!approved.length)
     return (
       <div className="card is-quiet">
-        <Empty critter={<ZoPic outfit="artist" size={64} />}>Approve hand-ins to put them in the class gallery.</Empty>
+        <Empty critter={<ZoPic outfit="artist" size={64} />}>{t("Approve hand-ins to put them in the class gallery.")}</Empty>
       </div>
     );
   return (
     <section className="card">
-      <Field label="Gallery name">
+      <Field label={t("Gallery name")}>
         <input value={title} onChange={(e) => setTitle(e.target.value)} />
       </Field>
       <ul className="gallery-picks">
@@ -375,8 +376,8 @@ function Gallery({ inbox }: { inbox: HandIn[] }) {
         ))}
       </ul>
       <div className="toolbar">
-        <button className="btn btn-primary" disabled={!items.length} onClick={() => shareFile(`${slug(title) || "class-gallery"}.html`, galleryFile(title, items), "text/html", title)}>
-          <Icon name="share" size={18} /> Share the gallery ({items.length})
+        <button className="btn btn-primary" disabled={!items.length} onClick={() => shareFile(`${slug(title) || t("class-gallery")}.html`, galleryFile(title, items), "text/html", title)}>
+          <Icon name="share" size={18} /> {t("Share the gallery ({n})", { n: items.length })}
         </button>
       </div>
     </section>
@@ -396,7 +397,7 @@ function StudentClass() {
 
   const open = (value: string) => {
     const m = value.match(/#\/(join|feedback)\/([A-Za-z0-9_-]+)/);
-    if (!m) return toast("That doesn't look like a challenge or feedback link.", "error");
+    if (!m) return toast(t("That doesn't look like a challenge or feedback link."), "error");
     go(`${m[1]}/${m[2]}`);
   };
 
@@ -407,17 +408,17 @@ function StudentClass() {
           <ZoPic outfit="student" pose="wave" size={84} />
         </div>
         <div className="hero-text">
-          <h1>My class</h1>
+          <h1>{t("My class")}</h1>
           <form className="idea" onSubmit={(e) => (e.preventDefault(), open(text))}>
             <Icon name="link" />
-            <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste a link from your teacher" aria-label="Link from your teacher" />
+            <input value={text} onChange={(e) => setText(e.target.value)} placeholder={t("Paste a link from your teacher")} aria-label={t("Link from your teacher")} />
             <button className="btn btn-primary" disabled={!text.trim()}>
-              Open
+              {t("Open")}
             </button>
           </form>
           <div className="toolbar">
             <button className="btn btn-ghost btn-sm" onClick={() => file.current?.click()}>
-              <Icon name="upload" size={16} /> Open a challenge file
+              <Icon name="upload" size={16} /> {t("Open a challenge file")}
             </button>
             <input
               ref={file}
@@ -434,7 +435,7 @@ function StudentClass() {
                   sessionStorage.setItem("ds-join", JSON.stringify(data));
                   go("join/file");
                 } catch {
-                  toast("That isn't a challenge file.", "error");
+                  toast(t("That isn't a challenge file."), "error");
                 }
               }}
             />
@@ -443,7 +444,7 @@ function StudentClass() {
       </section>
 
       <div className="page-head">
-        <h2 className="section-title">Missions</h2>
+        <h2 className="section-title">{t("Missions")}</h2>
       </div>
       {mine && mine.length ? (
         <div className="game-grid">
@@ -460,16 +461,16 @@ function StudentClass() {
                   <span className="game-card-text">
                     <strong>{p.mission!.title}</strong>
                     <small>
-                      {done}/{total} steps{p.mission!.teacher ? ` · ${p.mission!.teacher}` : ""}
+                      {t("{done}/{all} steps", { done, all: total })}{p.mission!.teacher ? ` · ${p.mission!.teacher}` : ""}
                     </small>
                   </span>
                 </a>
                 <div className="game-card-actions">
-                  <span className={`status status-${last ? last.status : p.handedIn ? "sent" : "doing"}`}>{last ? (last.status === "approved" ? "Approved" : "Try again") : p.handedIn ? "Handed in" : "In progress"}</span>
+                  <span className={`status status-${last ? last.status : p.handedIn ? "sent" : "doing"}`}>{last ? (last.status === "approved" ? t("Approved") : t("Try again")) : p.handedIn ? t("Handed in") : t("In progress")}</span>
                   {last && <Stars n={last.stars} />}
                   <span className="spacer" />
                   <a className="btn btn-soft btn-sm" href={`#/code/${p.id}`}>
-                    <Icon name="edit" size={16} /> Open
+                    <Icon name="edit" size={16} /> {t("Open")}
                   </a>
                 </div>
               </article>
@@ -478,7 +479,7 @@ function StudentClass() {
         </div>
       ) : mine ? (
         <div className="card is-quiet">
-          <Empty critter={<ZoPic outfit="student" size={64} />}>No missions yet. Your teacher sends them as a link or a file.</Empty>
+          <Empty critter={<ZoPic outfit="student" size={64} />}>{t("No missions yet. Your teacher sends them as a link or a file.")}</Empty>
         </div>
       ) : null}
     </div>
@@ -507,7 +508,7 @@ export function JoinPage({ data }: { data: string }) {
   if (!c)
     return (
       <div className="page">
-        <p>This link is broken. Ask your teacher to send it again.</p>
+        <p>{t("This link is broken. Ask your teacher to send it again.")}</p>
       </div>
     );
 
@@ -516,7 +517,7 @@ export function JoinPage({ data }: { data: string }) {
     if (!getRole()) setRole("student");
     const p = projectFor(c, student.trim());
     await projects.put(p);
-    toast("Mission started");
+    toast(t("Mission started"));
     go(`code/${p.id}`);
   };
 
@@ -524,7 +525,7 @@ export function JoinPage({ data }: { data: string }) {
     <div className="page class-page join-page">
       <section className="card join-card">
         <ZoPic outfit="teacher" pose="wave" size={72} />
-        <small className="muted">A challenge{c.teacher ? ` from ${c.teacher}` : ""}</small>
+        <small className="muted">{c.teacher ? t("A challenge from {name}", { name: c.teacher }) : t("A challenge")}</small>
         <h1>{c.title}</h1>
         {c.intro && <p>{c.intro}</p>}
         <ol className="join-steps">
@@ -532,17 +533,17 @@ export function JoinPage({ data }: { data: string }) {
             <li key={s.id}>{s.text}</li>
           ))}
         </ol>
-        <Field label="Your name">
+        <Field label={t("Your name")}>
           <input value={student} onChange={(e) => setStudent(e.target.value)} />
         </Field>
         <div className="toolbar">
           {existing && (
             <a className="btn btn-primary" href={`#/code/${existing.id}`}>
-              Continue
+              {t("Continue")}
             </a>
           )}
           <button className={`btn ${existing ? "btn-ghost" : "btn-primary"}`} onClick={start}>
-            {existing ? "Start again" : "Start"}
+            {existing ? t("Start again") : tc("mission", "Start")}
           </button>
         </div>
       </section>
@@ -572,7 +573,7 @@ export function FeedbackPage({ data }: { data: string }) {
   if (state === null)
     return (
       <div className="page">
-        <p>This feedback link is broken.</p>
+        <p>{t("This feedback link is broken.")}</p>
       </div>
     );
   const { f, project } = state;
@@ -580,16 +581,16 @@ export function FeedbackPage({ data }: { data: string }) {
     <div className="page class-page join-page">
       <section className="card join-card">
         <ZoPic outfit={f.status === "approved" ? "graduate" : "teacher"} pose={f.status === "approved" ? "cheer" : "wave"} size={72} />
-        <small className="muted">Feedback{f.teacher ? ` from ${f.teacher}` : ""}</small>
-        <h1>{f.status === "approved" ? "Approved!" : "Try again"}</h1>
+        <small className="muted">{f.teacher ? t("Feedback from {name}", { name: f.teacher }) : t("Feedback")}</small>
+        <h1>{f.status === "approved" ? t("Approved!") : t("Try again")}</h1>
         <Stars n={f.stars} />
         {f.comment && <p className="join-comment">{f.comment}</p>}
         {project ? (
           <a className="btn btn-primary" href={`#/code/${project.id}`}>
-            Open {project.title}
+            {t("Open {title}", { title: project.title })}
           </a>
         ) : (
-          <p className="muted">The game it's about isn't in this browser.</p>
+          <p className="muted">{t("The game it's about isn't in this browser.")}</p>
         )}
       </section>
     </div>

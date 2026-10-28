@@ -1,5 +1,6 @@
 import { svgUrl } from "../../code/art";
 import { zoSvg } from "../../code/art/zo";
+import { dateText, getLang, t } from "../i18n";
 
 /** The certificate of appreciation for a game chosen for the Wall of Fame, as a printable page. */
 
@@ -14,9 +15,9 @@ export interface Award {
 }
 
 export function certificatePage(a: Award): string {
-  const date = new Date(a.date).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
+  const date = dateText(a.date, { day: "numeric", month: "long", year: "numeric" });
   return `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>Certificate of appreciation · ${esc(a.title)}</title>
+<html lang="${getLang()}"><head><meta charset="utf-8"><title>${esc(t("Certificate of appreciation"))} · ${esc(a.title)}</title>
 <style>
 @page { size: A4 landscape; margin: 0; }
 * { box-sizing: border-box; }
@@ -37,13 +38,13 @@ h1 { margin: 0; font-size: 34pt; font-weight: 400; letter-spacing: 0.02em; }
 </style></head>
 <body><div class="sheet"><div class="frame">
 <img class="zo" src="${svgUrl(zoSvg("graduate", "cheer"))}" alt="">
-<div class="brand">DecentralSchool · Wall of Fame</div>
-<h1>Certificate of appreciation</h1>
-<div class="to">presented to</div>
+<div class="brand">DecentralSchool · ${esc(t("Wall of Fame"))}</div>
+<h1>${esc(t("Certificate of appreciation"))}</h1>
+<div class="to">${esc(t("presented to"))}</div>
 <div class="name">${esc(a.credit)}</div>
 ${a.school ? `<div class="school">${esc(a.school)}</div>` : ""}
-<p class="why">for contributing <span class="game">“${esc(a.title)}”</span> to our open Learning Game Community. Chosen for the Wall of Fame for its creativity, so students everywhere can play it.</p>
-<div class="foot"><div>${esc(date)}</div><div>The DecentralSchool team</div></div>
+<p class="why">${esc(t("for contributing {game} to our open Learning Game Community. Chosen for the Wall of Fame for its creativity, so students everywhere can play it.")).replace("{game}", `<span class="game">${esc(t("“{title}”", { title: a.title }))}</span>`)}</p>
+<div class="foot"><div>${esc(date)}</div><div>${esc(t("The DecentralSchool team"))}</div></div>
 </div></div></body></html>`;
 }
 

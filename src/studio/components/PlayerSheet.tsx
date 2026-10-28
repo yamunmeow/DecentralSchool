@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
+import { t } from "../i18n";
 import { Icon } from "../ui";
 
 /** A game to show: a built page (played from srcdoc, with no access to the studio) or a library URL. */
@@ -25,7 +26,7 @@ export function PlayerSheet({ playing, onClose }: { playing: Playing; onClose: (
       }}
     >
       <header className="player-bar">
-        <button className="icon-btn" onClick={onClose} aria-label="Close game">
+        <button className="icon-btn" onClick={onClose} aria-label={t("Close game")}>
           <Icon name="close" size={22} />
         </button>
         <strong className="player-title">{playing.title}</strong>

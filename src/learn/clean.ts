@@ -1,5 +1,7 @@
 import { distance, isNumber, normalise, rescueNumber, toNumber, wordsOf } from "./text";
 import type { LearnMode, Row } from "./types";
+// The studio's words; the shared players never load this file.
+import { t, tn } from "../studio/i18n";
 
 /**
  * Data checks: each finds one kind of problem real data scientists look for, says
@@ -43,7 +45,6 @@ const EMAIL = /[\w.+-]+@[\w-]+\.[\w.-]+/g;
 const PHONE = /(?:\+?\d[\d\s().-]{7,}\d)/g;
 const URL = /\b(?:https?:\/\/|www\.)\S+/gi;
 
-const plural = (n: number, one: string, many = one + "s") => `${n} ${n === 1 ? one : many}`;
 const without = (ids: Iterable<string>) => {
   const set = new Set(ids);
   return (rows: Row[]) => rows.filter((r) => !set.has(r.id));
@@ -66,10 +67,10 @@ export function checkData(rows: Row[], mode: LearnMode): Issue[] {
       id: "blank",
       kind: "blank",
       level: "fix",
-      title: `${plural(blank.length, "row")} with something missing`,
-      why: labelled ? "An example without its answer (or an answer without its example) can't teach Zo anything." : "Empty lines are just noise.",
+      title: tn(blank.length, "{n} row with something missing", "{n} rows with something missing"),
+      why: labelled ? t("An example without its answer (or an answer without its example) can't teach Zo anything.") : t("Empty lines are just noise."),
       rows: blank.map((r) => r.id),
-      fixes: [{ label: "Remove them", apply: without(blank.map((r) => r.id)) }],
+      fixes: [{ label: t("Remove them"), apply: without(blank.map((r) => r.id)) }],
     });
   const filled = rows.filter((r) => !blank.includes(r));
 
@@ -79,10 +80,10 @@ export function checkData(rows: Row[], mode: LearnMode): Issue[] {
       id: "spaces",
       kind: "spaces",
       level: "fix",
-      title: `${plural(spaced.length, "row")} with extra spaces`,
-      why: "To a computer “happy ” and “happy” are different things. Tidying is the first job in every data project.",
+      title: tn(spaced.length, "{n} row with extra spaces", "{n} rows with extra spaces"),
+      why: t("To a computer “happy ” and “happy” are different things. Tidying is the first job in every data project."),
       rows: spaced.map((r) => r.id),
-      fixes: [{ label: "Tidy them", apply: (rs) => rs.map((r) => ({ ...r, text: tidy(r.text), label: tidy(r.label) })) }],
+      fixes: [{ label: t("Tidy them"), apply: (rs) => rs.map((r) => ({ ...r, text: tidy(r.text), label: tidy(r.label) })) }],
     });
 
   // Personal details have no place in training data: models can repeat what they saw.
@@ -92,12 +93,12 @@ export function checkData(rows: Row[], mode: LearnMode): Issue[] {
       id: "personal",
       kind: "personal",
       level: "fix",
-      title: `${plural(personal.length, "row")} with an email or phone number`,
-      why: "Models can remember and repeat what they were trained on. Keep people's details out.",
+      title: tn(personal.length, "{n} row with an email or phone number", "{n} rows with an email or phone number"),
+      why: t("Models can remember and repeat what they were trained on. Keep people's details out."),
       rows: personal.map((r) => r.id),
       fixes: [
-        { label: "Hide the details", apply: (rs) => rs.map((r) => (personal.includes(r) ? { ...r, text: r.text.replace(EMAIL, "[email]").replace(PHONE, "[phone]") } : r)) },
-        { label: "Remove the rows", apply: without(personal.map((r) => r.id)) },
+        { label: t("Hide the details"), apply: (rs) => rs.map((r) => (personal.includes(r) ? { ...r, text: r.text.replace(EMAIL, t("[email]")).replace(PHONE, t("[phone]")) } : r)) },
+        { label: t("Remove the rows"), apply: without(personal.map((r) => r.id)) },
       ],
     });
 
@@ -107,10 +108,10 @@ export function checkData(rows: Row[], mode: LearnMode): Issue[] {
       id: "link",
       kind: "link",
       level: "fix",
-      title: `${plural(linked.length, "row")} with a web link`,
-      why: "Links are long strings of letters that mean nothing to Zo; they only add noise.",
+      title: tn(linked.length, "{n} row with a web link", "{n} rows with a web link"),
+      why: t("Links are long strings of letters that mean nothing to Zo; they only add noise."),
       rows: linked.map((r) => r.id),
-      fixes: [{ label: "Take the links out", apply: (rs) => rs.map((r) => (linked.includes(r) ? { ...r, text: tidy(r.text.replace(URL, "")) } : r)) }],
+      fixes: [{ label: t("Take the links out"), apply: (rs) => rs.map((r) => (linked.includes(r) ? { ...r, text: tidy(r.text.replace(URL, "")) } : r)) }],
     });
 
   if (mode !== "predict") {
@@ -120,10 +121,10 @@ export function checkData(rows: Row[], mode: LearnMode): Issue[] {
         id: "junk",
         kind: "junk",
         level: "fix",
-        title: `${plural(junk.length, "row")} with no words in it`,
-        why: "Zo learns from words. Rows of only symbols or numbers give it nothing to go on.",
+        title: tn(junk.length, "{n} row with no words in it", "{n} rows with no words in it"),
+        why: t("Zo learns from words. Rows of only symbols or numbers give it nothing to go on."),
         rows: junk.map((r) => r.id),
-        fixes: [{ label: "Remove them", apply: without(junk.map((r) => r.id)) }],
+        fixes: [{ label: t("Remove them"), apply: without(junk.map((r) => r.id)) }],
       });
   }
 
@@ -135,10 +136,10 @@ export function checkData(rows: Row[], mode: LearnMode): Issue[] {
       id: "duplicate",
       kind: "duplicate",
       level: "fix",
-      title: `${plural(extras.length, "copy", "copies")} of rows that are already there`,
-      why: "A row that appears twice counts twice. Copies also leak into the test, so Zo looks cleverer than it is.",
+      title: tn(extras.length, "{n} copy of rows that are already there", "{n} copies of rows that are already there"),
+      why: t("A row that appears twice counts twice. Copies also leak into the test, so Zo looks cleverer than it is."),
       rows: [...groups.values()].filter((g) => g.length > 1).flatMap((g) => g.map((r) => r.id)),
-      fixes: [{ label: "Keep one of each", apply: without(extras.map((r) => r.id)) }],
+      fixes: [{ label: t("Keep one of each"), apply: without(extras.map((r) => r.id)) }],
     });
 
   if (mode === "sort" || mode === "reply") issues.push(...labelChecks(filled, mode));
@@ -152,8 +153,8 @@ export function checkData(rows: Row[], mode: LearnMode): Issue[] {
         id: "too-short",
         kind: "too-short",
         level: "think",
-        title: `Only ${words} words to read`,
-        why: "A writer learns from reading. With little text Zo can only copy the sentences it saw.",
+        title: t("Only {n} words to read", { n: words }),
+        why: t("A writer learns from reading. With little text Zo can only copy the sentences it saw."),
         rows: [],
         fixes: [],
       });
@@ -162,8 +163,8 @@ export function checkData(rows: Row[], mode: LearnMode): Issue[] {
       id: "too-few",
       kind: "too-few",
       level: "think",
-      title: `Only ${plural(usable, "example")}`,
-      why: "More examples, and more different ones, help Zo find the pattern instead of remembering each one.",
+      title: tn(usable, "Only {n} example", "Only {n} examples"),
+      why: t("More examples, and more different ones, help Zo find the pattern instead of remembering each one."),
       rows: [],
       fixes: [],
     });
@@ -173,7 +174,7 @@ export function checkData(rows: Row[], mode: LearnMode): Issue[] {
 
 function labelChecks(rows: Row[], mode: "sort" | "reply"): Issue[] {
   const out: Issue[] = [];
-  const answer = mode === "reply" ? "answer" : "label";
+  const reply = mode === "reply";
 
   // The same text with two different labels: Zo is told two things at once.
   const byText = countBy(rows, (r) => normalise(r.text));
@@ -188,12 +189,12 @@ function labelChecks(rows: Row[], mode: "sort" | "reply"): Issue[] {
       id: "contradiction",
       kind: "contradiction",
       level: "fix",
-      title: `${plural(clashes.length, "example")} with two different ${answer}s`,
-      why: `The same words can't be two things at once for Zo. Decide which ${answer} is right, or drop the example.`,
+      title: reply ? tn(clashes.length, "{n} example with two different answers", "{n} examples with two different answers") : tn(clashes.length, "{n} example with two different labels", "{n} examples with two different labels"),
+      why: reply ? t("The same words can't be two things at once for Zo. Decide which answer is right, or drop the example.") : t("The same words can't be two things at once for Zo. Decide which label is right, or drop the example."),
       rows: clashes.flat().map((r) => r.id),
       fixes: [
-        { label: `Keep the most common ${answer}`, apply: without(clashes.flatMap(keepMost).map((r) => r.id)) },
-        { label: "Remove them all", apply: without(clashes.flat().map((r) => r.id)) },
+        { label: reply ? t("Keep the most common answer") : t("Keep the most common label"), apply: without(clashes.flatMap(keepMost).map((r) => r.id)) },
+        { label: t("Remove them all"), apply: without(clashes.flat().map((r) => r.id)) },
       ],
     });
   }
@@ -220,10 +221,10 @@ function labelChecks(rows: Row[], mode: "sort" | "reply"): Issue[] {
       id: `variant:${big}`,
       kind: "label-variant",
       level: "fix",
-      title: `${variants.map((v) => `“${v}”`).join(", ")} looks like “${big}”`,
-      why: `Zo treats every spelling as a different ${answer}. One typo can split a ${answer} in two.`,
+      title: t("{variants} looks like “{label}”", { variants: variants.map((v) => `“${v}”`).join(", "), label: big }),
+      why: reply ? t("Zo treats every spelling as a different answer. One typo can split an answer in two.") : t("Zo treats every spelling as a different label. One typo can split a label in two."),
       rows: ids,
-      fixes: [{ label: `Change to “${big}”`, apply: (rs) => rs.map((r) => (variants.includes(r.label.trim()) ? { ...r, label: big } : r)) }],
+      fixes: [{ label: t("Change to “{label}”", { label: big }), apply: (rs) => rs.map((r) => (variants.includes(r.label.trim()) ? { ...r, label: big } : r)) }],
     });
   }
 
@@ -236,10 +237,10 @@ function labelChecks(rows: Row[], mode: "sort" | "reply"): Issue[] {
         id: "rare-label",
         kind: "rare-label",
         level: "think",
-        title: `${rare.map((n) => `“${n}”`).join(", ")} ${rare.length === 1 ? "has" : "have"} very few examples`,
-        why: "Zo needs several examples of each label to spot what they share. Add more, or drop the label.",
+        title: tn(rare.length, "{labels} has very few examples", "{labels} have very few examples", { labels: rare.map((n) => `“${n}”`).join(", ") }),
+        why: t("Zo needs several examples of each label to spot what they share. Add more, or drop the label."),
         rows: rare.flatMap((n) => byLabel.get(n)!.map((r) => r.id)),
-        fixes: [{ label: "Drop these labels", apply: without(rare.flatMap((n) => byLabel.get(n)!.map((r) => r.id))) }],
+        fixes: [{ label: t("Drop these labels"), apply: without(rare.flatMap((n) => byLabel.get(n)!.map((r) => r.id))) }],
       });
     const big = Math.max(...sizes);
     const small = Math.min(...sizes.filter((s) => s >= 4));
@@ -250,10 +251,10 @@ function labelChecks(rows: Row[], mode: "sort" | "reply"): Issue[] {
         id: "imbalance",
         kind: "imbalance",
         level: "think",
-        title: `“${names.find((n) => byLabel.get(n)!.length === big)}” has ${Math.round(big / small)}× more examples than the smallest label`,
-        why: "With lopsided data Zo can score well by always guessing the big label. Balance it, or check the test per label.",
+        title: t("“{label}” has {n}× more examples than the smallest label", { label: names.find((n) => byLabel.get(n)!.length === big) || "", n: Math.round(big / small) }),
+        why: t("With lopsided data Zo can score well by always guessing the big label. Balance it, or check the test per label."),
         rows: [],
-        fixes: [{ label: `Keep at most ${cap} of each`, apply: without(trim) }],
+        fixes: [{ label: t("Keep at most {n} of each", { n: cap }), apply: without(trim) }],
       });
     }
   }
@@ -269,14 +270,14 @@ function numberChecks(rows: Row[]): Issue[] {
       id: "not-number",
       kind: "not-number",
       level: "fix",
-      title: `${plural(bad.length, "row")} where a value isn't a number`,
-      why: "“7 hrs” or “five” is easy for you to read, but Zo can only do maths with plain numbers.",
+      title: tn(bad.length, "{n} row where a value isn't a number", "{n} rows where a value isn't a number"),
+      why: t("“7 hrs” or “five” is easy for you to read, but Zo can only do maths with plain numbers."),
       rows: bad.map((r) => r.id),
       fixes: [
         ...(rescuable.length
-          ? [{ label: `Turn ${rescuable.length === bad.length ? "them" : rescuable.length} into numbers`, apply: (rs: Row[]) => rs.map((r) => (rescuable.includes(r) ? { ...r, text: String(rescueNumber(r.text)), label: String(rescueNumber(r.label)) } : r)) }]
+          ? [{ label: rescuable.length === bad.length ? t("Turn them into numbers") : t("Turn {n} into numbers", { n: rescuable.length }), apply: (rs: Row[]) => rs.map((r) => (rescuable.includes(r) ? { ...r, text: String(rescueNumber(r.text)), label: String(rescueNumber(r.label)) } : r)) }]
           : []),
-        { label: "Remove them", apply: without(bad.map((r) => r.id)) },
+        { label: t("Remove them"), apply: without(bad.map((r) => r.id)) },
       ],
     });
   }
@@ -302,10 +303,10 @@ function numberChecks(rows: Row[]): Issue[] {
         id: "outlier",
         kind: "outlier",
         level: "think",
-        title: `${plural(far.length, "point")} far from all the others`,
-        why: "An outlier can be a typo or something real and rare. One wrong point can pull Zo's whole line off.",
+        title: tn(far.length, "{n} point far from all the others", "{n} points far from all the others"),
+        why: t("An outlier can be a typo or something real and rare. One wrong point can pull Zo's whole line off."),
         rows: far.map((r) => r.id),
-        fixes: [{ label: "Remove them", apply: without(far.map((r) => r.id)) }],
+        fixes: [{ label: t("Remove them"), apply: without(far.map((r) => r.id)) }],
       });
   }
   return out;

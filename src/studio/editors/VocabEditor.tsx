@@ -1,9 +1,11 @@
 import { VOCAB_MODES } from "../../shared/normalize";
 import type { VocabGame, VocabMode, Word } from "../../shared/types";
 import { WordsButton } from "../random/WordsButton";
+import { t } from "../i18n";
 import { Icon } from "../ui";
 import { GenerateButton, PasteButton, removeAt, replaceAt, Section, splitBars } from "./common";
 
+// English; shown through t().
 const MODE_LABEL: Record<VocabMode, string> = {
   meaning: "Meaning → word",
   word: "Word → meaning",
@@ -31,36 +33,36 @@ export function VocabEditor({ game, onChange }: { game: VocabGame; onChange: (g:
 
   return (
     <>
-      <Section title="Activities">
+      <Section title={t("Activities")}>
         <div className="chips">
           {VOCAB_MODES.map((m) => (
-            <button key={m} type="button" className={`chip-btn${game.modes.includes(m) ? " on" : ""}`} aria-pressed={game.modes.includes(m)} onClick={() => toggle(m)} title={missing(m) ? "Add the matching column to some words" : undefined}>
-              {game.modes.includes(m) && <Icon name="check" size={16} />} {MODE_LABEL[m]}
-              {game.modes.includes(m) && missing(m) && <span className="warn-dot" aria-label="needs data" />}
+            <button key={m} type="button" className={`chip-btn${game.modes.includes(m) ? " on" : ""}`} aria-pressed={game.modes.includes(m)} onClick={() => toggle(m)} title={missing(m) ? t("Add the matching column to some words") : undefined}>
+              {game.modes.includes(m) && <Icon name="check" size={16} />} {t(MODE_LABEL[m])}
+              {game.modes.includes(m) && missing(m) && <span className="warn-dot" aria-label={t("needs data")} />}
             </button>
           ))}
         </div>
       </Section>
-      <Section title="Words" count={`${words.length}`}>
-        <div className="word-table" role="table" aria-label="Words">
+      <Section title={t("Words")} count={`${words.length}`}>
+        <div className="word-table" role="table" aria-label={t("Words")}>
           <div className="word-row word-row-head" role="row">
-            <span role="columnheader">Emoji</span>
-            <span role="columnheader">Word</span>
-            <span role="columnheader">Meaning</span>
-            <span role="columnheader">Example sentence</span>
-            <span role="columnheader">Opposite</span>
-            <span role="columnheader">Translation</span>
+            <span role="columnheader">{t("Emoji")}</span>
+            <span role="columnheader">{t("Word")}</span>
+            <span role="columnheader">{t("Meaning")}</span>
+            <span role="columnheader">{t("Example sentence")}</span>
+            <span role="columnheader">{t("Opposite")}</span>
+            <span role="columnheader">{t("Translation")}</span>
             <span />
           </div>
           {words.map((w, i) => (
             <div key={i} className="word-row" role="row">
-              <input className="emoji-input" value={w.emoji || ""} placeholder="🙂" aria-label="Emoji" onChange={(e) => set(i, { ...w, emoji: e.target.value || undefined })} />
-              <input value={w.word} placeholder="word" aria-label="Word" onChange={(e) => set(i, { ...w, word: e.target.value })} />
-              <input value={w.meaning} placeholder="meaning" aria-label="Meaning" onChange={(e) => set(i, { ...w, meaning: e.target.value })} />
-              <input value={w.example || ""} placeholder="sentence using the word" aria-label="Example" aria-invalid={!hasWord(w)} title={hasWord(w) ? undefined : "The sentence should contain the word exactly"} onChange={(e) => set(i, { ...w, example: e.target.value || undefined })} />
-              <input value={w.opposite || ""} placeholder="—" aria-label="Opposite" onChange={(e) => set(i, { ...w, opposite: e.target.value || undefined })} />
-              <input value={w.translation || ""} placeholder="—" aria-label="Translation" onChange={(e) => set(i, { ...w, translation: e.target.value || undefined })} />
-              <button type="button" className="icon-btn icon-btn-sm" aria-label={`Remove ${w.word || "word"}`} onClick={() => onChange({ ...game, words: removeAt(words, i) })}>
+              <input className="emoji-input" value={w.emoji || ""} placeholder="🙂" aria-label={t("Emoji")} onChange={(e) => set(i, { ...w, emoji: e.target.value || undefined })} />
+              <input value={w.word} placeholder={t("word")} aria-label={t("Word")} onChange={(e) => set(i, { ...w, word: e.target.value })} />
+              <input value={w.meaning} placeholder={t("meaning")} aria-label={t("Meaning")} onChange={(e) => set(i, { ...w, meaning: e.target.value })} />
+              <input value={w.example || ""} placeholder={t("sentence using the word")} aria-label={t("Example")} aria-invalid={!hasWord(w)} title={hasWord(w) ? undefined : t("The sentence should contain the word exactly")} onChange={(e) => set(i, { ...w, example: e.target.value || undefined })} />
+              <input value={w.opposite || ""} placeholder="—" aria-label={t("Opposite")} onChange={(e) => set(i, { ...w, opposite: e.target.value || undefined })} />
+              <input value={w.translation || ""} placeholder="—" aria-label={t("Translation")} onChange={(e) => set(i, { ...w, translation: e.target.value || undefined })} />
+              <button type="button" className="icon-btn icon-btn-sm" aria-label={t("Remove {word}", { word: w.word || t("word") })} onClick={() => onChange({ ...game, words: removeAt(words, i) })}>
                 <Icon name="trash" size={18} />
               </button>
             </div>
@@ -68,11 +70,11 @@ export function VocabEditor({ game, onChange }: { game: VocabGame; onChange: (g:
         </div>
         <div className="add-row">
           <button type="button" className="chip-btn" onClick={() => onChange({ ...game, words: [...words, { word: "", meaning: "" }] })}>
-            <Icon name="plus" size={16} /> Word
+            <Icon name="plus" size={16} /> {t("Word")}
           </button>
           <span className="spacer" />
           <WordsButton onAdd={(add) => onChange({ ...game, words: [...words, ...add.filter((a) => !words.some((w) => w.word === a.word))] })} />
-          <PasteButton placeholder={"brave - not afraid of danger\ngentle | kind and calm | The nurse was gentle with the baby. | 🤲"} parse={parseLine} onAdd={(add) => onChange({ ...game, words: [...words, ...add] })} />
+          <PasteButton placeholder={t("brave - not afraid of danger\ngentle | kind and calm | The nurse was gentle with the baby. | 🤲")} parse={parseLine} onAdd={(add) => onChange({ ...game, words: [...words, ...add] })} />
           <GenerateButton request={{ template: "vocab" }} onResult={(r) => onChange({ ...game, words: [...words, ...(r.words || [])] })} />
         </div>
       </Section>

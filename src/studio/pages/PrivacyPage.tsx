@@ -1,8 +1,10 @@
+import { getLang, t, tj } from "../i18n";
 import { Icon } from "../ui";
 
 export const PRIVACY_CONTACT = "privacy@decentralschool.org";
-const UPDATED = "27 October 2026";
+const UPDATED = new Date(2026, 9, 27);
 
+// The tables are English; their cells are shown through t().
 const ACCOUNT_DATA = [
   ["Your name", "To greet you and to put on your hand-ins and feedback", "Google"],
   ["Your email address", "To recognise your account when you sign in again", "Google"],
@@ -48,113 +50,96 @@ export function PrivacyPage() {
     <div className="page mission privacy">
       <section className="hero mission-hero">
         <div className="hero-text">
-          <p className="kicker">Privacy</p>
-          <h1>What we collect, and what we don't</h1>
-          <p className="hero-lede">Most of DecentralSchool works without sending anything anywhere. This page lists everything that does.</p>
-          <p className="muted">Last updated {UPDATED}</p>
+          <p className="kicker">{t("Privacy")}</p>
+          <h1>{t("What we collect, and what we don't")}</h1>
+          <p className="hero-lede">{t("Most of DecentralSchool works without sending anything anywhere. This page lists everything that does.")}</p>
+          <p className="muted">{t("Last updated {date}", { date: UPDATED.toLocaleDateString(getLang() === "fr" ? "fr-FR" : "en-GB", { day: "numeric", month: "long", year: "numeric" }) })}</p>
         </div>
       </section>
 
       <section className="story" aria-labelledby="device">
         <div>
           <h2 id="device" className="section-title">
-            On your device
+            {t("On your device")}
           </h2>
         </div>
         <div className="prose">
-          <p>
-            Your games, Game Lab projects, Zo's models, challenges, hand-ins and feedback are saved in
-            this browser, on your device. So are your settings: student or teacher, your name, the theme, the AI key and the app signing key. We never see
-            any of it, except a game you choose to submit to the Wall of Fame (see below).
-          </p>
-          <p>
-            Game links carry the game after the <code>#</code> in the address. Browsers never send that part to a server, so a shared game doesn't pass
-            through us either.
-          </p>
+          <p>{t("Your games, Game Lab projects, Zo's models, challenges, hand-ins and feedback are saved in this browser, on your device. So are your settings: student or teacher, your name, the theme, the AI key and the app signing key. We never see any of it, except a game you choose to submit to the Wall of Fame (see below).")}</p>
+          <p>{tj("Game links carry the game after the {hash} in the address. Browsers never send that part to a server, so a shared game doesn't pass through us either.", { hash: <code>#</code> })}</p>
         </div>
       </section>
 
       <section className="story" aria-labelledby="account">
         <div>
           <h2 id="account" className="section-title">
-            Your account
+            {t("Your account")}
           </h2>
         </div>
         <div className="prose">
-          <p>
-            The studio opens once you sign in for free with Google. We only ask Google for your basic profile and email address, and we keep:
-          </p>
+          <p>{t("The studio opens once you sign in for free with Google. We only ask Google for your basic profile and email address, and we keep:")}</p>
           <div className="table-scroll">
             <table className="credits">
               <thead>
                 <tr>
-                  <th>What</th>
-                  <th>Why</th>
-                  <th>From</th>
+                  <th>{t("What")}</th>
+                  <th>{t("Why")}</th>
+                  <th>{t("From")}</th>
                 </tr>
               </thead>
               <tbody>
                 {ACCOUNT_DATA.map(([what, why, from]) => (
                   <tr key={what}>
-                    <td>{what}</td>
-                    <td>{why}</td>
-                    <td>{from}</td>
+                    <td>{t(what)}</td>
+                    <td>{t(why)}</td>
+                    <td>{t(from)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
           <p>
-            <strong>We don't keep:</strong>
+            <strong>{t("We don't keep:")}</strong>
           </p>
           <ul className="check-list">
-            {NOT_KEPT.map((t) => (
-              <li key={t}>
+            {NOT_KEPT.map((item) => (
+              <li key={item}>
                 <Icon name="checkCircle" size={22} />
-                <span>{t}</span>
+                <span>{t(item)}</span>
               </li>
             ))}
           </ul>
-          <p>Your name and email are also saved in your browser, so the studio still knows who you are when you're offline.</p>
+          <p>{t("Your name and email are also saved in your browser, so the studio still knows who you are when you're offline.")}</p>
         </div>
       </section>
 
       <section className="story" aria-labelledby="fame">
         <div>
           <h2 id="fame" className="section-title">
-            Wall of Fame
+            {t("Wall of Fame")}
           </h2>
         </div>
         <div className="prose">
-          <p>
-            When you submit a game, we keep the game itself, the title, what makes it special, the name and school you typed, your note to the reviewers,
-            the date, and which account sent it. Before it leaves your device, the studio takes out class work, feedback and app-signing details.
-          </p>
-          <p>
-            Our reviewers see all of that, plus your account's name and email, so they can contact you. If the game is chosen, everyone signed in to
-            DecentralSchool can play and copy it and see the name and school you typed, but not your email or your note.
-          </p>
-          <p>
-            It stays until you withdraw it on the Wall of Fame page or delete your account, and both remove it straight away.
-          </p>
+          <p>{t("When you submit a game, we keep the game itself, the title, what makes it special, the name and school you typed, your note to the reviewers, the date, and which account sent it. Before it leaves your device, the studio takes out class work, feedback and app-signing details.")}</p>
+          <p>{t("Our reviewers see all of that, plus your account's name and email, so they can contact you. If the game is chosen, everyone signed in to DecentralSchool can play and copy it and see the name and school you typed, but not your email or your note.")}</p>
+          <p>{t("It stays until you withdraw it on the Wall of Fame page or delete your account, and both remove it straight away.")}</p>
         </div>
       </section>
 
       <section className="story" aria-labelledby="cookies">
         <div>
           <h2 id="cookies" className="section-title">
-            Cookies
+            {t("Cookies")}
           </h2>
         </div>
         <div className="prose">
-          <p>There are no cookies until you sign in. Then there are these, and only these:</p>
+          <p>{t("There are no cookies until you sign in. Then there are these, and only these:")}</p>
           <div className="table-scroll">
             <table className="credits">
               <thead>
                 <tr>
-                  <th>Cookie</th>
-                  <th>What it's for</th>
-                  <th>Lasts</th>
+                  <th>{t("Cookie")}</th>
+                  <th>{t("What it's for")}</th>
+                  <th>{t("Lasts")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -163,8 +148,8 @@ export function PrivacyPage() {
                     <td>
                       <code>{name}</code>
                     </td>
-                    <td>{what}</td>
-                    <td>{lasts}</td>
+                    <td>{t(what)}</td>
+                    <td>{t(lasts)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -176,7 +161,7 @@ export function PrivacyPage() {
       <section className="story" aria-labelledby="services">
         <div>
           <h2 id="services" className="section-title">
-            Other services
+            {t("Other services")}
           </h2>
         </div>
         <div className="prose">
@@ -184,37 +169,37 @@ export function PrivacyPage() {
             <table className="credits">
               <thead>
                 <tr>
-                  <th>Who</th>
-                  <th>What they get</th>
-                  <th>When</th>
+                  <th>{t("Who")}</th>
+                  <th>{t("What they get")}</th>
+                  <th>{t("When")}</th>
                 </tr>
               </thead>
               <tbody>
                 {SERVICES.map(([who, what, when]) => (
                   <tr key={who}>
-                    <td>{who}</td>
-                    <td>{what}</td>
-                    <td>{when}</td>
+                    <td>{t(who)}</td>
+                    <td>{t(what)}</td>
+                    <td>{t(when)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <p>Each of these has its own privacy policy.</p>
+          <p>{t("Each of these has its own privacy policy.")}</p>
         </div>
       </section>
 
       <section className="story" aria-labelledby="never">
         <div>
           <h2 id="never" className="section-title">
-            What we never do
+            {t("What we never do")}
           </h2>
         </div>
         <ul className="check-list prose">
-          {NEVER.map((t) => (
-            <li key={t}>
+          {NEVER.map((item) => (
+            <li key={item}>
               <Icon name="checkCircle" size={22} />
-              <span>{t}</span>
+              <span>{t(item)}</span>
             </li>
           ))}
         </ul>
@@ -223,17 +208,15 @@ export function PrivacyPage() {
       <section className="story" aria-labelledby="delete">
         <div>
           <h2 id="delete" className="section-title">
-            How long we keep it
+            {t("How long we keep it")}
           </h2>
         </div>
         <div className="prose">
+          <p>{t("Your account stays until you delete it. A sign-in session ends when you sign out, or after 30 days without visiting.")}</p>
           <p>
-            Your account stays until you delete it. A sign-in session ends when you sign out, or after 30 days without visiting.
-          </p>
-          <p>
-            <strong>Settings → Account → Delete account</strong> removes your name, email, sessions and Wall of Fame submissions straight away. Cloudflare keeps a recovery copy of
-            the database for 7 days, so after that it's gone completely. Games on your device are yours to delete in the studio or by clearing your
-            browser's data for this site.
+            {tj("{path} removes your name, email, sessions and Wall of Fame submissions straight away. Cloudflare keeps a recovery copy of the database for 7 days, so after that it's gone completely. Games on your device are yours to delete in the studio or by clearing your browser's data for this site.", {
+              path: <strong>{t("Settings → Account → Delete account")}</strong>,
+            })}
           </p>
         </div>
       </section>
@@ -241,32 +224,23 @@ export function PrivacyPage() {
       <section className="story" aria-labelledby="children">
         <div>
           <h2 id="children" className="section-title">
-            Children
+            {t("Children")}
           </h2>
         </div>
         <div className="prose">
-          <p>
-            Students sign in for free with a Google account, such as one from their school or one a parent manages; Google sets its own minimum age. Shared
-            game links, downloaded games and apps play without signing in. A parent or school that
-            wants a child's account removed can write to us.
-          </p>
+          <p>{t("Students sign in for free with a Google account, such as one from their school or one a parent manages; Google sets its own minimum age. Shared game links, downloaded games and apps play without signing in. A parent or school that wants a child's account removed can write to us.")}</p>
         </div>
       </section>
 
       <section className="story" aria-labelledby="contact">
         <div>
           <h2 id="contact" className="section-title">
-            Questions and requests
+            {t("Questions and requests")}
           </h2>
         </div>
         <div className="prose">
-          <p>
-            To ask what we hold about you, correct it or delete it, write to <a href={`mailto:${PRIVACY_CONTACT}`}>{PRIVACY_CONTACT}</a>. If this page
-            changes, the date at the top changes too.
-          </p>
-          <p>
-            DecentralSchool is open source, so the code that does all of this can be read by anyone. See the <a href="#/mission/license">license</a>.
-          </p>
+          <p>{tj("To ask what we hold about you, correct it or delete it, write to {email}. If this page changes, the date at the top changes too.", { email: <a href={`mailto:${PRIVACY_CONTACT}`}>{PRIVACY_CONTACT}</a> })}</p>
+          <p>{tj("DecentralSchool is open source, so the code that does all of this can be read by anyone. See the {license}.", { license: <a href="#/mission/license">{t("license")}</a> })}</p>
         </div>
       </section>
     </div>

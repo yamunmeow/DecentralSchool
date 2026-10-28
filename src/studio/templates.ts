@@ -1,11 +1,14 @@
 import { DEFAULT_SETTINGS, normalize } from "../shared/normalize";
 import type { Game, Template, Tint } from "../shared/types";
+import { getLang, t } from "./i18n";
+import { STARTERS_FR } from "./templates.fr";
 
 export interface Starter {
   title: string;
   make: () => Partial<Game> & { template: Template };
 }
 
+/** Names and blurbs are English; show them through t(). */
 export interface TemplateInfo {
   id: Template;
   name: string;
@@ -15,7 +18,10 @@ export interface TemplateInfo {
   starters: Starter[];
 }
 
-const settings = (patch: Partial<typeof DEFAULT_SETTINGS> = {}) => ({ ...DEFAULT_SETTINGS, ...patch });
+/** A new game's player speaks the studio's language. */
+export const gameDefaults = () => (getLang() === "fr" ? { ...DEFAULT_SETTINGS, speech: "fr-FR", ui: "fr" as const } : DEFAULT_SETTINGS);
+
+export const settings = (patch: Partial<typeof DEFAULT_SETTINGS> = {}) => ({ ...gameDefaults(), ...patch });
 
 export const TEMPLATE_INFO: TemplateInfo[] = [
   {
@@ -260,9 +266,12 @@ export const TEMPLATE_INFO: TemplateInfo[] = [
 
 export const templateInfo = (id: Template) => TEMPLATE_INFO.find((t) => t.id === id)!;
 
+/** Example games in the studio's language. */
+export const startersFor = (info: TemplateInfo): Starter[] => (getLang() === "fr" ? STARTERS_FR[info.id] : info.starters);
+
 export function blankGame(template: Template): Game {
   const info = templateInfo(template);
-  const base = { template, title: `New ${info.name.toLowerCase()} game`, emoji: info.emoji, tint: info.tint, settings: settings() };
+  const base = { template, title: template === "custom" ? t("New game") : t(`New ${info.name.toLowerCase()} game`), emoji: info.emoji, tint: info.tint, settings: settings() };
   const extra: Record<Template, object> = {
     quiz: { questions: [] },
     math: { sets: [{ kind: "add", min: 1, max: 20, weight: 1 }], answer: "type", questions: [] },
@@ -276,7 +285,7 @@ export function blankGame(template: Template): Game {
 
 export const fromStarter = (s: Starter): Game => normalize(s.make());
 
-const POP_EVENS = `<!doctype html>
+export const POP_EVENS = `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">

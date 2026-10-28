@@ -1,5 +1,6 @@
 import { strFromU8, unzipSync } from "fflate";
 import type { Passage } from "../shared/types";
+import { t } from "./i18n";
 
 /** Text out of a teacher's file, read in the browser: .txt, .md, .html, .docx, .odt, .pdf. */
 export async function textFromFile(file: File): Promise<string> {
@@ -18,7 +19,7 @@ export const ACCEPT_TEXT = ".txt,.md,.html,.htm,.docx,.odt,.pdf";
 function fromDocx(bytes: Uint8Array): string {
   const files = unzipSync(bytes, { filter: (f) => f.name === "word/document.xml" });
   const xml = files["word/document.xml"];
-  if (!xml) throw new Error("That Word file looks empty.");
+  if (!xml) throw new Error(t("That Word file looks empty."));
   const doc = new DOMParser().parseFromString(strFromU8(xml), "application/xml");
   return Array.from(doc.getElementsByTagName("w:p"))
     .map((p) => Array.from(p.getElementsByTagName("w:t")).map((t) => t.textContent || "").join(""))
@@ -30,7 +31,7 @@ function fromDocx(bytes: Uint8Array): string {
 function fromOdt(bytes: Uint8Array): string {
   const files = unzipSync(bytes, { filter: (f) => f.name === "content.xml" });
   const xml = files["content.xml"];
-  if (!xml) throw new Error("That document looks empty.");
+  if (!xml) throw new Error(t("That document looks empty."));
   const doc = new DOMParser().parseFromString(strFromU8(xml), "application/xml");
   return Array.from(doc.getElementsByTagName("*"))
     .filter((e) => e.tagName === "text:p" || e.tagName === "text:h")

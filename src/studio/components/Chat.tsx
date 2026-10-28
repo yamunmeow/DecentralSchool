@@ -8,6 +8,7 @@ import { ModelPicker } from "./ModelPicker";
 import { kv } from "../db";
 import { summary } from "../gameio";
 import { ACCEPT_TEXT, textFromFile } from "../importText";
+import { t } from "../i18n";
 import { Icon } from "../ui";
 import { useAi } from "../useAi";
 
@@ -75,15 +76,15 @@ export function Chat({ game, onGame, storageKey, initial, draft, placeholder, su
       ...next.slice(-16).map((m) => (m.role === "assistant" ? { ...m, content: m.content.replace(/```(game|json|html)[\s\S]*?```/g, "[game written]") } : m)),
     ];
     try {
-      const reply = await chat(context, (t) => setStreaming(t), ctrl.signal);
+      const reply = await chat(context, (text) => setStreaming(text), ctrl.signal);
       remember([...next, { role: "assistant", content: reply }]);
       const parsed = readReply(reply, current);
       if (parsed.game) {
         if (current) setHistory((h) => [...h, current].slice(-10));
         onGame(parsed.game);
-      } else if (parsed.broken) setError("The game in that reply was cut off or malformed. Ask again, or try another model.");
+      } else if (parsed.broken) setError(t("The game in that reply was cut off or malformed. Ask again, or try another model."));
     } catch (e) {
-      if ((e as Error).name !== "AbortError") setError(e instanceof AiError ? e.message : "Something went wrong. Try again.");
+      if ((e as Error).name !== "AbortError") setError(e instanceof AiError ? e.message : t("Something went wrong. Try again."));
       remember(next);
     } finally {
       setStreaming(null);
@@ -114,10 +115,10 @@ export function Chat({ game, onGame, storageKey, initial, draft, placeholder, su
       const text = (await textFromFile(f)).trim();
       if (!text) throw new Error();
       const clipped = text.length > MAX_ATTACH ? `${text.slice(0, MAX_ATTACH)}…` : text;
-      setInput((v) => `${v ? `${v}\n\n` : ""}Text from “${f.name}”:\n"""\n${clipped}\n"""`);
+      setInput((v) => `${v ? `${v}\n\n` : ""}${t("Text from “{file}”:", { file: f.name })}\n"""\n${clipped}\n"""`);
       box.current?.focus();
     } catch {
-      setError(`Couldn't read text from ${f.name}.`);
+      setError(t("Couldn't read text from {file}.", { file: f.name }));
     }
   };
 
@@ -125,8 +126,8 @@ export function Chat({ game, onGame, storageKey, initial, draft, placeholder, su
     return (
       <div className="chat chat-connect">
         <Critter kind="octopus" color="lemon" size={96} mood="happy" wave />
-        <h2>Connect the free AI</h2>
-        <p className="muted">Sign in or sign up for free at OpenRouter and come straight back. Free models are used, and your key stays in this browser.</p>
+        <h2>{t("Connect the free AI")}</h2>
+        <p className="muted">{t("Sign in or sign up for free at OpenRouter and come straight back. Free models are used, and your key stays in this browser.")}</p>
         <ConnectAi />
       </div>
     );
@@ -174,7 +175,7 @@ export function Chat({ game, onGame, storageKey, initial, draft, placeholder, su
         }}
       >
         <ModelPicker />
-        <button type="button" className="icon-btn icon-btn-sm" onClick={() => file.current?.click()} aria-label="Attach a text" title="Attach a text">
+        <button type="button" className="icon-btn icon-btn-sm" onClick={() => file.current?.click()} aria-label={t("Attach a text")} title={t("Attach a text")}>
           <Icon name="file" size={20} />
         </button>
         <input
@@ -192,8 +193,8 @@ export function Chat({ game, onGame, storageKey, initial, draft, placeholder, su
           ref={box}
           rows={1}
           value={input}
-          placeholder={placeholder || (game ? "Ask for a change…" : "Describe your game…")}
-          aria-label="Message"
+          placeholder={placeholder || (game ? t("Ask for a change…") : t("Describe your game…"))}
+          aria-label={t("Message")}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
@@ -203,11 +204,11 @@ export function Chat({ game, onGame, storageKey, initial, draft, placeholder, su
           }}
         />
         {streaming !== null ? (
-          <button type="button" className="icon-btn send-btn" onClick={() => abort.current?.abort()} aria-label="Stop">
+          <button type="button" className="icon-btn send-btn" onClick={() => abort.current?.abort()} aria-label={t("Stop")}>
             <Icon name="stop" />
           </button>
         ) : (
-          <button className="icon-btn send-btn" disabled={!input.trim()} aria-label="Send">
+          <button className="icon-btn send-btn" disabled={!input.trim()} aria-label={t("Send")}>
             <Icon name="send" />
           </button>
         )}
@@ -221,10 +222,10 @@ function AssistantBubble({ raw, game, live, canUndo, onUndo }: { raw: string; ga
   const wrote = /```(game|json|html)/.test(raw);
   return (
     <div className="bubble bubble-ai">
-      {reply.text ? <Markdown text={reply.text} /> : live && !reply.writing ? <span className="typing" aria-label="Thinking"><i /><i /><i /></span> : null}
+      {reply.text ? <Markdown text={reply.text} /> : live && !reply.writing ? <span className="typing" aria-label={t("Thinking")}><i /><i /><i /></span> : null}
       {live && reply.writing && (
         <div className="game-chip is-writing">
-          <span className="typing" aria-hidden><i /><i /><i /></span> Building the game…
+          <span className="typing" aria-hidden><i /><i /><i /></span> {t("Building the game…")}
         </div>
       )}
       {!live && wrote && reply.game && (
@@ -236,7 +237,7 @@ function AssistantBubble({ raw, game, live, canUndo, onUndo }: { raw: string; ga
           </span>
           {canUndo && (
             <button className="btn btn-ghost btn-sm" onClick={onUndo}>
-              <Icon name="undo" size={16} /> Undo
+              <Icon name="undo" size={16} /> {t("Undo")}
             </button>
           )}
         </div>

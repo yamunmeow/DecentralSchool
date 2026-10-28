@@ -1,6 +1,7 @@
 import { registerFieldColour } from "@blockly/field-colour";
 import * as Blockly from "blockly/core";
 import type { CodeProject, Target } from "../../code/types";
+import { getLang, t } from "../i18n";
 
 /**
  * Game Lab's blocks. Opcodes and input names follow Scratch 3 (so the runtime,
@@ -8,6 +9,8 @@ import type { CodeProject, Target } from "../../code/types";
  * wording, colours, icons and shapes are Game Lab's own: plain words, a category
  * icon on every step, and the "rail" renderer (renderer.ts).
  * Menus that list characters, outfits, sounds and signals read the open project.
+ * All wording is English here and goes through t() when the blocks are registered,
+ * so they are registered again after a language change.
  */
 
 export interface EditorContext {
@@ -21,24 +24,26 @@ export const ctx: { current: EditorContext | null } = { current: null };
 
 type Option = [string, string];
 const opt = (list: (string | Option)[]): Option[] => list.map((x) => (typeof x === "string" ? [x, x] : x));
+/** For menus built when they open: labels in the current language. */
+const topt = (list: (string | Option)[]): Option[] => opt(list).map(([label, v]) => [t(label), v]);
 const others = () => (ctx.current ? ctx.current.project().sprites.filter((s) => s.id !== ctx.current!.target().id).map((s): Option => [s.name, s.name]) : []);
 const withFallback = (list: Option[], fallback: Option): Option[] => (list.length ? list : [fallback]);
 
 export const KEYS = ["space", "up arrow", "down arrow", "right arrow", "left arrow", "any", ..."abcdefghijklmnopqrstuvwxyz".split(""), ..."0123456789".split("")];
 
 export const MENUS: Record<string, () => Option[]> = {
-  goto: () => [["anywhere", "_random_"], ["the pointer", "_mouse_"], ...others()],
-  towards: () => [["the pointer", "_mouse_"], ["any way", "_random_"], ...others()],
+  goto: () => [[t("anywhere"), "_random_"], [t("the pointer"), "_mouse_"], ...others()],
+  towards: () => [[t("the pointer"), "_mouse_"], [t("any way"), "_random_"], ...others()],
   costume: () => withFallback((ctx.current?.target().costumes || []).map((c): Option => [c.name, c.name]), ["costume1", "costume1"]),
-  backdrop: () => [...withFallback((ctx.current?.project().stage.costumes || []).map((c): Option => [c.name, c.name]), ["backdrop1", "backdrop1"]), ["the next one", "next backdrop"], ["the one before", "previous backdrop"], ["any one", "random backdrop"]],
+  backdrop: () => [...withFallback((ctx.current?.project().stage.costumes || []).map((c): Option => [c.name, c.name]), ["backdrop1", "backdrop1"]), [t("the next one"), "next backdrop"], [t("the one before"), "previous backdrop"], [t("any one"), "random backdrop"]],
   backdropName: () => withFallback((ctx.current?.project().stage.costumes || []).map((c): Option => [c.name, c.name]), ["backdrop1", "backdrop1"]),
   sound: () => withFallback((ctx.current?.target().sounds || []).map((s): Option => [s.name, s.name]), ["pop", "pop"]),
-  broadcast: () => [...withFallback((ctx.current?.project().broadcasts || []).map((b): Option => [b.name, b.name]), ["message1", "message1"]), ["New signal…", "__new__"]],
-  clone: () => (ctx.current?.target().isStage ? withFallback(others(), ["", ""]) : [["me", "_myself_"], ...others()]),
-  touching: () => [["the pointer", "_mouse_"], ["an edge", "_edge_"], ...others()],
-  distance: () => [["the pointer", "_mouse_"], ...others()],
-  keys: () => opt(KEYS),
-  object: () => [["the scene", "_stage_"], ...(ctx.current?.project().sprites.filter((s) => s.id !== ctx.current!.target().id).map((s): Option => [s.name, s.name]) || [])],
+  broadcast: () => [...withFallback((ctx.current?.project().broadcasts || []).map((b): Option => [b.name, b.name]), ["message1", "message1"]), [t("New signal…"), "__new__"]],
+  clone: () => (ctx.current?.target().isStage ? withFallback(others(), ["", ""]) : [[t("me"), "_myself_"], ...others()]),
+  touching: () => [[t("the pointer"), "_mouse_"], [t("an edge"), "_edge_"], ...others()],
+  distance: () => [[t("the pointer"), "_mouse_"], ...others()],
+  keys: () => topt(KEYS),
+  object: () => [[t("the scene"), "_stage_"], ...(ctx.current?.project().sprites.filter((s) => s.id !== ctx.current!.target().id).map((s): Option => [s.name, s.name]) || [])],
 };
 
 /** "(x) of (character)": the list depends on what is picked on the right. */
@@ -49,16 +54,17 @@ function ofProperties(this: Blockly.FieldDropdown): Option[] {
   const project = ctx.current?.project();
   if (object === "_stage_") {
     const vars = project?.stage.variables.map((v): Option => [v.name, v.name]) || [];
-    return [["background number", "backdrop #"], ["background name", "backdrop name"], ["volume", "volume"], ...vars];
+    return [[t("background number"), "backdrop #"], [t("background name"), "backdrop name"], [t("volume"), "volume"], ...vars];
   }
   const sprite = project?.sprites.find((s) => s.name === object);
   const vars = sprite?.variables.map((v): Option => [v.name, v.name]) || [];
-  return [["x", "x position"], ["y", "y position"], ["direction", "direction"], ["outfit number", "costume #"], ["outfit name", "costume name"], ["size", "size"], ["volume", "volume"], ...vars];
+  return [["x", "x position"], ["y", "y position"], [t("direction"), "direction"], [t("outfit number"), "costume #"], [t("outfit name"), "costume name"], [t("size"), "size"], [t("volume"), "volume"], ...vars];
 }
 
 /* ---------- categories: name, rail colour, icon ---------- */
 
 export interface Category {
+  /** English; show it through t(). */
   name: string;
   colour: string;
   /** White glyph on the category colour, 24 × 24 units. */
@@ -384,7 +390,7 @@ const MENU_SHADOWS: [string, string, string, () => Option[]][] = [
   ["sensing_distancetomenu", "sensing", "DISTANCETOMENU", MENUS.distance],
   ["sensing_keyoptions", "sensing", "KEY_OPTION", MENUS.keys],
   ["sensing_of_object_menu", "sensing", "OBJECT", MENUS.object],
-  ["pen_menu_colorParam", "pen", "COLOR_PARAM", () => [["colour", "color"], ["richness", "saturation"], ["brightness", "brightness"], ["see-through", "transparency"]]],
+  ["pen_menu_colorParam", "pen", "COLOR_PARAM", () => topt([["colour", "color"], ["richness", "saturation"], ["brightness", "brightness"], ["see-through", "transparency"]])],
 ];
 
 /** Keep a dropdown's saved value even when the menu no longer lists it (e.g. a renamed outfit). */
@@ -406,19 +412,36 @@ export const knownOpcodes = (): Set<string> =>
 
 /** Put the category chip in front of a step or start block: "walk %1 steps" → "%1 walk %2 steps". */
 function withChip(category: string, solid: boolean, message: string, args: Json[]): [string, Json[]] {
-  return [`%1 ${message.replace(/%(\d+)/g, (_, n) => `%${Number(n) + 1}`)}`, [image(chip(category, solid), 28, CATEGORIES[category].name), ...args]];
+  return [`%1 ${t(message).replace(/%(\d+)/g, (_, n) => `%${Number(n) + 1}`)}`, [image(chip(category, solid), 28, t(CATEGORIES[category].name)), ...args]];
 }
 
-let registered = false;
+/** The language the blocks were last registered in. */
+let registered: string | null = null;
+
+/** Dropdown fields get their labels translated; menus that are functions translate themselves. */
+const translated = (args: Json[]): Json[] =>
+  args.map((a) =>
+    a.type === "field_dropdown" && Array.isArray(a.options)
+      ? { ...a, options: (a.options as Option[]).map(([label, v]) => [t(label), v]) }
+      : a.type === "field_image" && a.alt
+        ? { ...a, alt: t(String(a.alt)) }
+        : a,
+  );
 
 export function registerBlocks() {
-  if (registered) return;
-  registered = true;
-  registerFieldColour();
-  Blockly.fieldRegistry.unregister("field_dropdown");
-  Blockly.fieldRegistry.register("field_dropdown", LenientDropdown);
+  const lang = getLang();
+  if (registered === lang) return;
+  const first = registered === null;
+  registered = lang;
+  if (first) {
+    registerFieldColour();
+    Blockly.fieldRegistry.unregister("field_dropdown");
+    Blockly.fieldRegistry.register("field_dropdown", LenientDropdown);
+  }
 
-  for (const [type, category, message] of DEFS) WORDS.set(type, `${message.replace(/%\d+|%%/g, " ")} ${CATEGORIES[category].name} ${ALSO[type] || ""}`.toLowerCase());
+  // Both languages' words, so a block is found by either.
+  const words = (message: string) => (lang === "en" ? message : `${t(message)} ${message}`).replace(/%\d+|%%/g, " ");
+  for (const [type, category, message] of DEFS) WORDS.set(type, `${words(message)} ${t(CATEGORIES[category].name)} ${CATEGORIES[category].name} ${ALSO[type] || ""}`.toLowerCase());
   for (const [type, words] of [
     ["control_repeat", "do this times"],
     ["control_forever", "keep doing this"],
@@ -429,29 +452,30 @@ export function registerBlocks() {
     ["procedures_call", "my tricks"],
     ["procedures_return", "give back my tricks"],
   ])
-    WORDS.set(type, `${words} flow ${ALSO[type] || ""}`.toLowerCase());
-  const defs: Json[] = DEFS.map(([type, category, message, args, extra]) => {
+    WORDS.set(type, `${lang === "en" ? words : `${t(words)} ${words}`} ${t("Flow")} flow ${ALSO[type] || ""}`.toLowerCase());
+  const defs: Json[] = DEFS.map(([type, category, message, rawArgs, extra]) => {
+    const args = translated(rawArgs);
     const step = !!extra && ("previousStatement" in extra || "nextStatement" in extra);
-    const [m, a] = step ? withChip(category, !("previousStatement" in extra!), message, args) : [message, args];
+    const [m, a] = step ? withChip(category, !("previousStatement" in extra!), message, args) : [t(message), args];
     return { type, message0: m, args0: a, style: `${category}_blocks`, inputsInline: true, ...(extra || {}) };
   });
   // Loops and ifs: their arm is the branch of the rail.
   const flow = (type: string, head: string, args: Json[], rest: Json, shape: Json) => {
-    const [m, a] = withChip("control", false, head, args);
+    const [m, a] = withChip("control", false, head, translated(args));
     return { type, message0: m, args0: a, ...rest, style: "control_blocks", ...shape };
   };
-  const again = { message2: "%1", args2: [image(AGAIN, 18, "again")], lastDummyAlign2: "RIGHT" };
+  const again = { message2: "%1", args2: translated([image(AGAIN, 18, "again")]), lastDummyAlign2: "RIGHT" };
   defs.push(
     flow("control_repeat", "do this %1 times", [value("TIMES")], { message1: "%1", args1: [statement("SUBSTACK")], ...again }, STACK),
     flow("control_forever", "keep doing this", [], { message1: "%1", args1: [statement("SUBSTACK")], ...again }, { previousStatement: null }),
     flow("control_if", "if %1", [bool("CONDITION")], { message1: "%1", args1: [statement("SUBSTACK")] }, STACK),
-    flow("control_if_else", "if %1", [bool("CONDITION")], { message1: "%1", args1: [statement("SUBSTACK")], message2: "%1 otherwise", args2: [image(svgUri(""), 28, "")], message3: "%1", args3: [statement("SUBSTACK2")] }, STACK),
+    flow("control_if_else", "if %1", [bool("CONDITION")], { message1: "%1", args1: [statement("SUBSTACK")], message2: t("%1 otherwise"), args2: [image(svgUri(""), 28, "")], message3: "%1", args3: [statement("SUBSTACK2")] }, STACK),
     flow("control_repeat_until", "keep doing this until %1", [bool("CONDITION")], { message1: "%1", args1: [statement("SUBSTACK")], ...again }, STACK),
     {
       ...flow(
         "control_stop",
         "stop %1",
-        [{ type: "field_dropdown", name: "STOP_OPTION", options: () => (ctx.current?.target().isStage ? [["everything", "all"], ["this script", "this script"], ["the scene's other scripts", "other scripts in stage"]] : [["everything", "all"], ["this script", "this script"], ["my other scripts", "other scripts in sprite"]]) }],
+        [{ type: "field_dropdown", name: "STOP_OPTION", options: () => topt(ctx.current?.target().isStage ? [["everything", "all"], ["this script", "this script"], ["the scene's other scripts", "other scripts in stage"]] : [["everything", "all"], ["this script", "this script"], ["my other scripts", "other scripts in sprite"]]) }],
         {},
         { previousStatement: null },
       ),
@@ -464,7 +488,7 @@ export function registerBlocks() {
     defs.push({ type, message0: "%1", args0: [{ type: "field_dropdown", name: field, options }], output: null, outputShape: 2, style: `${category}_menu` });
 
   // "stop my other scripts" can have blocks under it; "stop everything / this script" can't.
-  Blockly.Extensions.registerMutator(
+  if (first) Blockly.Extensions.registerMutator(
     "stop_shape",
     {
       saveExtraState(this: Blockly.Block) {
@@ -576,19 +600,19 @@ const FLOW_WORDS: Record<string, [string, (string | null)[]]> = {
 /** How a block reads on screen, without needing a workspace. */
 export function blockTemplate(type: string): BlockTemplate | null {
   const flow = FLOW_WORDS[type];
-  if (flow) return { category: "control", message: flow[0], args: flow[1], hat: false };
+  if (flow) return { category: "control", message: t(flow[0]), args: flow[1], hat: false };
   const def = DEFS.find((d) => d[0] === type);
   if (!def) return null;
   const [, category, message, args, extra] = def;
   return {
     category,
-    message,
+    message: t(message),
     args: args.map((a) => (a && typeof a === "object" && "name" in a && (a as { type?: string }).type !== "field_image" ? String((a as { name: string }).name) : null)),
     hat: !!extra && "nextStatement" in extra && !("previousStatement" in extra) && !("output" in extra),
   };
 }
 
-/** Friendly names for the special values menus store. */
+/** Friendly names for the special values menus store (English; show them through t()). */
 export const MENU_WORDS: Record<string, string> = {
   _random_: "anywhere",
   _mouse_: "the pointer",

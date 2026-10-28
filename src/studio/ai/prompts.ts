@@ -1,6 +1,8 @@
 import { MATH_KINDS } from "../../shared/math";
 import { grammarItem, normalize, question, word } from "../../shared/normalize";
 import type { Game, GrammarItem, Passage, Question, Template, Word } from "../../shared/types";
+import { getLang, t } from "../i18n";
+import { gameDefaults } from "../templates";
 
 const QUESTION_FORMAT = `  { "type": "mcq", "q": "...", "options": ["...", "..."], "answer": index of the right option, "explain": "optional" }
   { "type": "tf", "q": "statement", "answer": true | false, "explain": "..." }
@@ -56,7 +58,7 @@ Pick the template that fits: quiz, math, grammar, vocab or reading when the idea
 ${SCHEMA}
 
 ${RULES}
-${game ? `\nTHE CURRENT GAME (change this one unless the teacher asks for a new game):\n\`\`\`game\n${JSON.stringify(strip(game))}\n\`\`\`` : ""}`;
+${getLang() === "fr" ? '- The teacher uses the studio in French. Reply in French. Unless they ask for another language, write games in French with "speech": "fr-FR" and "ui": "fr", using French typography.\n' : ""}${game ? `\nTHE CURRENT GAME (change this one unless the teacher asks for a new game):\n\`\`\`game\n${JSON.stringify(strip(game))}\n\`\`\`` : ""}`;
 }
 
 /** What the model needs to see of a game: no ids or bookkeeping. */
@@ -117,7 +119,7 @@ export function readReply(raw: string, current: Game | null): Reply {
       } else {
         const parsed = looseJson(body) as Record<string, unknown>;
         if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("not a game");
-        game = normalize({ ...parsed, settings: { ...(current?.settings || {}), ...((parsed.settings as object) || {}) } }, keepOf(current));
+        game = normalize({ ...parsed, settings: { ...(current?.settings || gameDefaults()), ...((parsed.settings as object) || {}) } }, keepOf(current));
       }
     } catch {
       broken = true;
@@ -128,7 +130,7 @@ export function readReply(raw: string, current: Game | null): Reply {
 }
 
 const keepOf = (g: Game | null) => (g ? { id: g.id, created: g.created, app: g.app } : undefined);
-const titleOf = (html: string) => html.match(/<title>([^<]*)<\/title>/i)?.[1]?.trim() || "New game";
+const titleOf = (html: string) => html.match(/<title>([^<]*)<\/title>/i)?.[1]?.trim() || t("New game");
 
 /* ---------- one-shot generators used by the editors ---------- */
 

@@ -3,6 +3,7 @@ import type { Check, CheckKind, CodeProject, Feedback, Mission } from "../../cod
 
 export type { Check, CheckKind, Feedback, Mission, MissionStep } from "../../code/types";
 import { uid } from "../../shared/random";
+import { t } from "../i18n";
 
 /**
  * Teachers supervise without a server. A challenge travels to students as a link
@@ -57,6 +58,7 @@ const ANY: Record<Exclude<CheckKind, "characters" | "backgrounds" | "outfits">, 
   draw: ["pen_penDown", "pen_stamp"],
 };
 
+// Labels are English; checkLabel() translates them.
 export const CHECKS: { kind: CheckKind; label: string; counted?: boolean }[] = [
   { kind: "move", label: "Something moves" },
   { kind: "say", label: "A character says or thinks something" },
@@ -79,7 +81,7 @@ export const CHECKS: { kind: CheckKind; label: string; counted?: boolean }[] = [
   { kind: "outfits", label: "A character has at least N outfits", counted: true },
 ];
 
-export const checkLabel = (c: Check) => (CHECKS.find((x) => x.kind === c.kind)?.label || c.kind).replace("N", String(c.n ?? 2));
+export const checkLabel = (c: Check) => t(CHECKS.find((x) => x.kind === c.kind)?.label || c.kind).replace("N", String(c.n ?? 2));
 
 /** Every block type used anywhere in the project. */
 export function blockTypes(p: CodeProject): Set<string> {
@@ -121,11 +123,11 @@ export function newChallenge(starter: CodeProject, teacher: string): Challenge {
     v: 1,
     id,
     challengeId: id,
-    title: "New challenge",
+    title: t("New challenge"),
     intro: "",
     steps: [
-      { id: uid(), text: "Make your character move", check: { kind: "move" } },
-      { id: uid(), text: "Make it say something", check: { kind: "say" } },
+      { id: uid(), text: t("Make your character move"), check: { kind: "move" } },
+      { id: uid(), text: t("Make it say something"), check: { kind: "say" } },
     ],
     categories: null,
     teacher,
@@ -178,7 +180,7 @@ export async function classFileContents(file: File): Promise<Challenge | HandIn>
   const data = JSON.parse(embedded ? embedded[1] : text);
   if (data?.kind === "challenge" && data.starter) return data as Challenge;
   if (data?.kind === "hand-in" && data.project) return data as HandIn;
-  throw new Error("That isn't a challenge or a hand-in.");
+  throw new Error(t("That isn't a challenge or a hand-in."));
 }
 
 /** Hand a file to the phone's share sheet (WhatsApp, email, Classroom…) or download it. */

@@ -15,6 +15,7 @@ import { getSigningKey } from "../apk/keys";
 import { projects as table } from "../db";
 import { download, kb, slug } from "../exporting";
 import { go, useApp } from "../store";
+import { t } from "../i18n";
 import { Field, Icon, Modal } from "../ui";
 import { translate, type WebTranslation } from "../../code/web/translate";
 import { webZip } from "../../code/web/package";
@@ -59,9 +60,9 @@ export function CodeEditor({ id }: { id: string }) {
   if (project === null)
     return (
       <div className="page">
-        <p>This project isn't in this browser.</p>
+        <p>{t("This project isn't in this browser.")}</p>
         <a className="btn btn-primary" href="#/code">
-          Game Lab
+          {t("Game Lab")}
         </a>
       </div>
     );
@@ -126,7 +127,7 @@ function Editor({ initial }: { initial: CodeProject }) {
     window.clearTimeout(saveTimer.current);
     let p = projectRef.current;
     if (rp.current) p = absorb(p, rp.current);
-    table.put({ ...p, updated: Date.now() }).catch(() => toast("Couldn't save in this browser.", "error"));
+    table.put({ ...p, updated: Date.now() }).catch(() => toast(t("Couldn't save in this browser."), "error"));
   }, [toast]);
 
   // Once the editor has closed, save straight away: a late save would overwrite changes
@@ -178,7 +179,7 @@ function Editor({ initial }: { initial: CodeProject }) {
     }
     try {
       const next = buildRuntime(p, factoryFor(p, true), {
-        onError: (t, m) => setErrors((e) => [...e.slice(-4), `${t === "_stage_" ? "Scene" : t}: ${m}`]),
+        onError: (who, m) => setErrors((e) => [...e.slice(-4), `${who === "_stage_" ? t("Scene") : who}${t(": ")}${m}`]),
         onReport: (blockId, value) => blocks.current?.report(blockId, value),
       });
       next.editorMode = true;
@@ -193,7 +194,7 @@ function Editor({ initial }: { initial: CodeProject }) {
       setEdited(false);
       if (import.meta.env.DEV) (window as unknown as { __rp: unknown }).__rp = next;
     } catch (e) {
-      setErrors((x) => [...x, `Couldn't start: ${(e as Error).message}`]);
+      setErrors((x) => [...x, t("Couldn't start: {why}", { why: (e as Error).message })]);
     }
   }, [scheduleSave]);
 
@@ -361,15 +362,15 @@ function Editor({ initial }: { initial: CodeProject }) {
     setTargetId(copy.id);
   };
 
-  const remove = (t: Target) =>
+  const remove = (who: Target) =>
     setDialog({
       kind: "confirm",
-      title: `Delete ${t.name}?`,
-      text: "Its outfits, sounds and blocks go too.",
+      title: t("Delete {name}?", { name: who.name }),
+      text: t("Its outfits, sounds and blocks go too."),
       resolve: (ok) => {
         if (!ok) return;
-        update((p) => ({ ...p, sprites: p.sprites.filter((s) => s.id !== t.id) }));
-        if (targetId === t.id) setTargetId(projectRef.current.stage.id);
+        update((p) => ({ ...p, sprites: p.sprites.filter((s) => s.id !== who.id) }));
+        if (targetId === who.id) setTargetId(projectRef.current.stage.id);
       },
     });
 
@@ -441,33 +442,33 @@ function Editor({ initial }: { initial: CodeProject }) {
   const uiStyle = { "--ui": prefs.ui } as CSSProperties;
 
   const tabs: { id: typeof tab; label: string }[] = [
-    { id: "code", label: "Blocks" },
-    { id: "map", label: "Map" },
-    { id: "costumes", label: target.isStage ? "Backgrounds" : "Outfits" },
-    { id: "sounds", label: "Sounds" },
-    { id: "web", label: "Web" },
+    { id: "code", label: t("Blocks") },
+    { id: "map", label: t("Map") },
+    { id: "costumes", label: target.isStage ? t("Backgrounds") : t("Outfits") },
+    { id: "sounds", label: t("Sounds") },
+    { id: "web", label: t("Web") },
   ];
 
   return (
     <div className={`code-editor${prefs.dyslexia ? " is-dyslexia" : ""}${full ? " is-full" : ""}`} style={uiStyle}>
       <header className="ce-bar">
-        <a className="icon-btn" href="#/code" aria-label="All my games" title="All my games">
+        <a className="icon-btn" href="#/code" aria-label={t("All my games")} title={t("All my games")}>
           <Icon name="arrowL" />
         </a>
-        <input className="ce-title" value={project.title} aria-label="Game name" onChange={(e) => update((p) => ({ ...p, title: e.target.value }))} onBlur={() => !project.title.trim() && update((p) => ({ ...p, title: "Untitled" }))} />
-        <nav className="seg ce-tabs" aria-label="Editor">
-          {tabs.map((t) => (
-            <button key={t.id} className={tab === t.id ? "on" : ""} aria-pressed={tab === t.id} onClick={() => (blocks.current?.flush(), setTab(t.id))}>
-              {t.label}
+        <input className="ce-title" value={project.title} aria-label={t("Game name")} onChange={(e) => update((p) => ({ ...p, title: e.target.value }))} onBlur={() => !project.title.trim() && update((p) => ({ ...p, title: t("Untitled") }))} />
+        <nav className="seg ce-tabs" aria-label={t("Editor")}>
+          {tabs.map((x) => (
+            <button key={x.id} className={tab === x.id ? "on" : ""} aria-pressed={tab === x.id} onClick={() => (blocks.current?.flush(), setTab(x.id))}>
+              {x.label}
             </button>
           ))}
         </nav>
         <span className="spacer" />
-        <button className="btn btn-ghost btn-sm" onClick={() => setModal("settings")} aria-label="Display and accessibility">
-          <Icon name="eye" size={18} /> <span className="hide-sm">View</span>
+        <button className="btn btn-ghost btn-sm" onClick={() => setModal("settings")} aria-label={t("Display and accessibility")}>
+          <Icon name="eye" size={18} /> <span className="hide-sm">{t("View")}</span>
         </button>
         <button className="btn btn-primary btn-sm" onClick={() => (blocks.current?.flush(), persist(), setModal("share"))}>
-          <Icon name="share" size={18} /> <span className="hide-sm">Save & share</span>
+          <Icon name="share" size={18} /> <span className="hide-sm">{t("Save & share")}</span>
         </button>
       </header>
 
@@ -500,14 +501,14 @@ function Editor({ initial }: { initial: CodeProject }) {
               <div className="js-panel">
                 <div className="js-head">
                   <strong>script.js</strong>
-                  <span className="muted">from your blocks</span>
+                  <span className="muted">{t("from your blocks")}</span>
                   <span className="spacer" />
-                  <button className="icon-btn icon-btn-sm" aria-label="Close JavaScript" onClick={() => setShowJs(false)}>
+                  <button className="icon-btn icon-btn-sm" aria-label={t("Close JavaScript")} onClick={() => setShowJs(false)}>
                     ✕
                   </button>
                 </div>
                 <Suspense fallback={<div className="code-view" aria-busy />}>
-                  <CodeView value={web.files.js} language="js" readOnly dark={dark} label="script.js, made from your blocks" lines={selectedLines} onLineClick={lineClicked} scrollTo={selectedLines ? undefined : sectionStart} />
+                  <CodeView value={web.files.js} language="js" readOnly dark={dark} label={t("script.js, made from your blocks")} lines={selectedLines} onLineClick={lineClicked} scrollTo={selectedLines ? undefined : sectionStart} />
                 </Suspense>
               </div>
             )}
@@ -541,8 +542,8 @@ function Editor({ initial }: { initial: CodeProject }) {
                 onRemake={() =>
                   setDialog({
                     kind: "confirm",
-                    title: "Make the files again from the blocks?",
-                    text: "Your changes to index.html, style.css and script.js will be replaced.",
+                    title: t("Make the files again from the blocks?"),
+                    text: t("Your changes to index.html, style.css and script.js will be replaced."),
                     resolve: (ok) => ok && update((p) => ({ ...p, web: undefined })),
                   })
                 }
@@ -553,58 +554,58 @@ function Editor({ initial }: { initial: CodeProject }) {
 
         <aside className="ce-right">
           {project.mission && <MissionCard project={project} update={update} onHandIn={() => (blocks.current?.flush(), persist(), setModal("handin"))} />}
-          <section className="scene-card" aria-label="Scene">
+          <section className="scene-card" aria-label={t("Scene")}>
             <div className="scene-head">
-              <strong>Scene</strong>
+              <strong>{t("Scene")}</strong>
               <span className="spacer" />
-              <div className="seg seg-small stage-sizes" role="radiogroup" aria-label="Scene size">
+              <div className="seg seg-small stage-sizes" role="radiogroup" aria-label={t("Scene size")}>
                 {(["small", "normal", "large"] as StageSize[]).map((s) => (
                   <button key={s} className={stageSize === s ? "on" : ""} aria-pressed={stageSize === s} onClick={() => setStageSize(s)}>
                     {s === "small" ? "S" : s === "normal" ? "M" : "L"}
                   </button>
                 ))}
               </div>
-              <button className="icon-btn icon-btn-sm" aria-label={full ? "Leave full screen" : "Full screen"} onClick={() => setFull(!full)}>
+              <button className="icon-btn icon-btn-sm" aria-label={full ? t("Leave full screen") : t("Full screen")} onClick={() => setFull(!full)}>
                 {full ? "✕" : "⛶"}
               </button>
             </div>
             <div className="stage-frame">
               <div className="stage-box" ref={stageBox}>
-                <div ref={stageEl} className="stage-canvas" aria-label="Scene" />
+                <div ref={stageEl} className="stage-canvas" aria-label={t("Scene")} />
               </div>
               <div className="play-bar">
-                <button className={`play-btn${running ? " on" : ""}`} onClick={greenFlag} aria-label="Play" title="Play">
+                <button className={`play-btn${running ? " on" : ""}`} onClick={greenFlag} aria-label={t("Play")} title={t("Play")}>
                   <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
                     <path d="M8 5.5v13l10.5-6.5z" fill="currentColor" />
                   </svg>
-                  <span>{running && edited ? "Restart" : running ? "Playing" : "Play"}</span>
+                  <span>{running && edited ? t("Restart") : running ? t("Playing") : t("Play")}</span>
                 </button>
-                <button className="stop-btn" onClick={stop} aria-label="Stop" title="Stop">
+                <button className="stop-btn" onClick={stop} aria-label={t("Stop")} title={t("Stop")}>
                   <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
                     <rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor" />
                   </svg>
                 </button>
                 {full && (
-                  <button className="stop-btn" onClick={() => setFull(false)} aria-label="Leave full screen">
+                  <button className="stop-btn" onClick={() => setFull(false)} aria-label={t("Leave full screen")}>
                     ✕
                   </button>
                 )}
               </div>
               <div className="speed-bar">
-                <div className="seg seg-small debug-modes" role="radiogroup" aria-label="Speed">
-                  <button className={debug === "off" ? "on" : ""} aria-pressed={debug === "off"} onClick={() => setDebugMode("off")} title="Normal speed">
-                    Normal
+                <div className="seg seg-small debug-modes" role="radiogroup" aria-label={t("Speed")}>
+                  <button className={debug === "off" ? "on" : ""} aria-pressed={debug === "off"} onClick={() => setDebugMode("off")} title={t("Normal speed")}>
+                    {t("Normal")}
                   </button>
-                  <button className={debug === "slow" ? "on" : ""} aria-pressed={debug === "slow"} onClick={() => setDebugMode("slow")} title="Slow motion: see each block as it runs">
-                    Slow
+                  <button className={debug === "slow" ? "on" : ""} aria-pressed={debug === "slow"} onClick={() => setDebugMode("slow")} title={t("Slow motion: see each block as it runs")}>
+                    {t("Slow")}
                   </button>
-                  <button className={debug === "step" ? "on" : ""} aria-pressed={debug === "step"} onClick={() => setDebugMode("step")} title="One block at a time">
-                    Step
+                  <button className={debug === "step" ? "on" : ""} aria-pressed={debug === "step"} onClick={() => setDebugMode("step")} title={t("One block at a time")}>
+                    {t("Step")}
                   </button>
                 </div>
                 {debug === "step" && (
                   <button className="btn btn-soft btn-sm next-btn" onClick={stepOnce}>
-                    Next block
+                    {t("Next block")}
                   </button>
                 )}
               </div>
@@ -618,9 +619,9 @@ function Editor({ initial }: { initial: CodeProject }) {
             </div>
           )}
 
-          <section className="cast" aria-label="Characters">
+          <section className="cast" aria-label={t("Characters")}>
             <div className="cast-head">
-              <strong>Characters</strong>
+              <strong>{t("Characters")}</strong>
               <span className="muted">{project.sprites.length}</span>
             </div>
             <ul className="cast-list">
@@ -629,7 +630,7 @@ function Editor({ initial }: { initial: CodeProject }) {
                   <span className="cast-pic">
                     <img src={svgUrl(costumeSvg(project.stage.costumes[project.stage.costume]))} alt="" />
                   </span>
-                  <span className="cast-name">Scene</span>
+                  <span className="cast-name">{t("Scene")}</span>
                 </button>
               </li>
               {project.sprites.map((s) => (
@@ -647,7 +648,7 @@ function Editor({ initial }: { initial: CodeProject }) {
                   <span className="cast-pic">
                     <Icon name="plus" size={24} />
                   </span>
-                  <span className="cast-name">Add</span>
+                  <span className="cast-name">{t("Add")}</span>
                 </button>
               </li>
             </ul>
@@ -656,10 +657,10 @@ function Editor({ initial }: { initial: CodeProject }) {
           {target.isStage ? (
             <section className="who-card">
               <div className="who-head">
-                <strong>Scene</strong>
+                <strong>{t("Scene")}</strong>
                 <span className="spacer" />
                 <button className="btn btn-soft btn-sm" onClick={() => setModal("backdrop")}>
-                  <Icon name="plus" size={16} /> Background
+                  <Icon name="plus" size={16} /> {t("Background")}
                 </button>
               </div>
             </section>
@@ -667,22 +668,22 @@ function Editor({ initial }: { initial: CodeProject }) {
             live && (
               <section className="who-card">
                 <div className="who-head">
-                  <input className="who-name" aria-label="Character name" value={target.name} onChange={(e) => updateTarget({ ...target, name: e.target.value })} onBlur={() => !target.name.trim() && updateTarget({ ...target, name: uniqueName("Character", project.sprites.map((s) => s.name)) })} />
-                  <button className={`icon-btn icon-btn-sm${target.visible ? "" : " is-off"}`} aria-pressed={target.visible} aria-label={target.visible ? "Showing: hide it" : "Hidden: show it"} title={target.visible ? "Showing" : "Hidden"} onClick={() => (setLiveProp({ visible: !target.visible }), updateTarget({ ...target, visible: !target.visible }))}>
+                  <input className="who-name" aria-label={t("Character name")} value={target.name} onChange={(e) => updateTarget({ ...target, name: e.target.value })} onBlur={() => !target.name.trim() && updateTarget({ ...target, name: uniqueName(t("Character"), project.sprites.map((s) => s.name)) })} />
+                  <button className={`icon-btn icon-btn-sm${target.visible ? "" : " is-off"}`} aria-pressed={target.visible} aria-label={target.visible ? t("Showing: hide it") : t("Hidden: show it")} title={target.visible ? t("Showing") : t("Hidden")} onClick={() => (setLiveProp({ visible: !target.visible }), updateTarget({ ...target, visible: !target.visible }))}>
                     <Icon name={target.visible ? "eye" : "stop"} size={18} />
                   </button>
-                  <button className="icon-btn icon-btn-sm" aria-label={`Duplicate ${target.name}`} title="Duplicate" onClick={() => duplicate(target)}>
+                  <button className="icon-btn icon-btn-sm" aria-label={t("Duplicate {name}", { name: target.name })} title={t("Duplicate")} onClick={() => duplicate(target)}>
                     <Icon name="copy" size={18} />
                   </button>
-                  <button className="icon-btn icon-btn-sm danger-hover" aria-label={`Delete ${target.name}`} title="Delete" onClick={() => remove(target)}>
+                  <button className="icon-btn icon-btn-sm danger-hover" aria-label={t("Delete {name}", { name: target.name })} title={t("Delete")} onClick={() => remove(target)}>
                     <Icon name="trash" size={18} />
                   </button>
                 </div>
                 <div className="who-props">
                   <NumberBox label="x" value={live.x} onCommit={(x) => setLiveProp({ x })} />
                   <NumberBox label="y" value={live.y} onCommit={(y) => setLiveProp({ y })} />
-                  <NumberBox label="Size" value={live.size} onCommit={(size) => setLiveProp({ size })} />
-                  <NumberBox label="Facing" value={live.direction} onCommit={(direction) => setLiveProp({ direction })} />
+                  <NumberBox label={t("Size")} value={live.size} onCommit={(size) => setLiveProp({ size })} />
+                  <NumberBox label={t("Facing")} value={live.direction} onCommit={(direction) => setLiveProp({ direction })} />
                 </div>
               </section>
             )
@@ -691,10 +692,10 @@ function Editor({ initial }: { initial: CodeProject }) {
       </div>
 
       <DialogHost request={dialog} done={() => setDialog(null)} />
-      {modal === "sprite" && <LibraryModal title="Add a character" items={spriteItems()} onPick={addSprite} onClose={() => setModal(null)} />}
+      {modal === "sprite" && <LibraryModal title={t("Add a character")} items={spriteItems()} onPick={addSprite} onClose={() => setModal(null)} />}
       {modal === "backdrop" && (
         <LibraryModal
-          title="Add a background"
+          title={t("Add a background")}
           items={backdropItems()}
           onPick={(c) => update((p) => ({ ...p, stage: { ...p.stage, costumes: [...p.stage.costumes, c], costume: p.stage.costumes.length } }))}
           onClose={() => setModal(null)}
@@ -726,9 +727,9 @@ function NumberBox({ label, value, onCommit }: { label: string; value: number; o
 function SettingsModal({ prefs, setPrefs, project, update, onClose }: { prefs: Prefs; setPrefs: (p: Prefs) => void; project: CodeProject; update: (fn: (p: CodeProject) => CodeProject) => void; onClose: () => void }) {
   const set = (patch: Partial<Prefs>) => setPrefs({ ...prefs, ...patch });
   return (
-    <Modal title="View" onClose={onClose}>
-      <Field label="Text and buttons">
-        <div className="seg" role="radiogroup" aria-label="Text size">
+    <Modal title={t("View")} onClose={onClose}>
+      <Field label={t("Text and buttons")}>
+        <div className="seg" role="radiogroup" aria-label={t("Text size")}>
           {[1, 1.15, 1.3, 1.5].map((n) => (
             <button key={n} className={prefs.ui === n ? "on" : ""} aria-pressed={prefs.ui === n} onClick={() => set({ ui: n })}>
               {Math.round(n * 100)}%
@@ -736,8 +737,8 @@ function SettingsModal({ prefs, setPrefs, project, update, onClose }: { prefs: P
           ))}
         </div>
       </Field>
-      <Field label="Block size">
-        <div className="seg" role="radiogroup" aria-label="Block size">
+      <Field label={t("Block size")}>
+        <div className="seg" role="radiogroup" aria-label={t("Block size")}>
           {[0.7, 0.9, 1.15, 1.5, 2].map((n) => (
             <button key={n} className={prefs.blocks === n ? "on" : ""} aria-pressed={prefs.blocks === n} onClick={() => set({ blocks: n })}>
               {Math.round((n / 0.9) * 100)}%
@@ -747,24 +748,24 @@ function SettingsModal({ prefs, setPrefs, project, update, onClose }: { prefs: P
       </Field>
       <label className="check">
         <input type="checkbox" checked={prefs.highContrast} onChange={(e) => set({ highContrast: e.target.checked })} />
-        High-contrast blocks
+        {t("High-contrast blocks")}
       </label>
       <label className="check">
         <input type="checkbox" checked={prefs.dyslexia} onChange={(e) => set({ dyslexia: e.target.checked })} />
-        Easy-to-read font
+        {t("Easy-to-read font")}
       </label>
       <label className="check">
         <input type="checkbox" checked={prefs.readAloud} onChange={(e) => set({ readAloud: e.target.checked })} />
-        Read selected blocks aloud
+        {t("Read selected blocks aloud")}
       </label>
       <hr className="rule" />
       <label className="check">
         <input type="checkbox" checked={project.turbo} onChange={(e) => update((p) => ({ ...p, turbo: e.target.checked }))} />
-        Super speed (no waiting between frames)
+        {t("Super speed (no waiting between frames)")}
       </label>
       <label className="check">
         <input type="checkbox" checked={project.touchPad} onChange={(e) => update((p) => ({ ...p, touchPad: e.target.checked }))} />
-        Arrow keys on touch screens when shared
+        {t("Arrow keys on touch screens when shared")}
       </label>
     </Modal>
   );
@@ -781,30 +782,30 @@ function ShareModal({ project, update, onClose }: { project: CodeProject; update
   const apk = async () => {
     setBusy(true);
     try {
-      if (!APP_ID_RE.test(appId)) throw new Error("Bad app id");
+      if (!APP_ID_RE.test(appId)) throw new Error(t("The app id must look like org.school.mygame."));
       const versionCode = lastCode + 1;
       const key = await getSigningKey();
       const icon = await makeIconFromSvg(iconSvg(project));
-      const blob = await buildApk(icon, page, { id: appId, name: project.title.slice(0, 30) || "Game Lab", version: `1.${versionCode}`, versionCode, keepScreenOn: true }, key);
+      const blob = await buildApk(icon, page, { id: appId, name: project.title.slice(0, 30) || t("Game Lab"), version: `1.${versionCode}`, versionCode, keepScreenOn: true }, key);
       download(`${slug(project.title)}-v${versionCode}.apk`, blob, "application/vnd.android.package-archive");
       localStorage.setItem(`ds-apk-${project.id}`, String(versionCode));
       setLastCode(versionCode);
-      toast(`App ready: ${kb(blob.size)}`);
+      toast(t("App ready: {size}", { size: kb(blob.size) }));
     } catch (e) {
-      toast((e as Error).message || "Couldn't build the app.", "error");
+      toast((e as Error).message || t("Couldn't build the app."), "error");
     } finally {
       setBusy(false);
     }
   };
 
   return (
-    <Modal title="Save & share" wide onClose={onClose}>
+    <Modal title={t("Save & share")} wide onClose={onClose}>
       <div className="share-rows">
         <section className="share-row">
           <Icon name="file" size={22} />
           <div className="grow">
-            <strong>App file (.html)</strong>
-            <p className="muted">Plays in any browser without internet. Open it here again to keep editing.</p>
+            <strong>{t("App file (.html)")}</strong>
+            <p className="muted">{t("Plays in any browser without internet. Open it here again to keep editing.")}</p>
           </div>
           <button className="btn btn-primary btn-sm" onClick={() => download(`${slug(project.title)}.html`, page)}>
             <Icon name="download" size={16} /> {kb(new Blob([page]).size)}
@@ -813,8 +814,8 @@ function ShareModal({ project, update, onClose }: { project: CodeProject; update
         <section className="share-row">
           <Icon name="link" size={22} />
           <div className="grow">
-            <strong>Link</strong>
-            <p className="muted">{link.length > 60000 ? "Too big for a link; use the app file." : "The project travels inside the link."}</p>
+            <strong>{t("Link")}</strong>
+            <p className="muted">{link.length > 60000 ? t("Too big for a link; use the app file.") : t("The project travels inside the link.")}</p>
           </div>
           <button
             className="btn btn-soft btn-sm"
@@ -822,37 +823,37 @@ function ShareModal({ project, update, onClose }: { project: CodeProject; update
             onClick={async () => {
               try {
                 await navigator.clipboard.writeText(link);
-                toast("Link copied");
+                toast(t("Link copied"));
               } catch {
-                toast("Couldn't copy the link.", "error");
+                toast(t("Couldn't copy the link."), "error");
               }
             }}
           >
-            <Icon name="copy" size={16} /> Copy
+            <Icon name="copy" size={16} /> {t("Copy")}
           </button>
         </section>
         <section className="share-row">
           <Icon name="android" size={22} />
           <div className="grow">
-            <strong>Android app</strong>
-            <p className="muted">{lastCode ? `Next build is version ${lastCode + 1} and updates installed copies.` : "Installs like any app; works offline."}</p>
+            <strong>{t("Android app")}</strong>
+            <p className="muted">{lastCode ? t("Next build is version {n} and updates installed copies.", { n: lastCode + 1 }) : t("Installs like any app; works offline.")}</p>
           </div>
           <button className="btn btn-soft btn-sm" disabled={busy} onClick={apk}>
-            <Icon name="download" size={16} /> {busy ? "Building…" : "APK"}
+            <Icon name="download" size={16} /> {busy ? t("Building…") : "APK"}
           </button>
         </section>
         <section className="share-row">
           <Icon name="code" size={22} />
           <div className="grow">
-            <strong>Web project (.zip)</strong>
-            <p className="muted">index.html, style.css and script.js with the pictures and sounds, to open in any code editor.</p>
+            <strong>{t("Web project (.zip)")}</strong>
+            <p className="muted">{t("index.html, style.css and script.js with the pictures and sounds, to open in any code editor.")}</p>
           </div>
           <button
             className="btn btn-ghost btn-sm"
             onClick={() => {
-              const t = translate(project);
-              const files = project.web ? { html: project.web.html, css: project.web.css, js: project.web.js } : t.files;
-              download(`${slug(project.title)}-web.zip`, new Blob([webZip(files, t.assets, project.title) as BlobPart], { type: "application/zip" }), "application/zip");
+              const tr = translate(project);
+              const files = project.web ? { html: project.web.html, css: project.web.css, js: project.web.js } : tr.files;
+              download(`${slug(project.title)}-web.zip`, new Blob([webZip(files, tr.assets, project.title) as BlobPart], { type: "application/zip" }), "application/zip");
             }}
           >
             <Icon name="download" size={16} /> ZIP
@@ -861,8 +862,8 @@ function ShareModal({ project, update, onClose }: { project: CodeProject; update
         <section className="share-row">
           <Icon name="game" size={22} />
           <div className="grow">
-            <strong>Scratch project (.sb3)</strong>
-            <p className="muted">Opens in Scratch and other Scratch editors.</p>
+            <strong>{t("Scratch project (.sb3)")}</strong>
+            <p className="muted">{t("Opens in Scratch and other Scratch editors.")}</p>
           </div>
           <button
             className="btn btn-ghost btn-sm"
@@ -877,17 +878,17 @@ function ShareModal({ project, update, onClose }: { project: CodeProject; update
         <section className="share-row">
           <Icon name="edit" size={22} />
           <div className="grow">
-            <strong>Project file (.json)</strong>
-            <p className="muted">Readable text, for keeping or for other tools.</p>
+            <strong>{t("Project file (.json)")}</strong>
+            <p className="muted">{t("Readable text, for keeping or for other tools.")}</p>
           </div>
           <button className="btn btn-ghost btn-sm" onClick={() => download(`${slug(project.title)}.json`, projectJson(project), "application/json")}>
             <Icon name="download" size={16} /> JSON
           </button>
         </section>
       </div>
-      <p className="muted small">Saved in this browser as you work.</p>
+      <p className="muted small">{t("Saved in this browser as you work.")}</p>
       <button className="link-btn" onClick={() => (update((p) => ({ ...p })), go("code"))}>
-        Back to all projects
+        {t("Back to all projects")}
       </button>
     </Modal>
   );

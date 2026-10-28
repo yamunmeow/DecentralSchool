@@ -12,10 +12,15 @@
  * STORIES list becomes reading games (one per language), and the multiplication
  * quest becomes a maths game. Anything else is still playable and can be edited
  * as its own HTML.
+ *
+ * Each known game also gets a French copy (index.fr.html, see library-fr.mjs) and
+ * French-button versions of its templates (*.fr.json). To remake only those from
+ * what is already in public/library/: node scripts/import-games.mjs --french
  */
-import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 import vm from "node:vm";
+import { mathQuestFr, readingQuestFr, wordQuestFr } from "./library-fr.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const out = join(root, "public", "library");
@@ -93,6 +98,35 @@ const mathTemplate = () => [
   },
 ];
 
+/** French titles for the templates whose players get French buttons. */
+const FR_TITLES = {
+  "Word Quest": ["Défi Vocabulaire", "Apprends des mots anglais. Écoute, joue et épelle."],
+  "Reading Quest": ["Défi Lecture (anglais)", "De petites histoires en anglais à lire, puis des questions."],
+  "Math Quest": ["Défi Maths", "Les tables de multiplication de 1 à 9."],
+};
+
+function addFrench(dest) {
+  const read = (f) => readFileSync(join(dest, f), "utf8");
+  const html = read("index.html");
+  if (existsSync(join(dest, "content.json"))) {
+    const { page, content } = wordQuestFr(html, JSON.parse(read("content.json")));
+    writeFileSync(join(dest, "index.fr.html"), page);
+    writeFileSync(join(dest, "content.fr.json"), JSON.stringify(content, null, 1) + "\n");
+  } else if (html.includes("const STORIES=[")) writeFileSync(join(dest, "index.fr.html"), readingQuestFr(html));
+  else if (/multiplication/i.test(html)) writeFileSync(join(dest, "index.fr.html"), mathQuestFr(html));
+  else return;
+  if (!existsSync(join(dest, "template.json"))) return;
+  const game = JSON.parse(read("template.json"));
+  const [title, subtitle] = FR_TITLES[game.title] || [game.title, game.subtitle];
+  const speech = game.template === "math" ? "fr-FR" : game.settings.speech;
+  writeFileSync(join(dest, "template.fr.json"), JSON.stringify({ ...game, title, subtitle, settings: { ...game.settings, ui: "fr", speech } }, null, 1) + "\n");
+}
+
+if (process.argv[2] === "--french") {
+  for (const name of readdirSync(out)) if (existsSync(join(out, name, "index.html"))) addFrench(join(out, name)), console.log(`French copy: public/library/${name}/`);
+  process.exit(0);
+}
+
 for (const src of process.argv.slice(2)) {
   const dir = resolve(src);
   const meta = JSON.parse(readFileSync(join(dir, "game.json"), "utf8"));
@@ -113,5 +147,6 @@ for (const src of process.argv.slice(2)) {
         ? mathTemplate()
         : [];
   for (const t of templates) writeFileSync(join(dest, t.file), JSON.stringify(t.game, null, 1) + "\n");
+  addFrench(dest);
   console.log(`${meta.name}: public/library/${name}/ (${templates.map((t) => t.file).join(", ") || "play only"})`);
 }

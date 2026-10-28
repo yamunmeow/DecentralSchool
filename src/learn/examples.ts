@@ -1,3 +1,4 @@
+import { EXAMPLES_FR } from "./examples.fr";
 import type { LearnMode } from "./types";
 
 /**
@@ -231,6 +232,9 @@ The cloud was so happy that it began to rain.
 The rain fell on the fields and the flowers grew tall.
 The farmers looked up and waved at the little cloud.
 The cloud waved back and floated on, looking for new places.`;
+
+/** The examples in the studio's language. */
+export const examplesFor = (lang: string) => (lang === "fr" ? EXAMPLES_FR : EXAMPLES);
 
 export const EXAMPLES: Example[] = [
   { id: "mood", mode: "sort", title: "Happy or sad?", blurb: "Sentences sorted by feeling.", rows: MOOD },

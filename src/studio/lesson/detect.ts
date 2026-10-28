@@ -2,6 +2,7 @@ import { MATH_KINDS } from "../../shared/math";
 import { normalize } from "../../shared/normalize";
 import { uid } from "../../shared/random";
 import type { Game, GrammarItem, MathKind, MathSet, Question, Template, UiLang, Word } from "../../shared/types";
+import { t, tn } from "../i18n";
 import { splitPassages, wordCount } from "../importText";
 
 /**
@@ -30,6 +31,7 @@ export interface Lesson {
   best: LessonKind;
 }
 
+// English; shown through t().
 export const KIND_LABEL: Record<LessonKind, string> = { quiz: "Quiz", math: "Maths", grammar: "Grammar", vocab: "Vocabulary", reading: "Story to read" };
 
 /* ---------- lines ---------- */
@@ -153,7 +155,7 @@ function vocabulary(lines: string[]): Word[] {
 
 /* ---------- grammar ---------- */
 
-const GRAMMAR_WORDS = /\b(tense|verbs?|nouns?|adjectives?|adverbs?|pronouns?|articles?|prepositions?|plurals?|singular|grammar|conjugat\w*|past simple|simple past|present (?:simple|continuous|perfect)|passive|conditional|modal|comparatives?|superlatives?|conjonction|verbe|temps|grammaire)\b/gi;
+const GRAMMAR_WORDS = /\b(tense|verbs?|nouns?|adjectives?|adverbs?|pronouns?|articles?|prepositions?|plurals?|singular|grammar|conjugat\w*|past simple|simple past|present (?:simple|continuous|perfect)|passive|conditional|modal|comparatives?|superlatives?|conjonction|verbes?|temps|grammaire|conjugaison|passé composé|imparfait|futur|présent|accords?|pluriels?|singulier|noms?|adjectifs?|pronoms?|déterminants?)\b/giu;
 
 function grammar(lines: string[]): GrammarItem[] {
   const out: GrammarItem[] = [];
@@ -180,9 +182,9 @@ function grammar(lines: string[]): GrammarItem[] {
       continue;
     }
     // "Put the words in order: school / to / goes / she" with the sentence on the next line.
-    const order = l.match(/^(?:put the words in order|unscramble|reorder|remets les mots dans l'ordre)\b.*?[:\-–]\s*(.*)$/i);
+    const order = l.match(/^(?:put the words in order|unscramble|reorder|remets les mots dans l'ordre|remettez les mots dans l'ordre|mets les mots dans l'ordre)\b.*?[:\-–]\s*(.*)$/i);
     if (order) {
-      const answer = lines[i + 1] && strip(lines[i + 1]).match(/^(?:answer|ans|correct)\s*[:\-–]\s*(.+)$/i)?.[1];
+      const answer = lines[i + 1] && strip(lines[i + 1]).match(/^(?:answer|ans|correct|réponse)\s*[:\-–]\s*(.+)$/i)?.[1];
       if (answer) {
         out.push({ type: "unscramble", text: answer });
         i++;
@@ -217,19 +219,19 @@ function exampleSentences(lines: string[]): GrammarItem[] {
 /* ---------- maths ---------- */
 
 const KIND_WORDS: [MathKind, RegExp][] = [
-  ["mul", /\b(multipl\w*|times tables?|product|×)|\d\s*[x×*]\s*\d/i],
-  ["div", /\b(divi\w*|quotient|share equally|÷)|\d\s*÷\s*\d/i],
-  ["add", /\b(addition|add|sum|plus|total)\b|\d\s*\+\s*\d/i],
-  ["sub", /\b(subtract\w*|minus|difference|take away)\b|\d\s*[−-]\s*\d/i],
-  ["frac-add", /\b(fractions?|numerator|denominator)\b|\b\d+\/\d+\b/i],
-  ["decimal", /\bdecimals?\b|\d\.\d/i],
+  ["mul", /\b(multipl\w*|times tables?|tables de multiplication|product|produit|×)|\d\s*[x×*]\s*\d/i],
+  ["div", /\b(divi\w*|quotient|share equally|partage\w*|÷)|\d\s*÷\s*\d/i],
+  ["add", /\b(addition|add|sum|somme|plus|total)\b|\d\s*\+\s*\d/i],
+  ["sub", /\b(subtract\w*|soustraction|minus|moins|difference|différence|take away)\b|\d\s*[−-]\s*\d/i],
+  ["frac-add", /\b(fractions?|numerator|numérateur|denominator|dénominateur)\b|\b\d+\/\d+\b/i],
+  ["decimal", /\b(decimals?|décima\w*)\b|\d[.,]\d/i],
   ["percent", /\b(percent\w*|pourcentage)\b|%/i],
-  ["linear", /\b(equations?|solve for|algebra)\b|\d?x\s*[+−-]\s*\d+\s*=/i],
-  ["area", /\b(area|perimeter|rectangle|square metres?|cm²|m²)\b/i],
-  ["time", /\b(o'clock|half past|quarter (?:past|to)|clock|minutes? (?:past|to))\b/i],
-  ["place", /\b(place value|hundreds|thousands|tens and ones)\b/i],
-  ["round", /\b(round(?:ing)? (?:to|off)|nearest (?:ten|hundred|thousand))\b/i],
-  ["integers", /\b(negative numbers?|integers?)\b/i],
+  ["linear", /\b(equations?|équations?|solve for|résous|algebra|algèbre)\b|\d?x\s*[+−-]\s*\d+\s*=/i],
+  ["area", /\b(area|aire|perimeter|périmètre|rectangle|square metres?|cm²|m²)\b/i],
+  ["time", /\b(o'clock|half past|quarter (?:past|to)|clock|minutes? (?:past|to)|heures? et (?:demie|quart)|moins le quart|horloge|lire l'heure)\b/i],
+  ["place", /\b(place value|valeur de position|hundreds|centaines|thousands|milliers|tens and ones|dizaines et unités)\b/i],
+  ["round", /\b(round(?:ing)? (?:to|off)|nearest (?:ten|hundred|thousand)|arrondi\w*)\b/i],
+  ["integers", /\b(negative numbers?|nombres négatifs|integers?|entiers relatifs)\b/i],
   ["powers", /\b(squares?|cubes?|square roots?|powers?)\b|²|√/i],
   ["word", /\b(how many|how much|altogether|left over|each)\b/i],
 ];
@@ -374,11 +376,11 @@ export function lessonGame(l: Lesson, kind: LessonKind, id = uid()): Game {
 /** One line about what was found, for the teacher. */
 export function foundSummary(l: Lesson, kind: LessonKind): string {
   const parts: string[] = [];
-  if (kind === "reading" && l.story) parts.push(`a text of ${wordCount(l.story)} words`);
-  if ((kind === "quiz" || kind === "reading") && l.questions.length) parts.push(`${l.questions.length} question${l.questions.length === 1 ? "" : "s"}`);
-  if ((kind === "quiz" || kind === "math") && l.sums.length) parts.push(`${l.sums.length} sum${l.sums.length === 1 ? "" : "s"}`);
-  if (kind === "math" && l.mathSets.length) parts.push(l.mathSets.map((s) => MATH_KINDS[s.kind].label.toLowerCase()).join(", "));
-  if ((kind === "vocab" || kind === "reading") && l.words.length) parts.push(`${l.words.length} word${l.words.length === 1 ? "" : "s"} with meanings`);
-  if (kind === "grammar" && l.grammar.length) parts.push(`${l.grammar.length} sentence${l.grammar.length === 1 ? "" : "s"}`);
-  return parts.join(" · ") || "a starting point to fill in";
+  if (kind === "reading" && l.story) parts.push(t("a text of {n} words", { n: wordCount(l.story) }));
+  if ((kind === "quiz" || kind === "reading") && l.questions.length) parts.push(tn(l.questions.length, "{n} question", "{n} questions"));
+  if ((kind === "quiz" || kind === "math") && l.sums.length) parts.push(tn(l.sums.length, "{n} sum", "{n} sums"));
+  if (kind === "math" && l.mathSets.length) parts.push(l.mathSets.map((s) => t(MATH_KINDS[s.kind].label).toLowerCase()).join(", "));
+  if ((kind === "vocab" || kind === "reading") && l.words.length) parts.push(tn(l.words.length, "{n} word with meanings", "{n} words with meanings"));
+  if (kind === "grammar" && l.grammar.length) parts.push(tn(l.grammar.length, "{n} sentence", "{n} sentences"));
+  return parts.join(" · ") || t("a starting point to fill in");
 }

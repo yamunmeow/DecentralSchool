@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { t } from "./i18n";
 import { Icon } from "./ui";
 
 type Theme = "light" | "dark";
@@ -44,8 +45,8 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
   return (
     <button
       className={`icon-btn theme-toggle ${className}`}
-      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-      title={dark ? "Light mode" : "Dark mode"}
+      aria-label={dark ? t("Switch to light mode") : t("Switch to dark mode")}
+      title={dark ? t("Light mode") : t("Dark mode")}
       aria-pressed={dark}
       onClick={() => {
         const next: Theme = dark ? "light" : "dark";

@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import type { ProcPart, ProcState } from "../../code/compiler";
 import { uid } from "../../shared/random";
 import { Field, Icon, Modal } from "../ui";
+import { t } from "../i18n";
 
 /** Every modal question the Game Lab asks, as promises. */
 
@@ -57,7 +58,7 @@ function PromptDialog({ r, done }: { r: Extract<DialogRequest, { kind: "prompt" 
         <>
           <span className="spacer" />
           <button className="btn btn-ghost" onClick={() => (r.resolve(null), done())}>
-            Cancel
+            {t("Cancel")}
           </button>
           <button className="btn btn-primary" disabled={!value.trim()} onClick={ok}>
             OK
@@ -75,7 +76,7 @@ function PromptDialog({ r, done }: { r: Extract<DialogRequest, { kind: "prompt" 
 function VariableDialog({ r, done }: { r: Extract<DialogRequest, { kind: "variable" }>; done: () => void }) {
   const [name, setName] = useState("");
   const [global, setGlobal] = useState(true);
-  const clash = r.taken.some((t) => t.toLowerCase() === name.trim().toLowerCase());
+  const clash = r.taken.some((x) => x.toLowerCase() === name.trim().toLowerCase());
   const ok = () => {
     if (!name.trim() || clash) return;
     r.resolve({ name: name.trim(), global: r.stage || global });
@@ -83,13 +84,13 @@ function VariableDialog({ r, done }: { r: Extract<DialogRequest, { kind: "variab
   };
   return (
     <Modal
-      title={r.list ? "New list" : "New memory box"}
+      title={r.list ? t("New list") : t("New memory box")}
       onClose={() => (r.resolve(null), done())}
       footer={
         <>
           <span className="spacer" />
           <button className="btn btn-ghost" onClick={() => (r.resolve(null), done())}>
-            Cancel
+            {t("Cancel")}
           </button>
           <button className="btn btn-primary" disabled={!name.trim() || clash} onClick={ok}>
             OK
@@ -97,17 +98,17 @@ function VariableDialog({ r, done }: { r: Extract<DialogRequest, { kind: "variab
         </>
       }
     >
-      <Field label={r.list ? "List name" : "Box name"}>
+      <Field label={r.list ? t("List name") : t("Box name")}>
         <input autoFocus value={name} aria-invalid={clash} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && ok()} />
       </Field>
-      {clash && <p className="form-error">That name is already used.</p>}
+      {clash && <p className="form-error">{t("That name is already used.")}</p>}
       {!r.stage && (
-        <div className="seg" role="radiogroup" aria-label="Who can use it">
+        <div className="seg" role="radiogroup" aria-label={t("Who can use it")}>
           <button className={global ? "on" : ""} aria-pressed={global} onClick={() => setGlobal(true)}>
-            Every character
+            {t("Every character")}
           </button>
           <button className={!global ? "on" : ""} aria-pressed={!global} onClick={() => setGlobal(false)}>
-            Only this character
+            {t("Only this character")}
           </button>
         </div>
       )}
@@ -116,12 +117,12 @@ function VariableDialog({ r, done }: { r: Extract<DialogRequest, { kind: "variab
 }
 
 function ProcedureDialog({ r, done }: { r: Extract<DialogRequest, { kind: "procedure" }>; done: () => void }) {
-  const [parts, setParts] = useState<ProcPart[]>(r.proc?.parts ?? [{ type: "label", text: "trick name" }]);
+  const [parts, setParts] = useState<ProcPart[]>(r.proc?.parts ?? [{ type: "label", text: t("trick name") }]);
   const [warp, setWarp] = useState(r.proc?.warp ?? false);
   const [reporter, setReporter] = useState(r.proc?.reporter ?? false);
   const set = (i: number, p: ProcPart) => setParts(parts.map((x, j) => (j === i ? p : x)));
   const add = (type: ProcPart["type"]) =>
-    setParts([...parts, type === "label" ? { type, text: "label text" } : { type, id: uid(), name: type === "bool" ? "yes or no" : "number or words" }]);
+    setParts([...parts, type === "label" ? { type, text: t("label text") } : { type, id: uid(), name: type === "bool" ? t("yes or no") : t("number or words") }]);
   const valid = parts.some((p) => (p.type === "label" ? p.text?.trim() : p.name?.trim()));
   const ok = () => {
     const clean = parts.filter((p) => (p.type === "label" ? p.text?.trim() : p.name?.trim()));
@@ -133,14 +134,14 @@ function ProcedureDialog({ r, done }: { r: Extract<DialogRequest, { kind: "proce
   );
   return (
     <Modal
-      title={r.proc ? "Change trick" : "New trick"}
+      title={r.proc ? t("Change trick") : t("New trick")}
       wide
       onClose={() => (r.resolve(null), done())}
       footer={
         <>
           <span className="spacer" />
           <button className="btn btn-ghost" onClick={() => (r.resolve(null), done())}>
-            Cancel
+            {t("Cancel")}
           </button>
           <button className="btn btn-primary" disabled={!valid} onClick={ok}>
             OK
@@ -154,13 +155,13 @@ function ProcedureDialog({ r, done }: { r: Extract<DialogRequest, { kind: "proce
       <ol className="proc-parts">
         {parts.map((p, i) => (
           <li key={i} className="proc-part">
-            <span className={`pill proc-kind proc-${p.type}`}>{p.type === "label" ? "words" : p.type === "bool" ? "yes or no" : "number or words"}</span>
+            <span className={`pill proc-kind proc-${p.type}`}>{p.type === "label" ? t("words") : p.type === "bool" ? t("yes or no") : t("number or words")}</span>
             <input
               value={p.type === "label" ? p.text : p.name}
-              aria-label={p.type === "label" ? "Label text" : "Input name"}
+              aria-label={p.type === "label" ? t("Label text") : t("Input name")}
               onChange={(e) => set(i, p.type === "label" ? { ...p, text: e.target.value } : { ...p, name: e.target.value })}
             />
-            <button className="icon-btn icon-btn-sm" disabled={parts.length < 2} aria-label="Remove" onClick={() => setParts(parts.filter((_, j) => j !== i))}>
+            <button className="icon-btn icon-btn-sm" disabled={parts.length < 2} aria-label={t("Remove")} onClick={() => setParts(parts.filter((_, j) => j !== i))}>
               <Icon name="trash" size={18} />
             </button>
           </li>
@@ -168,22 +169,22 @@ function ProcedureDialog({ r, done }: { r: Extract<DialogRequest, { kind: "proce
       </ol>
       <div className="toolbar">
         <button className="chip-btn" onClick={() => add("num")}>
-          <Icon name="plus" size={16} /> Gap for a number or words
+          <Icon name="plus" size={16} /> {t("Gap for a number or words")}
         </button>
         <button className="chip-btn" onClick={() => add("bool")}>
-          <Icon name="plus" size={16} /> Gap for yes or no
+          <Icon name="plus" size={16} /> {t("Gap for yes or no")}
         </button>
         <button className="chip-btn" onClick={() => add("label")}>
-          <Icon name="plus" size={16} /> Words
+          <Icon name="plus" size={16} /> {t("Words")}
         </button>
       </div>
       <label className="check">
         <input type="checkbox" checked={warp} onChange={(e) => setWarp(e.target.checked)} />
-        Do it all in one go
+        {t("Do it all in one go")}
       </label>
       <label className="check">
         <input type="checkbox" checked={reporter} onChange={(e) => setReporter(e.target.checked)} />
-        Works something out (finish with “give back”)
+        {t("Works something out (finish with “give back”)")}
       </label>
     </Modal>
   );

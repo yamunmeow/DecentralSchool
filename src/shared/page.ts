@@ -61,7 +61,7 @@ ${game ? `<script type="application/json" id="game">${scriptJson(game)}</script>
  * costumes are generated in the page (blob:/data: URLs). The hosted page has no
  * project and compiles one from the link, so only it allows eval.
  */
-export function buildCodePage(runtime: string, project: { title: string } | null, code: string, opts: { hosted?: boolean } = {}): string {
+export function buildCodePage(runtime: string, project: { title: string } | null, code: string, opts: { hosted?: boolean; lang?: string } = {}): string {
   const csp = [
     "default-src 'none'",
     `script-src 'unsafe-inline'${opts.hosted ? " 'unsafe-eval'" : ""}`,
@@ -73,8 +73,9 @@ export function buildCodePage(runtime: string, project: { title: string } | null
     ...(opts.hosted ? ["worker-src 'self'", "manifest-src 'self'"] : []),
   ].join("; ");
   const title = project ? project.title : "DecentralSchool Game Lab";
+  // The player's buttons follow this; the hosted page leaves it to the device's language.
   return `<!doctype html>
-<html lang="en">
+<html lang="${opts.hosted ? "" : opts.lang || "en"}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -94,9 +95,9 @@ ${project ? `<script>DecentralCode.run(function (L) {\n${code.replace(/<\/script
 }
 
 /** A trained Zo (Zo Wants to Learn) as one page. Network off, like the others. */
-export function buildLearnPage(runtime: string, app: { title: string }): string {
+export function buildLearnPage(runtime: string, app: { title: string }, lang = "en"): string {
   return `<!doctype html>
-<html lang="en">
+<html lang="${lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">

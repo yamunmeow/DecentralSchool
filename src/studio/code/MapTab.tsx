@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CodeProject } from "../../code/types";
 import { download, slug } from "../exporting";
+import { t } from "../i18n";
 import { Icon } from "../ui";
 import { buildTree, drawMap, initialFolds, type Palette } from "./mindmap";
 
@@ -62,35 +63,35 @@ export function MapTab({ project, dark, onJump }: { project: CodeProject; dark: 
   return (
     <div className="map-tab">
       <div className="map-bar">
-        <strong>Map</strong>
+        <strong>{t("Map")}</strong>
         <span className="map-legend hide-sm">
-          <span className="lg lg-script" /> starts
-          <span className="lg lg-loop" /> repeats
-          <span className="lg lg-if" /> decides
-          <span className="lg lg-signal" /> signal
+          <span className="lg lg-script" /> {t("starts")}
+          <span className="lg lg-loop" /> {t("repeats")}
+          <span className="lg lg-if" /> {t("decides")}
+          <span className="lg lg-signal" /> {t("signal")}
         </span>
         <span className="spacer" />
         <button className="btn btn-ghost btn-sm" onClick={() => setFolded(new Set())}>
-          Open all
+          {t("Open all")}
         </button>
-        <button className="btn btn-ghost btn-sm hide-sm" onClick={() => setFolded(new Set([project.stage, ...project.sprites].map((t) => `t:${t.id}`)))}>
-          Fold all
+        <button className="btn btn-ghost btn-sm hide-sm" onClick={() => setFolded(new Set([project.stage, ...project.sprites].map((x) => `t:${x.id}`)))}>
+          {t("Fold all")}
         </button>
-        <div className="seg seg-small" role="group" aria-label="Zoom">
-          <button onClick={() => setZoom((z) => Math.max(0.3, z / 1.2))} aria-label="Zoom out">
+        <div className="seg seg-small" role="group" aria-label={t("Zoom")}>
+          <button onClick={() => setZoom((z) => Math.max(0.3, z / 1.2))} aria-label={t("Zoom out")}>
             −
           </button>
-          <button onClick={fit} aria-label="Fit">
+          <button onClick={fit} aria-label={t("Fit")}>
             {Math.round(zoom * 100)}%
           </button>
-          <button onClick={() => setZoom((z) => Math.min(2.5, z * 1.2))} aria-label="Zoom in">
+          <button onClick={() => setZoom((z) => Math.min(2.5, z * 1.2))} aria-label={t("Zoom in")}>
             +
           </button>
         </div>
-        <button className="btn btn-ghost btn-sm" onClick={exportSvg} title="Download the map as SVG">
+        <button className="btn btn-ghost btn-sm" onClick={exportSvg} title={t("Download the map as SVG")}>
           <Icon name="download" size={16} /> SVG
         </button>
-        <button className="btn btn-ghost btn-sm" onClick={exportPng} title="Download the map as a picture">
+        <button className="btn btn-ghost btn-sm" onClick={exportPng} title={t("Download the map as a picture")}>
           PNG
         </button>
       </div>

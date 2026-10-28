@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { Tint } from "../../shared/types";
+import { t } from "../i18n";
 import { PALETTE } from "../palette";
 import { Icon } from "../ui";
 
@@ -26,7 +27,8 @@ interface CardProps {
 }
 
 /** The card every game on the site is shown in: a cover to open it, then title, blurb, tags and actions. */
-export function GameCard({ title, blurb, tags = [], cover, tint, coverExtra, href, onOpen, badge = { label: "Play", icon: "play" }, actions, className = "" }: CardProps) {
+export function GameCard({ title, blurb, tags = [], cover, tint, coverExtra, href, onOpen, badge, actions, className = "" }: CardProps) {
+  badge ??= { label: t("Play"), icon: "play" };
   const style = tint ? ({ "--cover": PALETTE[tint].tint } as CSSProperties) : undefined;
   const inner = (
     <>
@@ -54,9 +56,9 @@ export function GameCard({ title, blurb, tags = [], cover, tint, coverExtra, hre
         {blurb && <p>{blurb}</p>}
         {tags.length > 0 && (
           <div className="tags">
-            {tags.map((t) => (
-              <span key={t} className="tag">
-                {t}
+            {tags.map((tag) => (
+              <span key={tag} className="tag">
+                {tag}
               </span>
             ))}
           </div>

@@ -2,6 +2,7 @@ import { useRef, useState, type ReactNode } from "react";
 import { chat, signIn } from "../ai/openrouter";
 import { generatorPrompt, readGenerated, type GenerateRequest } from "../ai/prompts";
 import { ModelPicker } from "../components/ModelPicker";
+import { getLang, t, tn } from "../i18n";
 import { Field, Icon, Modal } from "../ui";
 import { useAi } from "../useAi";
 
@@ -41,18 +42,18 @@ export function ItemCard({
         <span className="item-n">{index + 1}</span>
         {head}
         <span className="spacer" />
-        <button type="button" className="icon-btn icon-btn-sm" disabled={index === 0} onClick={() => onMove(-1)} aria-label="Move up" title="Move up">
+        <button type="button" className="icon-btn icon-btn-sm" disabled={index === 0} onClick={() => onMove(-1)} aria-label={t("Move up")} title={t("Move up")}>
           <Icon name="up" size={18} />
         </button>
-        <button type="button" className="icon-btn icon-btn-sm" disabled={index === count - 1} onClick={() => onMove(1)} aria-label="Move down" title="Move down">
+        <button type="button" className="icon-btn icon-btn-sm" disabled={index === count - 1} onClick={() => onMove(1)} aria-label={t("Move down")} title={t("Move down")}>
           <Icon name="down" size={18} />
         </button>
         {onCopy && (
-          <button type="button" className="icon-btn icon-btn-sm" onClick={onCopy} aria-label="Duplicate" title="Duplicate">
+          <button type="button" className="icon-btn icon-btn-sm" onClick={onCopy} aria-label={t("Duplicate")} title={t("Duplicate")}>
             <Icon name="copy" size={18} />
           </button>
         )}
-        <button type="button" className="icon-btn icon-btn-sm danger-hover" onClick={onDelete} aria-label="Delete" title="Delete">
+        <button type="button" className="icon-btn icon-btn-sm danger-hover" onClick={onDelete} aria-label={t("Delete")} title={t("Delete")}>
           <Icon name="trash" size={18} />
         </button>
       </div>
@@ -102,12 +103,12 @@ export function Section({ title, count, actions, children }: { title: string; co
 
 type Result = ReturnType<typeof readGenerated>;
 
-export function GenerateButton({ request, onResult, label = "Generate" }: { request: Omit<GenerateRequest, "topic" | "level" | "count" | "language"> & Partial<GenerateRequest>; onResult: (r: Result) => void; label?: string }) {
+export function GenerateButton({ request, onResult, label }: { request: Omit<GenerateRequest, "topic" | "level" | "count" | "language"> & Partial<GenerateRequest>; onResult: (r: Result) => void; label?: string }) {
   const [open, setOpen] = useState(false);
   return (
     <>
       <button type="button" className="btn btn-soft btn-sm" onClick={() => setOpen(true)}>
-        <Icon name="sparkle" size={16} /> {label}
+        <Icon name="sparkle" size={16} /> {label ?? t("Generate")}
       </button>
       {open && <GenerateModal request={request} onClose={() => setOpen(false)} onResult={onResult} />}
     </>
@@ -122,7 +123,7 @@ function GenerateModal({ request, onClose, onResult }: { request: Partial<Genera
   const [topic, setTopic] = useState(request.topic || "");
   const [level, setLevel] = useState(() => localStorage.getItem(LEVEL_KEY) || "");
   const [count, setCount] = useState(request.count || 10);
-  const [language, setLanguage] = useState(request.language || "English");
+  const [language, setLanguage] = useState(request.language || (getLang() === "fr" ? "français" : "English"));
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
@@ -144,7 +145,7 @@ function GenerateModal({ request, onClose, onResult }: { request: Partial<Genera
           { role: "system", content: "You write accurate classroom content for teachers. Reply with JSON only." },
           { role: "user", content: generatorPrompt(req) },
         ],
-        (t) => setProgress(t.length),
+        (text) => setProgress(text.length),
         ctrl.current.signal,
       );
       const result = readGenerated(req, raw);
@@ -154,7 +155,7 @@ function GenerateModal({ request, onClose, onResult }: { request: Partial<Genera
       onClose();
     } catch (e) {
       if ((e as Error).name === "AbortError") return;
-      setError((e as Error).message && (e as Error).message !== "empty" && !(e instanceof SyntaxError) ? (e as Error).message : "The model's answer couldn't be read. Try again or pick another model.");
+      setError((e as Error).message && (e as Error).message !== "empty" && !(e instanceof SyntaxError) ? (e as Error).message : t("The model's answer couldn't be read. Try again or pick another model."));
     } finally {
       setBusy(false);
     }
@@ -162,7 +163,7 @@ function GenerateModal({ request, onClose, onResult }: { request: Partial<Genera
 
   return (
     <Modal
-      title={reading ? "Questions from the text" : "Generate with AI"}
+      title={reading ? t("Questions from the text") : t("Generate with AI")}
       onClose={() => {
         ctrl.current?.abort();
         onClose();
@@ -171,10 +172,10 @@ function GenerateModal({ request, onClose, onResult }: { request: Partial<Genera
         ai.connected ? (
           <>
             <ModelPicker />
-            {busy && <span className="muted">Writing… {progress > 0 ? `${Math.round(progress / 100) / 10}k` : ""}</span>}
+            {busy && <span className="muted">{t("Writing…")} {progress > 0 ? `${Math.round(progress / 100) / 10}k` : ""}</span>}
             <span className="spacer" />
             <button className="btn btn-primary" disabled={busy || (!reading && !topic.trim())} onClick={run}>
-              <Icon name="sparkle" size={18} /> {busy ? "Generating…" : "Generate"}
+              <Icon name="sparkle" size={18} /> {busy ? t("Generating…") : t("Generate")}
             </button>
           </>
         ) : undefined
@@ -182,30 +183,30 @@ function GenerateModal({ request, onClose, onResult }: { request: Partial<Genera
     >
       {!ai.connected ? (
         <div className="connect-inline">
-          <p>Connect OpenRouter to generate content. Free models are used by default.</p>
+          <p>{t("Connect OpenRouter to generate content. Free models are used by default.")}</p>
           <button className="btn btn-primary" onClick={() => signIn()}>
-            Connect OpenRouter
+            {t("Connect OpenRouter")}
           </button>
         </div>
       ) : (
         <>
           {!reading && (
-            <Field label="Topic">
-              <textarea rows={2} value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="Photosynthesis; parts of a plant" autoFocus />
+            <Field label={t("Topic")}>
+              <textarea rows={2} value={topic} onChange={(e) => setTopic(e.target.value)} placeholder={t("Photosynthesis; parts of a plant")} autoFocus />
             </Field>
           )}
           <div className="form-grid form-grid-3">
-            <Field label="Class or age">
-              <input value={level} onChange={(e) => setLevel(e.target.value)} placeholder="Class 6" />
+            <Field label={t("Class or age")}>
+              <input value={level} onChange={(e) => setLevel(e.target.value)} placeholder={t("Class 6")} />
             </Field>
-            <Field label="How many">
+            <Field label={t("How many")}>
               <select value={count} onChange={(e) => setCount(Number(e.target.value))}>
                 {[5, 8, 10, 15, 20, 30].map((n) => (
                   <option key={n}>{n}</option>
                 ))}
               </select>
             </Field>
-            <Field label="Language">
+            <Field label={t("Language")}>
               <input value={language} onChange={(e) => setLanguage(e.target.value)} />
             </Field>
           </div>
@@ -225,16 +226,16 @@ export function PasteButton<T>({ placeholder, parse, onAdd }: { placeholder: str
   return (
     <>
       <button type="button" className="btn btn-ghost btn-sm" onClick={() => setOpen(true)}>
-        <Icon name="list" size={16} /> Paste list
+        <Icon name="list" size={16} /> {t("Paste list")}
       </button>
       {open && (
         <Modal
-          title="Paste a list"
+          title={t("Paste a list")}
           onClose={() => setOpen(false)}
           wide
           footer={
             <>
-              <span className="muted">{items.length} ready</span>
+              <span className="muted">{tn(items.length, "{n} ready", "{n} ready")}</span>
               <span className="spacer" />
               <button
                 className="btn btn-primary"
@@ -245,12 +246,12 @@ export function PasteButton<T>({ placeholder, parse, onAdd }: { placeholder: str
                   setOpen(false);
                 }}
               >
-                Add {items.length || ""}
+                {items.length ? t("Add {n}", { n: items.length }) : t("Add")}
               </button>
             </>
           }
         >
-          <textarea className="mono" rows={10} value={text} onChange={(e) => setText(e.target.value)} placeholder={placeholder} autoFocus aria-label="One per line" />
+          <textarea className="mono" rows={10} value={text} onChange={(e) => setText(e.target.value)} placeholder={placeholder} autoFocus aria-label={t("One per line")} />
         </Modal>
       )}
     </>

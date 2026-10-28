@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { checkKey, KEYS_PAGE, setKey, signIn } from "../ai/openrouter";
+import { t, tj } from "../i18n";
 import { Icon } from "../ui";
 
 /**
@@ -27,23 +28,26 @@ export function ConnectAi() {
   return (
     <div className="connect-ai">
       <button className="btn btn-primary" onClick={() => signIn()}>
-        <Icon name="sparkle" size={18} /> Connect with OpenRouter
+        <Icon name="sparkle" size={18} /> {t("Connect with OpenRouter")}
       </button>
       {!paste ? (
         <button className="link-btn" onClick={() => setPaste(true)}>
-          Stuck on “Verifying your request”? Use a key instead
+          {t("Stuck on “Verifying your request”? Use a key instead")}
         </button>
       ) : (
         <div className="connect-paste">
           <ol>
             <li>
-              Open{" "}
-              <a href={KEYS_PAGE} target="_blank" rel="noopener">
-                openrouter.ai/settings/keys
-              </a>{" "}
-              and press <strong>Create</strong>.
+              {tj("Open {page} and press {create}.", {
+                page: (
+                  <a href={KEYS_PAGE} target="_blank" rel="noopener">
+                    openrouter.ai/settings/keys
+                  </a>
+                ),
+                create: <strong>Create</strong>,
+              })}
             </li>
-            <li>Copy the key and paste it here.</li>
+            <li>{t("Copy the key and paste it here.")}</li>
           </ol>
           <form
             className="toolbar"
@@ -52,9 +56,9 @@ export function ConnectAi() {
               void use();
             }}
           >
-            <input className="grow" type="password" value={key} placeholder="sk-or-…" aria-label="OpenRouter key" autoComplete="off" onChange={(e) => (setKeyText(e.target.value), setError(""))} />
+            <input className="grow" type="password" value={key} placeholder="sk-or-…" aria-label={t("OpenRouter key")} autoComplete="off" onChange={(e) => (setKeyText(e.target.value), setError(""))} />
             <button className="btn btn-primary btn-sm" disabled={busy || !key.trim()}>
-              {busy ? "Checking…" : "Use key"}
+              {busy ? t("Checking…") : t("Use key")}
             </button>
           </form>
           {error && <p className="form-error">{error}</p>}

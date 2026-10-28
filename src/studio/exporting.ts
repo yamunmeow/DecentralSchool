@@ -2,6 +2,7 @@ import runtime from "virtual:player-runtime";
 import { encodeGame, shareable } from "../shared/codec";
 import { buildPage } from "../shared/page";
 import type { Game } from "../shared/types";
+import { locale, t } from "./i18n";
 
 /** The self-contained student page: what downloads, previews and APKs carry. */
 export const pageFor = (game: Game) => buildPage(runtime, shareable(game));
@@ -30,4 +31,4 @@ export function download(name: string, data: Blob | string, type = "text/html") 
   setTimeout(() => URL.revokeObjectURL(url), 30000);
 }
 
-export const kb = (bytes: number) => (bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`);
+export const kb = (bytes: number) => (bytes < 1024 * 1024 ? t("{n} KB", { n: Math.max(1, Math.round(bytes / 1024)) }) : t("{n} MB", { n: (bytes / 1024 / 1024).toLocaleString(locale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 }) }));

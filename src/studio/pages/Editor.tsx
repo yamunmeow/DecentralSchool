@@ -14,6 +14,7 @@ import { VocabEditor } from "../editors/VocabEditor";
 import { PALETTE } from "../palette";
 import { useApp } from "../store";
 import { templateInfo } from "../templates";
+import { t } from "../i18n";
 import { Empty, Icon } from "../ui";
 
 const TABS = [
@@ -60,14 +61,14 @@ export function Editor({ id, tab }: { id: string; tab?: string }) {
   if (!game)
     return (
       <div className="page">
-        <Empty critter={<Critter kind="owl" color="lilac" size={84} mood="worried" />}>This game isn't in this browser.</Empty>
+        <Empty critter={<Critter kind="owl" color="lilac" size={84} mood="worried" />}>{t("This game isn't in this browser.")}</Empty>
         <a className="btn btn-primary" href="#/games" style={{ alignSelf: "center" }}>
-          Quick games
+          {t("Quick games")}
         </a>
       </div>
     );
 
-  const current: Tab = TABS.some(([t]) => t === tab) ? (tab as Tab) : "edit";
+  const current: Tab = TABS.some(([id]) => id === tab) ? (tab as Tab) : "edit";
   const p = PALETTE[game.tint];
   const info = templateInfo(game.template);
 
@@ -95,20 +96,20 @@ export function Editor({ id, tab }: { id: string; tab?: string }) {
       <header className="editor-head">
         <EmojiPicker value={game.emoji} onChange={(emoji) => update({ ...game, emoji })} />
         <div className="grow editor-title">
-          <input className="title-input" value={game.title} aria-label="Title" onChange={(e) => update({ ...game, title: e.target.value })} onBlur={() => !game.title.trim() && update({ ...game, title: "Untitled game" })} />
+          <input className="title-input" value={game.title} aria-label={t("Title")} onChange={(e) => update({ ...game, title: e.target.value })} onBlur={() => !game.title.trim() && update({ ...game, title: t("Untitled game") })} />
           <span className="pill">
-            {info.emoji} {info.name}
+            {info.emoji} {t(info.name)}
           </span>
         </div>
         <button className={`btn btn-sm ${chatOpen ? "btn-primary" : "btn-soft"}`} aria-pressed={chatOpen} onClick={() => setChatOpen(!chatOpen)}>
-          <Icon name="sparkle" size={18} /> Assistant
+          <Icon name="sparkle" size={18} /> {t("Assistant")}
         </button>
       </header>
 
-      <nav className="seg seg-tabs editor-tabs" aria-label="Sections">
-        {TABS.map(([t, label, icon]) => (
-          <a key={t} href={`#/game/${game.id}${t === "edit" ? "" : `/${t}`}`} className={current === t ? "on" : ""} aria-current={current === t ? "page" : undefined}>
-            <Icon name={icon} size={18} /> {label}
+      <nav className="seg seg-tabs editor-tabs" aria-label={t("Sections")}>
+        {TABS.map(([id, label, icon]) => (
+          <a key={id} href={`#/game/${game.id}${id === "edit" ? "" : `/${id}`}`} className={current === id ? "on" : ""} aria-current={current === id ? "page" : undefined}>
+            <Icon name={icon} size={18} /> {t(label)}
           </a>
         ))}
       </nav>
@@ -116,12 +117,12 @@ export function Editor({ id, tab }: { id: string; tab?: string }) {
       <div className="editor-layout">
         <div className="editor-main">{body}</div>
         {chatOpen && (
-          <aside className="side-chat" aria-label="Assistant">
+          <aside className="side-chat" aria-label={t("Assistant")}>
             <div className="side-chat-head">
               <Icon name="sparkle" />
-              <strong>Assistant</strong>
+              <strong>{t("Assistant")}</strong>
               <span className="spacer" />
-              <button className="icon-btn icon-btn-sm" aria-label="Close assistant" onClick={() => setChatOpen(false)}>
+              <button className="icon-btn icon-btn-sm" aria-label={t("Close assistant")} onClick={() => setChatOpen(false)}>
                 <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
                   <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
                 </svg>
@@ -134,7 +135,7 @@ export function Editor({ id, tab }: { id: string; tab?: string }) {
                 flush();
               }}
               storageKey={`chat:${game.id}`}
-              suggestions={game.template === "custom" ? ["Make it easier for younger students", "Add a timer and a high score"] : ["Add 10 more questions", "Make it harder", "Translate it into Hindi", "Turn this into a custom game with a race"]}
+              suggestions={(game.template === "custom" ? ["Make it easier for younger students", "Add a timer and a high score"] : ["Add 10 more questions", "Make it harder", "Translate it into Hindi", "Turn this into a custom game with a race"]).map((s) => t(s))}
             />
           </aside>
         )}
@@ -148,7 +149,7 @@ function EmojiPicker({ value, onChange }: { value: string; onChange: (v: string)
   const [custom, setCustom] = useState("");
   return (
     <div className="menu-wrap">
-      <button className="emoji-btn" aria-label="Change emoji" aria-expanded={open} onClick={() => setOpen(!open)}>
+      <button className="emoji-btn" aria-label={t("Change emoji")} aria-expanded={open} onClick={() => setOpen(!open)}>
         {value}
       </button>
       {open && (
@@ -171,8 +172,8 @@ function EmojiPicker({ value, onChange }: { value: string; onChange: (v: string)
             </div>
             <input
               value={custom}
-              placeholder="Any emoji"
-              aria-label="Any emoji"
+              placeholder={t("Any emoji")}
+              aria-label={t("Any emoji")}
               onChange={(e) => setCustom(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && custom.trim()) {

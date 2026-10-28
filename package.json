@@ -14,7 +14,8 @@
     "shell": "sh shell/build_shell.sh && cp shell/shell-template.apk public/shell-template.apk",
     "deploy": "npm run build && wrangler d1 migrations apply DB --remote && wrangler deploy",
     "auth:schema": "node scripts/auth-schema.ts",
-    "library": "node scripts/import-games.mjs"
+    "library": "node scripts/import-games.mjs",
+    "i18n": "node scripts/i18n-check.mjs"
   },
   "dependencies": {
     "@blockly/continuous-toolbox": "^13.4.0",

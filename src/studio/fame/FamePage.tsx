@@ -19,10 +19,12 @@ import { Empty, Field, Icon, Modal } from "../ui";
 import { cleanGame, cleanProject, decide, fameGame, forReview, mine, send, wall, withdraw, type FameCard, type ForReview, type Kind, type Status, type Submission } from "./api";
 import { printCertificate } from "./certificate";
 import "./fame.css";
+import { dateText, t } from "../i18n";
 
+// English; shown through t().
 const STATUS: Record<Status, string> = { waiting: "Waiting for review", featured: "On the Wall of Fame", declined: "Not chosen this time" };
-const kindName = (g: FameCard) => (g.kind === "lab" ? "Game Lab" : TEMPLATE_INFO.find((t) => t.id === g.tag)?.name || "Quick game");
-const day = (t: number) => new Date(t).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+const kindName = (g: FameCard) => t(g.kind === "lab" ? "Game Lab" : TEMPLATE_INFO.find((x) => x.id === g.tag)?.name || "Quick game");
+const day = (ms: number) => dateText(ms, { day: "numeric", month: "short", year: "numeric" });
 
 /** A game that came back from the server, ready to play and to copy into the studio. */
 type Loaded = { kind: "quick"; game: Game } | { kind: "lab"; project: CodeProject };
@@ -30,7 +32,7 @@ type Loaded = { kind: "quick"; game: Game } | { kind: "lab"; project: CodeProjec
 function load(kind: Kind, raw: unknown): Loaded {
   if (kind === "lab") {
     const p = raw as CodeProject;
-    if (p?.kind !== "code" || !p.stage || !Array.isArray(p.sprites)) throw new Error("That game couldn't be opened.");
+    if (p?.kind !== "code" || !p.stage || !Array.isArray(p.sprites)) throw new Error(t("That game couldn't be opened."));
     return { kind: "lab", project: p };
   }
   return { kind: "quick", game: normalize(raw, { id: uid() }) };
@@ -66,8 +68,8 @@ function usePlayer() {
         actions: (
           <>
             {extra}
-            <button className="btn btn-ghost btn-sm" onClick={() => keep(l).catch(() => toast("Couldn't copy that game.", "error"))}>
-              <Icon name="edit" size={16} /> Make it mine
+            <button className="btn btn-ghost btn-sm" onClick={() => keep(l).catch(() => toast(t("Couldn't copy that game."), "error"))}>
+              <Icon name="edit" size={16} /> {t("Make it mine")}
             </button>
           </>
         ),
@@ -109,11 +111,11 @@ function Wall() {
     <div className="page fame-page">
       <section className="hero fame-hero">
         <div className="hero-text">
-          <h1>Wall of Fame</h1>
-          <p className="hero-lede">Games made by teachers, chosen every week for being creative and unique. Play them, or make one your own.</p>
+          <h1>{t("Wall of Fame")}</h1>
+          <p className="hero-lede">{t("Games made by teachers, chosen every week for being creative and unique. Play them, or make one your own.")}</p>
           {teacher && (
             <button className="btn btn-primary" onClick={() => setSending(true)}>
-              <Icon name="upload" size={18} /> Submit a game
+              <Icon name="upload" size={18} /> {t("Submit a game")}
             </button>
           )}
         </div>
@@ -125,7 +127,7 @@ function Wall() {
       {own?.reviewer && (
         <a className="card fame-review-link" href="#/fame/review">
           <Icon name="eye" size={20} />
-          <strong className="grow">Review submissions</strong>
+          <strong className="grow">{t("Review submissions")}</strong>
           <Icon name="arrowR" size={18} />
         </a>
       )}
@@ -133,7 +135,7 @@ function Wall() {
       <section aria-labelledby="fame-games">
         <div className="page-head">
           <h2 id="fame-games" className="section-title">
-            Featured games
+            {t("Featured games")}
           </h2>
         </div>
         {error ? (
@@ -148,7 +150,7 @@ function Wall() {
           </div>
         ) : (
           <div className="card is-quiet">
-            <Empty critter={<ZoPic outfit="artist" size={64} />}>The first games are on their way.</Empty>
+            <Empty critter={<ZoPic outfit="artist" size={64} />}>{t("The first games are on their way.")}</Empty>
           </div>
         )}
       </section>
@@ -157,7 +159,7 @@ function Wall() {
         <section aria-labelledby="fame-mine">
           <div className="page-head">
             <h2 id="fame-mine" className="section-title">
-              My submissions
+              {t("My submissions")}
             </h2>
           </div>
           <ul className="fame-list">
@@ -165,22 +167,22 @@ function Wall() {
               <li key={s.id} className="card fame-item">
                 <div className="fame-item-head">
                   <strong className="grow">{s.title}</strong>
-                  <span className={`fame-status is-${s.status}`}>{STATUS[s.status]}</span>
+                  <span className={`fame-status is-${s.status}`}>{t(STATUS[s.status])}</span>
                 </div>
-                <small className="muted">Sent {day(s.createdAt)}</small>
+                <small className="muted">{t("Sent {date}", { date: day(s.createdAt) })}</small>
                 {s.reply && <p className="fame-reply">{s.reply}</p>}
                 <div className="toolbar">
                   {s.status === "featured" && (
                     <button className="btn btn-primary btn-sm" onClick={() => printCertificate({ credit: s.credit, school: s.school, title: s.title, date: s.reviewedAt || s.createdAt })}>
-                      <Icon name="star" size={16} /> Certificate
+                      <Icon name="star" size={16} /> {t("Certificate")}
                     </button>
                   )}
                   <button className="btn btn-ghost btn-sm" onClick={() => player.play(s.id, s.title)}>
-                    <Icon name="play" size={16} /> Play
+                    <Icon name="play" size={16} /> {t("Play")}
                   </button>
                   <span className="spacer" />
                   <button className="btn btn-ghost btn-sm" onClick={() => setLeaving(s)}>
-                    <Icon name="trash" size={16} /> Withdraw
+                    <Icon name="trash" size={16} /> {t("Withdraw")}
                   </button>
                 </div>
               </li>
@@ -194,20 +196,20 @@ function Wall() {
           onClose={() => setSending(false)}
           onSent={() => {
             setSending(false);
-            toast("Sent. We review new games every week.");
+            toast(t("Sent. We review new games every week."));
             refresh();
           }}
         />
       )}
       {leaving && (
         <Modal
-          title={`Withdraw “${leaving.title}”?`}
+          title={t("Withdraw “{title}”?", { title: leaving.title })}
           onClose={() => setLeaving(null)}
           footer={
             <>
               <span className="spacer" />
               <button className="btn btn-ghost" onClick={() => setLeaving(null)}>
-                Keep it
+                {t("Keep it")}
               </button>
               <button
                 className="btn btn-danger"
@@ -215,17 +217,17 @@ function Wall() {
                   const s = leaving;
                   setLeaving(null);
                   withdraw(s.id).then(
-                    () => (toast("Withdrawn"), refresh()),
+                    () => (toast(t("Withdrawn")), refresh()),
                     (e: Error) => toast(e.message, "error"),
                   );
                 }}
               >
-                Withdraw
+                {t("Withdraw")}
               </button>
             </>
           }
         >
-          <p>{leaving.status === "featured" ? "It comes off the Wall of Fame and is deleted from our server." : "It's deleted from our server."} Your copy in the studio stays.</p>
+          <p>{leaving.status === "featured" ? t("It comes off the Wall of Fame and is deleted from our server.") : t("It's deleted from our server.")} {t("Your copy in the studio stays.")}</p>
         </Modal>
       )}
       {player.sheet}
@@ -240,14 +242,14 @@ function FameGameCard({ g, onPlay, onKeep }: { g: FameCard; onPlay: () => void; 
     <GameCard
       title={g.title}
       blurb={g.blurb}
-      tags={[tag, `by ${g.credit}`, ...(g.school ? [g.school] : [])]}
+      tags={[tag, t("by {name}", { name: g.credit }), ...(g.school ? [g.school] : [])]}
       cover={g.kind === "lab" ? (g.thumb ? { img: g.thumb, framed: true } : { emoji: "🎮" }) : { emoji: g.emoji || "⭐" }}
       tint={tint}
       coverExtra={g.kind === "quick" && TEMPLATE_CRITTER[g.tag] ? <Critter kind={TEMPLATE_CRITTER[g.tag]} color={tint} size={56} className="play-critter" /> : undefined}
       onOpen={onPlay}
       actions={
         <button className="btn btn-ghost btn-sm" onClick={onKeep}>
-          <Icon name="edit" size={16} /> Make it mine
+          <Icon name="edit" size={16} /> {t("Make it mine")}
         </button>
       }
     />
@@ -303,7 +305,7 @@ function SubmitModal({ onClose, onSent }: { onClose: () => void; onSent: () => v
 
   return (
     <Modal
-      title="Submit a game"
+      title={t("Submit a game")}
       onClose={onClose}
       footer={
         <>
@@ -314,16 +316,16 @@ function SubmitModal({ onClose, onSent }: { onClose: () => void; onSent: () => v
           )}
           <span className="spacer" />
           <button className="btn btn-primary" disabled={!ready || busy} onClick={submit}>
-            <Icon name="upload" size={18} /> {busy ? "Sending…" : "Send"}
+            <Icon name="upload" size={18} /> {busy ? t("Sending…") : t("Send")}
           </button>
         </>
       }
     >
       {picks.length === 0 ? (
-        <Empty critter={<ZoPic outfit="teacher" size={64} />}>Make a quick game or a Game Lab game first.</Empty>
+        <Empty critter={<ZoPic outfit="teacher" size={64} />}>{t("Make a quick game or a Game Lab game first.")}</Empty>
       ) : (
         <>
-          <Field label="Game">
+          <Field label={t("Game")}>
             <select
               value={key}
               onChange={(e) => {
@@ -333,10 +335,10 @@ function SubmitModal({ onClose, onSent }: { onClose: () => void; onSent: () => v
               autoFocus
             >
               <option value="" disabled>
-                Choose one of your games
+                {t("Choose one of your games")}
               </option>
               {games.length > 0 && (
-                <optgroup label="Quick games">
+                <optgroup label={t("Quick games")}>
                   {picks.filter((p) => p.kind === "quick").map((p) => (
                     <option key={p.key} value={p.key}>
                       {p.title}
@@ -345,7 +347,7 @@ function SubmitModal({ onClose, onSent }: { onClose: () => void; onSent: () => v
                 </optgroup>
               )}
               {labs.length > 0 && (
-                <optgroup label="Game Lab">
+                <optgroup label={t("Game Lab")}>
                   {picks.filter((p) => p.kind === "lab").map((p) => (
                     <option key={p.key} value={p.key}>
                       {p.title}
@@ -355,30 +357,30 @@ function SubmitModal({ onClose, onSent }: { onClose: () => void; onSent: () => v
               )}
             </select>
           </Field>
-          <Field label="Title">
+          <Field label={t("Title")}>
             <input value={title} maxLength={80} onChange={(e) => setTitle(e.target.value)} />
           </Field>
-          <Field label="What makes it special">
-            <textarea rows={2} value={blurb} maxLength={240} onChange={(e) => setBlurb(e.target.value)} placeholder="Students race to build sentences before the train leaves" />
+          <Field label={t("What makes it special")}>
+            <textarea rows={2} value={blurb} maxLength={240} onChange={(e) => setBlurb(e.target.value)} placeholder={t("Students race to build sentences before the train leaves")} />
           </Field>
           <div className="form-grid">
-            <Field label="Your name, as it should appear">
+            <Field label={t("Your name, as it should appear")}>
               <input value={credit} maxLength={80} onChange={(e) => setCredit(e.target.value)} />
             </Field>
-            <Field label="School or town (optional)">
+            <Field label={t("School or town (optional)")}>
               <input value={school} maxLength={120} onChange={(e) => setSchool(e.target.value)} />
             </Field>
           </div>
-          <Field label="Note for the reviewers (optional)">
+          <Field label={t("Note for the reviewers (optional)")}>
             <textarea rows={2} value={note} maxLength={1000} onChange={(e) => setNote(e.target.value)} />
           </Field>
           <label className="check">
             <input type="checkbox" checked={mineOk} onChange={(e) => setMineOk(e.target.checked)} />
-            <span>I made this game, and anyone may play, copy and change it with my name shown (CC BY 4.0).</span>
+            <span>{t("I made this game, and anyone may play, copy and change it with my name shown (CC BY 4.0).")}</span>
           </label>
           <label className="check">
             <input type="checkbox" checked={safeOk} onChange={(e) => setSafeOk(e.target.checked)} />
-            <span>It has no students' names, photos or other personal details.</span>
+            <span>{t("It has no students' names, photos or other personal details.")}</span>
           </label>
         </>
       )}
@@ -400,7 +402,7 @@ function ReviewPage() {
 
   const set = (s: ForReview, status: Status) =>
     decide(s.id, status, replies[s.id] ?? s.reply).then(
-      () => (toast(status === "featured" ? "On the Wall of Fame" : status === "declined" ? "Declined" : "Back to waiting"), refresh()),
+      () => (toast(status === "featured" ? t("On the Wall of Fame") : status === "declined" ? t("Declined") : t("Back to waiting")), refresh()),
       (e: Error) => toast(e.message, "error"),
     );
 
@@ -420,32 +422,32 @@ function ReviewPage() {
     <li key={s.id} className="card fame-item">
       <div className="fame-item-head">
         <strong className="grow">{s.title}</strong>
-        <span className={`fame-status is-${s.status}`}>{STATUS[s.status]}</span>
+        <span className={`fame-status is-${s.status}`}>{t(STATUS[s.status])}</span>
       </div>
       <p>{s.blurb}</p>
       <dl className="fame-facts">
-        <dt>From</dt>
+        <dt>{t("From")}</dt>
         <dd>
           {s.credit}
           {s.school ? `, ${s.school}` : ""} · <a href={`mailto:${s.email}`}>{s.email}</a>
         </dd>
-        <dt>Game</dt>
+        <dt>{t("Game")}</dt>
         <dd>
-          {kindName(s)} · {Math.max(1, Math.round(s.size / 1024))} KB · sent {day(s.createdAt)}
+          {kindName(s)} · {t("{n} KB", { n: Math.max(1, Math.round(s.size / 1024)) })} · {t("sent {date}", { date: day(s.createdAt) })}
         </dd>
         {s.note && (
           <>
-            <dt>Note</dt>
+            <dt>{t("Note")}</dt>
             <dd>{s.note}</dd>
           </>
         )}
       </dl>
-      <Field label="Reply to the teacher (optional)">
+      <Field label={t("Reply to the teacher (optional)")}>
         <textarea rows={2} maxLength={600} value={replies[s.id] ?? s.reply} onChange={(e) => setReplies({ ...replies, [s.id]: e.target.value })} />
       </Field>
       <div className="toolbar">
         <button className="btn btn-soft btn-sm" onClick={() => player.play(s.id, s.title)}>
-          <Icon name="play" size={16} /> Play
+          <Icon name="play" size={16} /> {t("Play")}
         </button>
         <button className="btn btn-ghost btn-sm" onClick={() => save(s)}>
           <Icon name="download" size={16} /> .json
@@ -453,21 +455,21 @@ function ReviewPage() {
         <span className="spacer" />
         {s.status !== "waiting" && (
           <button className="btn btn-ghost btn-sm" onClick={() => set(s, "waiting")}>
-            <Icon name="undo" size={16} /> Back to waiting
+            <Icon name="undo" size={16} /> {t("Back to waiting")}
           </button>
         )}
         {s.status !== "declined" && (
           <button className="btn btn-ghost btn-sm" onClick={() => set(s, "declined")}>
-            Decline
+            {t("Decline")}
           </button>
         )}
         {s.status === "featured" ? (
           <button className="btn btn-primary btn-sm" onClick={() => printCertificate({ credit: s.credit, school: s.school, title: s.title, date: s.reviewedAt || Date.now() })}>
-            <Icon name="star" size={16} /> Certificate
+            <Icon name="star" size={16} /> {t("Certificate")}
           </button>
         ) : (
           <button className="btn btn-primary btn-sm" onClick={() => set(s, "featured")}>
-            <Icon name="star" size={16} /> Feature
+            <Icon name="star" size={16} /> {t("Feature")}
           </button>
         )}
       </div>
@@ -478,11 +480,11 @@ function ReviewPage() {
     <div className="page fame-page">
       <div className="page-head">
         <a className="btn btn-ghost btn-sm" href="#/fame">
-          <Icon name="arrowL" size={16} /> Wall of Fame
+          <Icon name="arrowL" size={16} /> {t("Wall of Fame")}
         </a>
       </div>
       <div className="page-head">
-        <h1>Review submissions</h1>
+        <h1>{t("Review submissions")}</h1>
       </div>
       {error ? (
         <div className="card is-quiet">
@@ -493,7 +495,7 @@ function ReviewPage() {
           <section aria-labelledby="fame-waiting">
             <div className="page-head">
               <h2 id="fame-waiting" className="section-title">
-                Waiting
+                {t("Waiting")}
               </h2>
               <span className="pill">{waiting.length}</span>
             </div>
@@ -501,7 +503,7 @@ function ReviewPage() {
               <ul className="fame-list">{waiting.map(item)}</ul>
             ) : (
               <div className="card is-quiet">
-                <Empty critter={<ZoPic outfit="graduate" size={64} />}>Nothing waiting.</Empty>
+                <Empty critter={<ZoPic outfit="graduate" size={64} />}>{t("Nothing waiting.")}</Empty>
               </div>
             )}
           </section>
@@ -509,7 +511,7 @@ function ReviewPage() {
             <section aria-labelledby="fame-done">
               <div className="page-head">
                 <h2 id="fame-done" className="section-title">
-                  Reviewed in the last 60 days
+                  {t("Reviewed in the last 60 days")}
                 </h2>
               </div>
               <ul className="fame-list">{done.map(item)}</ul>

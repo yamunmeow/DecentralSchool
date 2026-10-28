@@ -13,6 +13,7 @@ import { Field, Icon } from "../ui";
 import { challengeFile } from "./files";
 import "./class.css";
 import { CHECKS, joinLink, LINK_LIMIT, newChallenge, shareFile, type Challenge, type Check, type CheckKind, type MissionStep } from "./model";
+import { t } from "../i18n";
 
 /** Palette categories a challenge can switch off (Memory covers lists too). */
 const PALETTE = ["events", "motion", "looks", "sound", "control", "sensing", "operators", "variables", "myblocks", "pen"];
@@ -31,9 +32,9 @@ export function ChallengeEditorPage({ id }: { id: string }) {
   if (c === null)
     return (
       <div className="page">
-        <p>This challenge isn't in this browser.</p>
+        <p>{t("This challenge isn't in this browser.")}</p>
         <a className="btn btn-primary" href="#/class">
-          Class
+          {t("Class")}
         </a>
       </div>
     );
@@ -53,7 +54,7 @@ function ChallengeEditor({ initial }: { initial: Challenge }) {
     setC((old) => {
       const next = { ...fn(old), updated: Date.now() };
       window.clearTimeout(timer.current);
-      timer.current = window.setTimeout(() => table.put(next).catch(() => toast("Couldn't save in this browser.", "error")), 400);
+      timer.current = window.setTimeout(() => table.put(next).catch(() => toast(t("Couldn't save in this browser."), "error")), 400);
       return next;
     });
   const latest = useRef(c);
@@ -83,29 +84,29 @@ function ChallengeEditor({ initial }: { initial: Challenge }) {
   }, [link, tooLong]);
 
   const starters: { key: string; name: string; make: () => CodeProject }[] = [
-    { key: "blank", name: "Empty game", make: () => newProject(c.title) },
-    ...STARTERS.map((s) => ({ key: `starter:${s.id}`, name: `Example: ${s.title}`, make: s.make })),
-    ...mine.map((p) => ({ key: `mine:${p.id}`, name: `My game: ${p.title}`, make: () => structuredClone(p) })),
+    { key: "blank", name: t("Empty game"), make: () => newProject(c.title) },
+    ...STARTERS.map((s) => ({ key: `starter:${s.id}`, name: t("Example: {title}", { title: t(s.title) }), make: s.make })),
+    ...mine.map((p) => ({ key: `mine:${p.id}`, name: t("My game: {title}", { title: p.title }), make: () => structuredClone(p) })),
   ];
   const all = c.categories === null;
 
   return (
     <div className="page class-page">
       <header className="class-head">
-        <a href="#/class" className="icon-btn" aria-label="Class">
+        <a href="#/class" className="icon-btn" aria-label={t("Class")}>
           <Icon name="arrowL" />
         </a>
-        <input className="class-title" value={c.title} aria-label="Challenge name" onChange={(e) => update((x) => ({ ...x, title: e.target.value }))} />
+        <input className="class-title" value={c.title} aria-label={t("Challenge name")} onChange={(e) => update((x) => ({ ...x, title: e.target.value }))} />
       </header>
 
       <div className="challenge-grid">
         <div className="challenge-main">
           <section className="card">
-            <Field label="What students should make">
-              <textarea rows={3} value={c.intro} placeholder="Make a game where a character catches falling fruit." onChange={(e) => update((x) => ({ ...x, intro: e.target.value }))} />
+            <Field label={t("What students should make")}>
+              <textarea rows={3} value={c.intro} placeholder={t("Make a game where a character catches falling fruit.")} onChange={(e) => update((x) => ({ ...x, intro: e.target.value }))} />
             </Field>
             <label className="field">
-              <span className="field-label">Students start from</span>
+              <span className="field-label">{t("Students start from")}</span>
               <select
                 value=""
                 onChange={(e) => {
@@ -124,40 +125,40 @@ function ChallengeEditor({ initial }: { initial: Challenge }) {
           </section>
 
           <section className="card">
-            <h2 className="card-title">Steps</h2>
+            <h2 className="card-title">{t("Steps")}</h2>
             <ol className="step-editor">
               {c.steps.map((s, i) => (
                 <li key={s.id}>
                   <span className="step-num">{i + 1}</span>
                   <div className="step-fields">
-                    <input value={s.text} aria-label={`Step ${i + 1}`} onChange={(e) => setStep(i, { ...s, text: e.target.value })} />
+                    <input value={s.text} aria-label={t("Step {n}", { n: i + 1 })} onChange={(e) => setStep(i, { ...s, text: e.target.value })} />
                     <div className="step-row">
                       <select
-                        aria-label="How it is checked"
+                        aria-label={t("How it is checked")}
                         value={s.check?.kind ?? ""}
                         onChange={(e) => setStep(i, { ...s, check: e.target.value ? ({ kind: e.target.value as CheckKind, n: CHECKS.find((k) => k.kind === e.target.value)?.counted ? 2 : undefined } as Check) : undefined })}
                       >
-                        <option value="">Student ticks it</option>
+                        <option value="">{t("Student ticks it")}</option>
                         {CHECKS.map((k) => (
                           <option key={k.kind} value={k.kind}>
-                            Check: {k.label.replace(" N ", " a number of ")}
+                            {t("Check: {label}", { label: t(k.label).replace(" N ", t(" a number of ")) })}
                           </option>
                         ))}
                       </select>
                       {s.check && CHECKS.find((k) => k.kind === s.check!.kind)?.counted && (
-                        <input className="step-n" type="number" min={1} max={20} aria-label="How many" value={s.check.n ?? 2} onChange={(e) => setStep(i, { ...s, check: { ...s.check!, n: Math.max(1, Number(e.target.value) || 1) } })} />
+                        <input className="step-n" type="number" min={1} max={20} aria-label={t("How many")} value={s.check.n ?? 2} onChange={(e) => setStep(i, { ...s, check: { ...s.check!, n: Math.max(1, Number(e.target.value) || 1) } })} />
                       )}
                     </div>
-                    <input value={s.hint || ""} placeholder="Hint (optional)" aria-label="Hint" onChange={(e) => setStep(i, { ...s, hint: e.target.value || undefined })} />
+                    <input value={s.hint || ""} placeholder={t("Hint (optional)")} aria-label={t("Hint")} onChange={(e) => setStep(i, { ...s, hint: e.target.value || undefined })} />
                   </div>
                   <div className="step-tools">
-                    <button className="icon-btn icon-btn-sm" disabled={i === 0} aria-label="Move up" onClick={() => moveStep(i, -1)}>
+                    <button className="icon-btn icon-btn-sm" disabled={i === 0} aria-label={t("Move up")} onClick={() => moveStep(i, -1)}>
                       <Icon name="up" size={16} />
                     </button>
-                    <button className="icon-btn icon-btn-sm" disabled={i === c.steps.length - 1} aria-label="Move down" onClick={() => moveStep(i, 1)}>
+                    <button className="icon-btn icon-btn-sm" disabled={i === c.steps.length - 1} aria-label={t("Move down")} onClick={() => moveStep(i, 1)}>
                       <Icon name="down" size={16} />
                     </button>
-                    <button className="icon-btn icon-btn-sm danger-hover" disabled={c.steps.length < 2} aria-label="Remove step" onClick={() => update((x) => ({ ...x, steps: x.steps.filter((_, j) => j !== i) }))}>
+                    <button className="icon-btn icon-btn-sm danger-hover" disabled={c.steps.length < 2} aria-label={t("Remove step")} onClick={() => update((x) => ({ ...x, steps: x.steps.filter((_, j) => j !== i) }))}>
                       <Icon name="trash" size={16} />
                     </button>
                   </div>
@@ -166,19 +167,19 @@ function ChallengeEditor({ initial }: { initial: Challenge }) {
             </ol>
             <div className="toolbar">
               <button className="btn btn-soft btn-sm" onClick={() => update((x) => ({ ...x, steps: [...x.steps, { id: uid(), text: "" }] }))}>
-                <Icon name="plus" size={16} /> Add a step
+                <Icon name="plus" size={16} /> {t("Add a step")}
               </button>
             </div>
           </section>
 
           <section className="card">
-            <h2 className="card-title">Blocks students can use</h2>
+            <h2 className="card-title">{t("Blocks students can use")}</h2>
             <div className="seg seg-small">
               <button className={all ? "on" : ""} aria-pressed={all} onClick={() => update((x) => ({ ...x, categories: null }))}>
-                All
+                {t("All")}
               </button>
               <button className={!all ? "on" : ""} aria-pressed={!all} onClick={() => update((x) => ({ ...x, categories: x.categories ?? ["events", "motion", "looks", "control"] }))}>
-                Only some
+                {t("Only some")}
               </button>
             </div>
             {!all && (
@@ -198,7 +199,7 @@ function ChallengeEditor({ initial }: { initial: Challenge }) {
                         }
                       />
                       <span className="cat-dot" aria-hidden />
-                      {CATEGORIES[k].name}
+                      {t(CATEGORIES[k].name)}
                     </label>
                   );
                 })}
@@ -208,32 +209,32 @@ function ChallengeEditor({ initial }: { initial: Challenge }) {
         </div>
 
         <aside className="card share-card">
-          <h2 className="card-title">Send to students</h2>
-          <Field label="Your name, as students see it">
+          <h2 className="card-title">{t("Send to students")}</h2>
+          <Field label={t("Your name, as students see it")}>
             <input value={c.teacher} onChange={(e) => update((x) => ({ ...x, teacher: e.target.value }))} />
           </Field>
-          {qr && <img className="share-qr" src={qr} alt="QR code for the challenge link" />}
+          {qr && <img className="share-qr" src={qr} alt={t("QR code for the challenge link")} />}
           <div className="toolbar">
             {!tooLong && (
               <button
                 className="btn btn-primary btn-sm"
                 onClick={() =>
                   navigator.clipboard.writeText(link).then(
-                    () => toast("Link copied"),
-                    () => toast("Couldn't copy. Use the file instead.", "error"),
+                    () => toast(t("Link copied")),
+                    () => toast(t("Couldn't copy. Use the file instead."), "error"),
                   )
                 }
               >
-                <Icon name="link" size={16} /> Copy link
+                <Icon name="link" size={16} /> {t("Copy link")}
               </button>
             )}
-            <button className="btn btn-ghost btn-sm" onClick={() => shareFile(`${slug(c.title)}-challenge.html`, challengeFile(c), "text/html", c.title)}>
-              <Icon name="file" size={16} /> Challenge file
+            <button className="btn btn-ghost btn-sm" onClick={() => shareFile(`${slug(c.title)}-${t("challenge")}.html`, challengeFile(c), "text/html", c.title)}>
+              <Icon name="file" size={16} /> {t("Challenge file")}
             </button>
           </div>
-          {tooLong && <p className="notice">The starter game is too big for a link. Send the file.</p>}
+          {tooLong && <p className="notice">{t("The starter game is too big for a link. Send the file.")}</p>}
           <a className="btn btn-ghost btn-sm" href={link} target="_blank" rel="noreferrer">
-            <Icon name="eye" size={16} /> Try it as a student
+            <Icon name="eye" size={16} /> {t("Try it as a student")}
           </a>
         </aside>
       </div>

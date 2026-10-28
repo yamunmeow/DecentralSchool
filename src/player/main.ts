@@ -1,6 +1,6 @@
 import { decodeGame } from "../shared/decode";
 import { normalize } from "../shared/normalize";
-import type { CustomGame, Game } from "../shared/types";
+import type { CustomGame, Game, UiLang } from "../shared/types";
 import { sound, store } from "./device";
 import { h, mount } from "./dom";
 import { STRINGS } from "./i18n";
@@ -38,11 +38,14 @@ function boot() {
       remember(game, location.hash);
       return open(root, game, hosted);
     } catch {
-      return mount(root, h("main", { class: "screen center" }, h("div", { class: "hero-emoji" }, "🧩"), h("p", { class: "lead" }, STRINGS.en.broken), library(root)));
+      return mount(root, h("main", { class: "screen center" }, h("div", { class: "hero-emoji" }, "🧩"), h("p", { class: "lead" }, STRINGS[device()].broken), library(root)));
     }
   }
   mount(root, h("main", { class: "screen" }, library(root)));
 }
+
+/** Without a game to say otherwise, the player speaks the device's language. */
+const device = (): UiLang => (["fr", "hi", "es"] as const).find((l) => (navigator.language || "").toLowerCase().startsWith(l)) || "en";
 
 function remember(game: Game, hash: string) {
   const list = store.get<Saved[]>(LIBRARY, []).filter((g) => g.id !== game.id);
@@ -51,7 +54,7 @@ function remember(game: Game, hash: string) {
 }
 
 function library(root: HTMLElement): HTMLElement {
-  const t = STRINGS.en;
+  const t = STRINGS[device()];
   const list = store.get<Saved[]>(LIBRARY, []);
   return h(
     "section",

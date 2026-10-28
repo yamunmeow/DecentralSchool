@@ -1,4 +1,5 @@
 import * as Blockly from "blockly/core";
+import { t } from "../i18n";
 import { chip } from "./blocks";
 import type { ProcPart, ProcState } from "../../code/compiler";
 
@@ -51,7 +52,7 @@ const fresh = () => `L${n++}`;
 function addParts(block: Blockly.Block, parts: ProcPart[], call: boolean, reporter = false) {
   let row: Blockly.Input | null = null;
   // A step that uses a trick carries the trick chip, like every other step.
-  if (call && !reporter) row = block.appendDummyInput(fresh()).appendField(new Blockly.FieldImage(chip("myblocks"), 28, 28, "trick"));
+  if (call && !reporter) row = block.appendDummyInput(fresh()).appendField(new Blockly.FieldImage(chip("myblocks"), 28, 28, t("trick")));
   for (const p of parts) {
     if (p.type === "label") {
       if (!row) row = block.appendDummyInput(fresh());
@@ -71,9 +72,9 @@ export function registerProcedures() {
       this.setStyle("myblocks_blocks");
       this.setNextStatement(true);
       this.setInputsInline(true);
-      this.appendDummyInput("HEAD").appendField(new Blockly.FieldImage(chip("myblocks", true), 28, 28, "trick")).appendField("how to");
+      this.appendDummyInput("HEAD").appendField(new Blockly.FieldImage(chip("myblocks", true), 28, 28, t("trick"))).appendField(t("how to"));
       this.proc = null;
-      this.setTooltip("Teach a trick of your own");
+      this.setTooltip(t("Teach a trick of your own"));
     },
     saveExtraState(this: ProcBlock) {
       return this.proc;
@@ -86,10 +87,10 @@ export function registerProcedures() {
       const proc = this.proc;
       if (!proc) return;
       rebuildInputs(this, ["HEAD"], () => addParts(this, proc.parts, false));
-      this.getInput("HEAD")!.fieldRow[1].setValue(proc.reporter ? "how to work out" : "how to");
+      this.getInput("HEAD")!.fieldRow[1].setValue(proc.reporter ? t("how to work out") : t("how to"));
     },
     customContextMenu(this: ProcBlock, options: Blockly.ContextMenuRegistry.ContextMenuOption[]) {
-      options.unshift({ text: "Edit", enabled: true, callback: () => editProcedure(this.workspace, this.proc) } as unknown as Blockly.ContextMenuRegistry.ContextMenuOption);
+      options.unshift({ text: t("Edit"), enabled: true, callback: () => editProcedure(this.workspace, this.proc) } as unknown as Blockly.ContextMenuRegistry.ContextMenuOption);
     },
   };
 
@@ -124,7 +125,7 @@ export function registerProcedures() {
       rebuildInputs(this, [], () => addParts(this, proc.parts, true, !!proc.reporter));
     },
     customContextMenu(this: ProcBlock, options: Blockly.ContextMenuRegistry.ContextMenuOption[]) {
-      options.unshift({ text: "Edit", enabled: true, callback: () => editProcedure(this.workspace, findDefinition(this.workspace, this.proc?.id)?.proc ?? this.proc) } as unknown as Blockly.ContextMenuRegistry.ContextMenuOption);
+      options.unshift({ text: t("Edit"), enabled: true, callback: () => editProcedure(this.workspace, findDefinition(this.workspace, this.proc?.id)?.proc ?? this.proc) } as unknown as Blockly.ContextMenuRegistry.ContextMenuOption);
     },
   };
 
@@ -148,7 +149,7 @@ export function registerProcedures() {
   }
 
   Blockly.common.defineBlocksWithJsonArray([
-    { type: "procedures_return", message0: "%1 give back %2", args0: [{ type: "field_image", src: chip("myblocks"), width: 28, height: 28, alt: "trick" }, { type: "input_value", name: "VALUE" }], previousStatement: null, style: "myblocks_blocks", inputsInline: true, tooltip: "Give back a value from a trick that works something out" },
+    { type: "procedures_return", message0: t("%1 give back %2"), args0: [{ type: "field_image", src: chip("myblocks"), width: 28, height: 28, alt: t("trick") }, { type: "input_value", name: "VALUE" }], previousStatement: null, style: "myblocks_blocks", inputsInline: true, tooltip: t("Give back a value from a trick that works something out") },
   ]);
 }
 
@@ -243,7 +244,7 @@ export function watchDefinitions(ws: Blockly.WorkspaceSvg) {
 
 /** Blocks for the My Blocks part of the toolbox. */
 export function myBlocksFlyout(ws: Blockly.WorkspaceSvg): Blockly.utils.toolbox.FlyoutItemInfoArray {
-  const out: Blockly.utils.toolbox.FlyoutItemInfoArray = [{ kind: "button", text: "+ New trick", callbackkey: "MAKE_BLOCK" }];
+  const out: Blockly.utils.toolbox.FlyoutItemInfoArray = [{ kind: "button", text: t("+ New trick"), callbackkey: "MAKE_BLOCK" }];
   const procs = definitions(ws);
   for (const proc of procs) {
     const inputs: Record<string, unknown> = {};

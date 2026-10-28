@@ -3,6 +3,7 @@ import { costumeSvg, svgUrl } from "../../code/art";
 import { compileProject } from "../../code/compiler";
 import { buildCodePage, scriptJson } from "../../shared/page";
 import { appFile, iconSvg } from "../code/files";
+import { getLang, t, tn } from "../i18n";
 import { joinLink, type Challenge, type HandIn } from "./model";
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
@@ -14,7 +15,7 @@ export const handInFile = (h: HandIn) => appFile(h.project).replace('<div id="ap
 /** A challenge as a file: a small page with a button that opens it in the studio. */
 export function challengeFile(c: Challenge): string {
   return `<!doctype html>
-<html lang="en">
+<html lang="${getLang()}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,11 +25,11 @@ export function challengeFile(c: Challenge): string {
 </head>
 <body>
 <main>
-<small>A Game Lab challenge${c.teacher ? ` from ${esc(c.teacher)}` : ""}</small>
+<small>${c.teacher ? esc(t("A Game Lab challenge from {name}", { name: c.teacher })) : esc(t("A Game Lab challenge"))}</small>
 <h1>${esc(c.title)}</h1>
 ${c.intro ? `<p>${esc(c.intro)}</p>` : ""}
 <ol>${c.steps.map((s) => `<li>${esc(s.text)}</li>`).join("")}</ol>
-<a href="${esc(joinLink(c))}">Start in DecentralSchool</a>
+<a href="${esc(joinLink(c))}">${esc(t("Start in DecentralSchool"))}</a>
 </main>
 <script type="application/json" id="challenge">${scriptJson(c)}</script>
 </body>
@@ -46,11 +47,11 @@ export function galleryFile(title: string, items: HandIn[]): string {
     title: h.project.title,
     student: h.student,
     thumb: svgUrl(iconSvg(h.project)),
-    page: buildCodePage(marker, h.project, compileProject(h.project)),
+    page: buildCodePage(marker, h.project, compileProject(h.project), { lang: getLang() }),
   }));
   const runtime = codeRuntime.replace(/<\/script/gi, "<\\/script");
   return `<!doctype html>
-<html lang="en">
+<html lang="${getLang()}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -71,9 +72,9 @@ button.card{width:100%;display:flex;flex-direction:column;gap:.3rem;padding:.6re
 </style>
 </head>
 <body>
-<header><small>Class gallery</small><h1>${esc(title)}</h1><p>${games.length} game${games.length === 1 ? "" : "s"} made by the class</p></header>
+<header><small>${esc(t("Class gallery"))}</small><h1>${esc(title)}</h1><p>${esc(tn(games.length, "{n} game made by the class", "{n} games made by the class"))}</p></header>
 <ul id="list"></ul>
-<div class="play" id="play"><button class="close" id="close" aria-label="Back to the gallery">✕</button></div>
+<div class="play" id="play"><button class="close" id="close" aria-label="${esc(t("Back to the gallery"))}">✕</button></div>
 <script type="text/plain" id="runtime">${runtime}</script>
 <script type="application/json" id="games">${scriptJson(games)}</script>
 <script>

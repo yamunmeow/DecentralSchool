@@ -854,11 +854,13 @@ export class RProject extends Project {
       const input = document.createElement("input");
       input.type = "text";
       input.className = "leopard__askInput";
-      input.setAttribute("aria-label", question || "Answer");
+      // The page's language, set by the studio (src/shared/page.ts).
+      const answer = /^fr/i.test(document.documentElement.lang || navigator.language || "") ? "Réponse" : "Answer";
+      input.setAttribute("aria-label", question || answer);
       const button = document.createElement("button");
       button.className = "leopard__askButton";
       button.textContent = "✓";
-      button.setAttribute("aria-label", "Answer");
+      button.setAttribute("aria-label", answer);
       if (question) form.append(text);
       form.append(input, button);
       form.addEventListener("submit", (e) => {

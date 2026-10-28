@@ -7,7 +7,8 @@ import { PALETTE, TEMPLATE_CRITTER } from "../palette";
 import { fromLibrary, LIBRARY, libraryUrl } from "../play/library";
 import { GameTile } from "../components/GameCard";
 import { go, useApp } from "../store";
-import { blankGame, fromStarter, TEMPLATE_INFO } from "../templates";
+import { blankGame, fromStarter, startersFor, TEMPLATE_INFO } from "../templates";
+import { t } from "../i18n";
 import { Icon } from "../ui";
 import { useAi } from "../useAi";
 import { normalize } from "../../shared/normalize";
@@ -17,6 +18,7 @@ import { htmlGameFromFile, isGameHtml } from "../lesson/htmlGame";
 import { UploadResult, type Upload } from "../lesson/UploadResult";
 import { askAssistant } from "./Home";
 
+// English; shown through t().
 const IDEAS = [
   "A times-tables race for class 3 with a 10 second timer",
   "English vocabulary about the market, with French translations",
@@ -44,7 +46,7 @@ export function NewGame({ template }: { template?: string }) {
     go(`game/${game.id}`);
   };
 
-  const askFor = (t: Template, name: string) => askAssistant(t === "custom" ? "Make a game where " : `Make a ${name.toLowerCase()} game about `, true);
+  const askFor = (id: Template, name: string) => askAssistant(id === "custom" ? t("Make a game where ") : t(`Make a ${name.toLowerCase()} game about `), true);
 
   /** No AI needed: an HTML game becomes the game as it is; a lesson is read and turned into the template it fits. */
   const take = async (f: File) => {
@@ -58,14 +60,14 @@ export function NewGame({ template }: { template?: string }) {
         setUpload({ kind: "html", file: f.name, game: html, id: game.id });
       } else {
         const text = (await textFromFile(f)).trim();
-        if (!text) throw new Error(`Couldn't read any text from ${f.name}.`);
+        if (!text) throw new Error(t("Couldn't read any text from {file}.", { file: f.name }));
         const lesson = readLesson(text, f.name);
         const game = lessonGame(lesson, lesson.best);
         await save(game);
         setUpload({ kind: "lesson", file: f.name, lesson, text, id: game.id, chosen: lesson.best });
       }
     } catch (e) {
-      toast((e as Error).message || `Couldn't read ${f.name}.`, "error");
+      toast((e as Error).message || t("Couldn't read {file}.", { file: f.name }), "error");
     } finally {
       setReading(false);
     }
@@ -75,7 +77,7 @@ export function NewGame({ template }: { template?: string }) {
     <div className="page create-page">
       <section className="hero create-hero">
         <div className="hero-text">
-          <h1>Create a game</h1>
+          <h1>{t("Create a game")}</h1>
           <form
             className="create-box"
             onSubmit={(e) => {
@@ -84,36 +86,36 @@ export function NewGame({ template }: { template?: string }) {
             }}
           >
             <label className="sr-only" htmlFor="idea">
-              Describe your game
+              {t("Describe your game")}
             </label>
-            <textarea id="idea" rows={3} value={idea} onChange={(e) => setIdea(e.target.value)} placeholder="Describe your game: the subject, the age of your students, the language…" />
+            <textarea id="idea" rows={3} value={idea} onChange={(e) => setIdea(e.target.value)} placeholder={t("Describe your game: the subject, the age of your students, the language…")} />
             <div className="create-row">
-              <button type="button" className="btn btn-ghost btn-sm upload-btn" disabled={reading} onClick={() => file.current?.click()} title="A lesson plan or worksheet (.docx, .pdf, .odt, .txt), or an HTML game (.html, or its folder as a .zip)">
-                <Icon name="upload" size={16} /> {reading ? "Reading…" : "Upload your lesson file or a pre-existing HTML game file"}
+              <button type="button" className="btn btn-ghost btn-sm upload-btn" disabled={reading} onClick={() => file.current?.click()} title={t("A lesson plan or worksheet (.docx, .pdf, .odt, .txt), or an HTML game (.html, or its folder as a .zip)")}>
+                <Icon name="upload" size={16} /> {reading ? t("Reading…") : t("Upload your lesson file or a pre-existing HTML game file")}
               </button>
               <span className="create-ai">
                 {ai.connected ? (
                   <>
                     <span className="ai-dot on" aria-hidden />
-                    AI connected · {modelName(ai.model)}
+                    {t("AI connected")} · {modelName(ai.model)}
                   </>
                 ) : (
                   <button type="button" className="btn btn-sm btn-ai" onClick={() => signIn()}>
-                    Login to OpenRouter AI for free
+                    {t("Login to OpenRouter AI for free")}
                   </button>
                 )}
               </span>
               <span className="spacer" />
               <button className="btn btn-primary" disabled={!idea.trim()}>
-                <Icon name="sparkle" size={18} /> {ai.connected ? "Create with AI" : "Connect & create"}
+                <Icon name="sparkle" size={18} /> {ai.connected ? t("Create with AI") : t("Connect & create")}
               </button>
             </div>
             <input ref={file} type="file" accept={ACCEPT_UPLOAD} hidden onChange={(e) => (e.target.files?.[0] && take(e.target.files[0]), (e.target.value = ""))} />
           </form>
           <div className="chips idea-chips">
             {IDEAS.map((i) => (
-              <button key={i} type="button" className="chip-btn" onClick={() => setIdea(i)}>
-                {i}
+              <button key={i} type="button" className="chip-btn" onClick={() => setIdea(t(i))}>
+                {t(i)}
               </button>
             ))}
           </div>
@@ -122,7 +124,7 @@ export function NewGame({ template }: { template?: string }) {
 
       {upload && <UploadResult upload={upload} onChange={setUpload} onAgain={() => file.current?.click()} />}
 
-      <section className="create-steps" aria-label="How it works">
+      <section className="create-steps" aria-label={t("How it works")}>
         {[
           ["sparkle", "Describe or upload", "a lesson, a worksheet or an HTML game"],
           ["edit", "Check and change", "every question stays editable"],
@@ -132,42 +134,42 @@ export function NewGame({ template }: { template?: string }) {
             <span className="step-n">{i + 1}</span>
             <Icon name={icon as "sparkle"} size={22} />
             <span>
-              <strong>{title}</strong>
-              <small>{text}</small>
+              <strong>{t(title)}</strong>
+              <small>{t(text)}</small>
             </span>
           </div>
         ))}
       </section>
 
       <div className="page-head">
-        <h2 className="section-title">Or start from a template</h2>
+        <h2 className="section-title">{t("Or start from a template")}</h2>
       </div>
       <div className="template-grid">
-        {TEMPLATE_INFO.map((t) => {
-          const p = PALETTE[t.tint];
+        {TEMPLATE_INFO.map((tpl) => {
+          const p = PALETTE[tpl.tint];
           return (
-            <section id={`t-${t.id}`} key={t.id} className={`template-card${template === t.id ? " is-picked" : ""}`} style={{ "--tint": p.tint, "--ink-t": p.ink, "--deep": p.deep } as CSSProperties}>
+            <section id={`t-${tpl.id}`} key={tpl.id} className={`template-card${template === tpl.id ? " is-picked" : ""}`} style={{ "--tint": p.tint, "--ink-t": p.ink, "--deep": p.deep } as CSSProperties}>
               <header className="template-head">
-                <span className="template-emoji">{t.emoji}</span>
+                <span className="template-emoji">{tpl.emoji}</span>
                 <div className="grow">
-                  <h2>{t.name}</h2>
-                  <p>{t.blurb}</p>
+                  <h2>{t(tpl.name)}</h2>
+                  <p>{t(tpl.blurb)}</p>
                 </div>
-                <Critter kind={TEMPLATE_CRITTER[t.id]} color={t.tint} size={60} />
+                <Critter kind={TEMPLATE_CRITTER[tpl.id]} color={tpl.tint} size={60} />
               </header>
               <div className="template-actions">
-                {t.id !== "custom" && (
-                  <button className="btn btn-ghost btn-sm" onClick={() => create(blankGame(t.id))}>
-                    <Icon name="plus" size={16} /> Empty
+                {tpl.id !== "custom" && (
+                  <button className="btn btn-ghost btn-sm" onClick={() => create(blankGame(tpl.id))}>
+                    <Icon name="plus" size={16} /> {t("Empty")}
                   </button>
                 )}
-                {t.starters.map((s) => (
+                {startersFor(tpl).map((s) => (
                   <button key={s.title} className="btn btn-ghost btn-sm" onClick={() => create(fromStarter(s))}>
                     <Icon name="star" size={16} /> {s.title}
                   </button>
                 ))}
-                <button className="btn btn-soft btn-sm" onClick={() => askFor(t.id, t.name)}>
-                  <Icon name="sparkle" size={16} /> With AI
+                <button className="btn btn-soft btn-sm" onClick={() => askFor(tpl.id, tpl.name)}>
+                  <Icon name="sparkle" size={16} /> {t("With AI")}
                 </button>
               </div>
             </section>
@@ -176,16 +178,16 @@ export function NewGame({ template }: { template?: string }) {
       </div>
 
       <div className="page-head">
-        <h2 className="section-title">Or start from a CAEB game</h2>
+        <h2 className="section-title">{t("Or start from a CAEB game")}</h2>
       </div>
       <div className="tile-grid">
-        {LIBRARY.flatMap((g) => g.templates.map((t) => ({ g, t }))).map(({ g, t }) => (
+        {LIBRARY.flatMap((g) => g.templates.map((tpl) => ({ g, tpl }))).map(({ g, tpl }) => (
           <GameTile
-            key={`${g.id}-${t.file}`}
+            key={`${g.id}-${tpl.file}`}
             img={libraryUrl(g, "icon.png")}
-            title={g.title}
-            note={t.label}
-            onOpen={() => fromLibrary(g, t.file).then(create, (e: Error) => toast(e.message, "error"))}
+            title={t(g.title)}
+            note={t(tpl.label)}
+            onOpen={() => fromLibrary(g, tpl.file).then(create, (e: Error) => toast(e.message, "error"))}
           />
         ))}
       </div>

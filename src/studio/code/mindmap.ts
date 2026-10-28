@@ -1,7 +1,8 @@
 import { costumeSvg, svgUrl } from "../../code/art";
 import { topBlocks, type ProcState, type SBlock } from "../../code/compiler";
 import type { CodeProject, Target } from "../../code/types";
-import { blockTemplate, CATEGORIES, MENU_WORDS } from "./blocks";
+import { t } from "../i18n";
+import { blockTemplate, CATEGORIES, KEYS, MENU_WORDS } from "./blocks";
 
 /**
  * The project as a mind map: the game, then each character, its scripts (one per start
@@ -46,7 +47,7 @@ function names(p: CodeProject): Map<string, string> {
 function fieldText(v: unknown, vars: Map<string, string>): string {
   if (v && typeof v === "object" && "id" in v) return vars.get(String((v as { id: string }).id)) || "?";
   const s = String(v ?? "");
-  return MENU_WORDS[s] || s;
+  return MENU_WORDS[s] ? t(MENU_WORDS[s]) : KEYS.includes(s) ? t(s) : s;
 }
 
 function inputText(input: { block?: SBlock; shadow?: SBlock } | undefined, vars: Map<string, string>): string {
@@ -64,17 +65,17 @@ const procWords = (proc: ProcState | undefined, value: (id: string) => string) =
 
 /** A block in words, the way it reads in the editor. */
 export function say(b: SBlock, vars: Map<string, string>): string {
-  if (b.type === "procedures_definition") return `how to ${procWords(b.extraState as unknown as ProcState, (id) => `[${(b.extraState as unknown as ProcState).parts.find((p) => p.id === id)?.name || "?"}]`)}`;
+  if (b.type === "procedures_definition") return `${t("how to")} ${procWords(b.extraState as unknown as ProcState, (id) => `[${(b.extraState as unknown as ProcState).parts.find((p) => p.id === id)?.name || "?"}]`)}`;
   if (b.type === "procedures_call") {
     const proc = (b.extraState as { proc?: ProcState } | undefined)?.proc;
     return procWords(proc, (id) => inputText(b.inputs?.[id], vars));
   }
-  if (b.type.startsWith("argument_reporter")) return String((b.extraState as { name?: string } | undefined)?.name || b.fields?.VALUE || "input");
+  if (b.type.startsWith("argument_reporter")) return String((b.extraState as { name?: string } | undefined)?.name || b.fields?.VALUE || t("input"));
   if (b.type === "data_variable" || b.type === "data_listcontents") return fieldText(b.fields?.VARIABLE ?? b.fields?.LIST, vars);
-  const t = blockTemplate(b.type);
-  if (!t) return b.type.replace(/^[a-z]+_/, "").replace(/_/g, " ");
-  return t.message.replace(/%(\d+)/g, (_, n) => {
-    const name = t.args[Number(n) - 1];
+  const tpl = blockTemplate(b.type);
+  if (!tpl) return b.type.replace(/^[a-z]+_/, "").replace(/_/g, " ");
+  return tpl.message.replace(/%(\d+)/g, (_, n) => {
+    const name = tpl.args[Number(n) - 1];
     if (!name) return "";
     if (b.inputs?.[name]) return inputText(b.inputs[name], vars);
     return fieldText(b.fields?.[name], vars);
@@ -93,14 +94,14 @@ const signalOf = (b: SBlock, field: "in" | "out") =>
 
 const LOOPS = new Set(["control_forever", "control_repeat", "control_repeat_until"]);
 
-function chain(first: SBlock | undefined, t: Target, vars: Map<string, string>, folded: Set<string>): MapNode[] {
+function chain(first: SBlock | undefined, who: Target, vars: Map<string, string>, folded: Set<string>): MapNode[] {
   const out: MapNode[] = [];
   for (let b = first; b; b = b.next?.block) {
-    const base = { key: b.id, label: say(b, vars), cat: category(b), targetId: t.id, blockId: b.id };
-    if (LOOPS.has(b.type)) out.push(fold({ ...base, kind: "loop", children: chain(b.inputs?.SUBSTACK?.block, t, vars, folded) }, folded));
+    const base = { key: b.id, label: say(b, vars), cat: category(b), targetId: who.id, blockId: b.id };
+    if (LOOPS.has(b.type)) out.push(fold({ ...base, kind: "loop", children: chain(b.inputs?.SUBSTACK?.block, who, vars, folded) }, folded));
     else if (b.type === "control_if" || b.type === "control_if_else") {
-      const yes: MapNode = { key: `${b.id}:yes`, kind: "branch", label: "yes", cat: "control", targetId: t.id, blockId: b.id, children: chain(b.inputs?.SUBSTACK?.block, t, vars, folded) };
-      const no: MapNode = { key: `${b.id}:no`, kind: "branch", label: "otherwise", cat: "control", targetId: t.id, blockId: b.id, children: chain(b.inputs?.SUBSTACK2?.block, t, vars, folded) };
+      const yes: MapNode = { key: `${b.id}:yes`, kind: "branch", label: t("yes"), cat: "control", targetId: who.id, blockId: b.id, children: chain(b.inputs?.SUBSTACK?.block, who, vars, folded) };
+      const no: MapNode = { key: `${b.id}:no`, kind: "branch", label: t("otherwise"), cat: "control", targetId: who.id, blockId: b.id, children: chain(b.inputs?.SUBSTACK2?.block, who, vars, folded) };
       out.push(fold({ ...base, kind: "if", label: `${base.label.replace(/\?\)?$/, (m) => (m === "?)" ? ")" : ""))}?`, children: b.type === "control_if_else" ? [yes, no] : [yes] }, folded));
     } else out.push({ ...base, kind: "step", children: [], sends: b.type.startsWith("event_broadcast") ? signalOf(b, "out") : undefined });
   }
@@ -115,8 +116,8 @@ function fold(n: MapNode, folded: Set<string>): MapNode {
 
 export function buildTree(p: CodeProject, folded: Set<string>): MapNode {
   const vars = names(p);
-  const targets = [p.stage, ...p.sprites].map((t) => {
-    const scripts = topBlocks(t)
+  const targets = [p.stage, ...p.sprites].map((who) => {
+    const scripts = topBlocks(who)
       .slice()
       .sort((a, b) => (a.y ?? 0) - (b.y ?? 0) || (a.x ?? 0) - (b.x ?? 0))
       .map((top) => {
@@ -127,18 +128,18 @@ export function buildTree(p: CodeProject, folded: Set<string>): MapNode {
               kind: "script",
               label: say(top, vars),
               cat: category(top),
-              targetId: t.id,
+              targetId: who.id,
               blockId: top.id,
               receives: top.type === "event_whenbroadcastreceived" ? signalOf(top, "in") : undefined,
-              children: chain(top.next?.block, t, vars, folded),
+              children: chain(top.next?.block, who, vars, folded),
             }
-          : { key: top.id, kind: "script", label: "loose blocks: nothing starts them", cat: "loose", targetId: t.id, blockId: top.id, children: chain(top, t, vars, folded) };
+          : { key: top.id, kind: "script", label: t("loose blocks: nothing starts them"), cat: "loose", targetId: who.id, blockId: top.id, children: chain(top, who, vars, folded) };
         return fold(node, folded);
       });
-    const pic = t.costumes[t.costume] || t.costumes[0];
-    return fold({ key: `t:${t.id}`, kind: "target", label: t.isStage ? "Scene" : t.name, cat: "target", targetId: t.id, thumb: pic ? svgUrl(costumeSvg(pic)) : undefined, children: scripts }, folded);
+    const pic = who.costumes[who.costume] || who.costumes[0];
+    return fold({ key: `t:${who.id}`, kind: "target", label: who.isStage ? t("Scene") : who.name, cat: "target", targetId: who.id, thumb: pic ? svgUrl(costumeSvg(pic)) : undefined, children: scripts }, folded);
   });
-  return { key: "root", kind: "root", label: p.title || "My game", cat: "root", children: targets };
+  return { key: "root", kind: "root", label: p.title || t("My game"), cat: "root", children: targets };
 }
 
 /** Fold every script of a big project at first, so the map opens readable. */
@@ -229,7 +230,7 @@ export function drawMap(root: MapNode, pal: Palette): { svg: string; width: numb
       const x2 = to.x;
       const y2 = to.y + to.h / 2;
       const bend = Math.max(60, Math.abs(y2 - y1) / 3);
-      parts.push(`<path class="map-signal" d="M${x1} ${y1}C${x1 + bend} ${y1} ${x2 - bend} ${y2} ${x2 - 4} ${y2}" fill="none" stroke="${CATEGORIES.events.colour}" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#sig)"><title>${esc(`signal “${p.node.sends}”`)}</title></path>`);
+      parts.push(`<path class="map-signal" d="M${x1} ${y1}C${x1 + bend} ${y1} ${x2 - bend} ${y2} ${x2 - 4} ${y2}" fill="none" stroke="${CATEGORIES.events.colour}" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#sig)"><title>${esc(t("signal “{name}”", { name: p.node.sends || "" }))}</title></path>`);
     }
   }
 

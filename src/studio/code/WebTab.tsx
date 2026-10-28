@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { previewPage, WEB_JS } from "../../code/web/package";
 import { slug, type WebFiles, type WebTranslation } from "../../code/web/translate";
 import type { CodeProject, WebState } from "../../code/types";
+import { t } from "../i18n";
 import { Icon } from "../ui";
 import { CodeView, type Language } from "./CodeView";
 
@@ -37,17 +38,17 @@ const says = (js: string) => new Set([...js.matchAll(/\.(say|sayFor|think|thinkF
 
 export function dotsFor(project: CodeProject, translation: WebTranslation): Dot[] {
   const first = project.sprites[0];
-  const name = first?.name || "a character";
+  const name = first?.name || t("a character");
   const id = first ? slug(translation.names.get(first.id) || "sprite") : "";
   return [
-    { id: "link", text: "On the Blocks tab, open JavaScript, then click a block and find its line.", check: (_f, _b, linked) => linked },
-    { id: "bigger", text: `In style.css, make ${name} twice as wide.`, check: (f, b) => lastPx(ruleOf(f.css, `#${id}`), "width") >= 1.8 * lastPx(ruleOf(b.css, `#${id}`), "width") },
-    { id: "move", text: `In style.css, change where ${name} starts (its left or top).`, check: (f, b) => { const r = ruleOf(f.css, `#${id}`); const o = ruleOf(b.css, `#${id}`); return lastPx(r, "left") !== lastPx(o, "left") || lastPx(r, "top") !== lastPx(o, "top"); } },
-    { id: "colour", text: "In style.css, give the page a new background colour (body { background: … }).", check: (f, b) => ruleOf(f.css, "body").match(/background[^;]*/)?.[0] !== ruleOf(b.css, "body").match(/background[^;]*/)?.[0] },
-    { id: "heading", text: "In index.html, add a line of text under the stage with <p>…</p>.", check: (f) => /<p[\s>]/.test(f.html) },
-    { id: "hidden", text: "In index.html, hide a character by adding hidden to its <img>.", check: (f, b) => (f.html.match(/<img[^>]*\shidden/g) || []).length > (b.html.match(/<img[^>]*\shidden/g) || []).length },
-    { id: "number", text: "In script.js, change a number, then watch the page change.", check: (f, b) => numbers(f.js) !== numbers(b.js) },
-    { id: "say", text: "In script.js, make a character say something new: me.say(\"…\").", check: (f, b) => [...says(f.js)].some((s) => !says(b.js).has(s)) },
+    { id: "link", text: t("On the Blocks tab, open JavaScript, then click a block and find its line."), check: (_f, _b, linked) => linked },
+    { id: "bigger", text: t("In style.css, make {name} twice as wide.", { name }), check: (f, b) => lastPx(ruleOf(f.css, `#${id}`), "width") >= 1.8 * lastPx(ruleOf(b.css, `#${id}`), "width") },
+    { id: "move", text: t("In style.css, change where {name} starts (its left or top).", { name }), check: (f, b) => { const r = ruleOf(f.css, `#${id}`); const o = ruleOf(b.css, `#${id}`); return lastPx(r, "left") !== lastPx(o, "left") || lastPx(r, "top") !== lastPx(o, "top"); } },
+    { id: "colour", text: t("In style.css, give the page a new background colour ({rule}).", { rule: "body { background: … }" }), check: (f, b) => ruleOf(f.css, "body").match(/background[^;]*/)?.[0] !== ruleOf(b.css, "body").match(/background[^;]*/)?.[0] },
+    { id: "heading", text: t("In index.html, add a line of text under the stage with <p>…</p>."), check: (f) => /<p[\s>]/.test(f.html) },
+    { id: "hidden", text: t("In index.html, hide a character by adding hidden to its <img>."), check: (f, b) => (f.html.match(/<img[^>]*\shidden/g) || []).length > (b.html.match(/<img[^>]*\shidden/g) || []).length },
+    { id: "number", text: t("In script.js, change a number, then watch the page change."), check: (f, b) => numbers(f.js) !== numbers(b.js) },
+    { id: "say", text: t("In script.js, make a character say something new: {code}.", { code: 'me.say("…")' }), check: (f, b) => [...says(f.js)].some((s) => !says(b.js).has(s)) },
   ];
 }
 
@@ -109,9 +110,9 @@ export function WebTab({
 
   return (
     <div className="web-tab">
-      <section className="web-files" aria-label="Files">
+      <section className="web-files" aria-label={t("Files")}>
         <div className="web-bar">
-          <nav className="seg seg-small" aria-label="File">
+          <nav className="seg seg-small" aria-label={t("File")}>
             {FILES.map((f) => (
               <button key={f.key} className={file === f.key ? "on" : ""} aria-pressed={file === f.key} onClick={() => setFile(f.key)}>
                 {f.name}
@@ -121,29 +122,29 @@ export function WebTab({
           <span className="spacer" />
           {project.web ? (
             <span className="web-state is-edited">
-              Changed by you
+              {t("Changed by you")}
               <button className="link-btn" onClick={onRemake}>
-                Make again from blocks
+                {t("Make again from blocks")}
               </button>
             </span>
           ) : (
-            <span className="web-state">Made from your blocks</span>
+            <span className="web-state">{t("Made from your blocks")}</span>
           )}
         </div>
         <div className="web-editor">
-          <CodeView key={file} value={value} language={meta.lang} readOnly={file === "lib"} dark={dark} label={meta.name} onChange={(t) => edit(file, t)} />
+          <CodeView key={file} value={value} language={meta.lang} readOnly={file === "lib"} dark={dark} label={meta.name} onChange={(text) => edit(file, text)} />
         </div>
       </section>
 
-      <section className="web-side" aria-label="Web page">
+      <section className="web-side" aria-label={t("Web page")}>
         <div className="web-bar">
-          <strong>Web page</strong>
+          <strong>{t("Web page")}</strong>
           <span className="spacer" />
           <button className="btn btn-soft btn-sm" onClick={() => (setShown(files), setRun((n) => n + 1))}>
-            <Icon name="play" size={16} /> Run
+            <Icon name="play" size={16} /> {t("Run")}
           </button>
         </div>
-        <iframe key={run} className="web-preview" title="Web page preview" sandbox="allow-scripts" srcDoc={page} />
+        <iframe key={run} className="web-preview" title={t("Web page preview")} sandbox="allow-scripts" srcDoc={page} />
         {errors.length > 0 && (
           <div className="ce-errors" role="alert">
             {errors.map((e, i) => (
@@ -153,7 +154,7 @@ export function WebTab({
         )}
         <details className="dots" open>
           <summary>
-            Connect the dots <span className="pill">{done.filter((d) => dots.some((x) => x.id === d)).length} / {dots.length}</span>
+            {t("Connect the dots")} <span className="pill">{done.filter((d) => dots.some((x) => x.id === d)).length} / {dots.length}</span>
           </summary>
           <ol>
             {dots.map((d) => (
@@ -162,14 +163,14 @@ export function WebTab({
                   {done.includes(d.id) ? "✓" : ""}
                 </span>
                 <span>{d.text}</span>
-                {done.includes(d.id) && <span className="sr-only">(done)</span>}
+                {done.includes(d.id) && <span className="sr-only">{t("(done)")}</span>}
               </li>
             ))}
           </ol>
         </details>
         {translation.warnings.length > 0 && (
           <details className="web-warnings">
-            <summary>Not in the web version ({translation.warnings.length})</summary>
+            <summary>{t("Not in the web version ({n})", { n: translation.warnings.length })}</summary>
             <ul>
               {translation.warnings.map((w) => (
                 <li key={w}>{w}</li>

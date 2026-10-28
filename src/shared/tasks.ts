@@ -331,18 +331,20 @@ export function buildRound(game: Game, opts: RoundOptions = {}): Step[] {
       const sets = game.sets.filter((s) => s.weight > 0 && (!opts.only || opts.only.includes(`gen:${s.kind}`)));
       const mine = !sets.length ? choose(own, n, seen) : choose(own, opts.only ? own.length : Math.round(n / 3), seen);
       const made: Task[] = [];
+      // Checking is by value, so a French decimal comma still counts.
+      const decimals = (x: string) => (game.settings.ui === "fr" ? x.replace(/(\d)\.(\d)/g, "$1,$2") : x);
       const prompts = new Set<string>();
       for (let tries = 0; sets.length && made.length < n - mine.length && tries < n * 20; tries++) {
         const set = weighted(sets, (s) => s.weight)!;
-        const p = generate(set);
+        const p = generate(set, game.settings.ui);
         if (prompts.has(p.prompt)) continue;
         prompts.add(p.prompt);
         const key = `gen:${set.kind}`;
         if (game.answer === "choose" || p.choices) {
           const { options, answer } = withDistractors(p);
-          made.push({ key, k: "choice", prompt: p.prompt, big: p.prompt.length < 24, options, answer, explain: p.explain });
+          made.push({ key, k: "choice", prompt: p.prompt, big: p.prompt.length < 24, options: options.map(decimals), answer, explain: p.explain });
         } else {
-          made.push({ key, k: "type", prompt: p.prompt, big: p.prompt.length < 24, accept: [p.answer], pad: p.pad, lowest: p.lowest, explain: p.explain });
+          made.push({ key, k: "type", prompt: p.prompt, big: p.prompt.length < 24, accept: [decimals(p.answer)], pad: p.pad, lowest: p.lowest, explain: p.explain });
         }
       }
       return shuffle([...mine, ...made]);

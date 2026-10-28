@@ -8,6 +8,7 @@ import { loadStored } from "../apk/keys";
 import { fingerprint } from "../apk/sign";
 import { download, kb, linkFor, pageFor, slug } from "../exporting";
 import { useApp } from "../store";
+import { t, tj } from "../i18n";
 import { Field, Icon } from "../ui";
 
 /** Longest link that still fits in a QR code phones can scan from a projector. */
@@ -31,9 +32,9 @@ function LinkCard({ game }: { game: Game }) {
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(link);
-      toast("Link copied");
+      toast(t("Link copied"));
     } catch {
-      toast("Couldn't copy. Select the link and copy it.", "error");
+      toast(t("Couldn't copy. Select the link and copy it."), "error");
     }
   };
   return (
@@ -41,30 +42,30 @@ function LinkCard({ game }: { game: Game }) {
       <header className="share-head">
         <span className="share-icon"><Icon name="link" size={22} /></span>
         <div>
-          <h2>Link</h2>
-          <p className="muted">Opens in any phone browser and keeps working offline after the first visit.</p>
+          <h2>{t("Link")}</h2>
+          <p className="muted">{t("Opens in any phone browser and keeps working offline after the first visit.")}</p>
         </div>
       </header>
-      <input className="link-box" readOnly value={link} aria-label="Student link" onFocus={(e) => e.target.select()} />
+      <input className="link-box" readOnly value={link} aria-label={t("Student link")} onFocus={(e) => e.target.select()} />
       <div className="toolbar">
         <button className="btn btn-primary btn-sm" onClick={copy}>
-          <Icon name="copy" size={16} /> Copy
+          <Icon name="copy" size={16} /> {t("Copy")}
         </button>
         {"share" in navigator && (
           <button className="btn btn-soft btn-sm" onClick={() => navigator.share({ title: game.title, text: `${game.emoji} ${game.title}`, url: link }).catch(() => undefined)}>
-            <Icon name="share" size={16} /> Share
+            <Icon name="share" size={16} /> {t("Share")}
           </button>
         )}
         {link.length <= QR_LIMIT && (
           <button className="btn btn-ghost btn-sm" aria-pressed={qr} onClick={() => setQr(!qr)}>
-            <Icon name="qr" size={16} /> QR code
+            <Icon name="qr" size={16} /> {t("QR code")}
           </button>
         )}
         <a className="btn btn-ghost btn-sm" href={link} target="_blank" rel="noreferrer">
-          <Icon name="eye" size={16} /> Open
+          <Icon name="eye" size={16} /> {t("Open")}
         </a>
       </div>
-      {link.length > 8000 && <p className="note">This link is long ({Math.round(link.length / 1000)}k characters). Some chat apps cut long links; the file below always works.</p>}
+      {link.length > 8000 && <p className="note">{t("This link is long ({n}k characters). Some chat apps cut long links; the file below always works.", { n: Math.round(link.length / 1000) })}</p>}
       {qr && <Qr text={link} title={game.title} />}
     </section>
   );
@@ -82,10 +83,10 @@ function Qr({ text, title }: { text: string; title: string }) {
   }, [text]);
   return (
     <figure className="qr">
-      <img src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`} alt={`QR code for ${title}`} />
+      <img src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`} alt={t("QR code for {title}", { title })} />
       <figcaption>
         <button className="link-btn" onClick={() => download(`${slug(title)}-qr.svg`, svg, "image/svg+xml")}>
-          Download QR
+          {t("Download QR")}
         </button>
       </figcaption>
     </figure>
@@ -99,13 +100,13 @@ function FileCard({ game }: { game: Game }) {
       <header className="share-head">
         <span className="share-icon"><Icon name="file" size={22} /></span>
         <div>
-          <h2>Offline file</h2>
-          <p className="muted">One .html file. Send it by WhatsApp, Bluetooth or USB; it opens in the phone's browser with no internet.</p>
+          <h2>{t("Offline file")}</h2>
+          <p className="muted">{t("One .html file. Send it by WhatsApp, Bluetooth or USB; it opens in the phone's browser with no internet.")}</p>
         </div>
       </header>
       <div className="toolbar">
         <button className="btn btn-primary btn-sm" onClick={() => download(`${slug(game.title)}.html`, page)}>
-          <Icon name="download" size={16} /> Download .html
+          <Icon name="download" size={16} /> {t("Download .html")}
         </button>
         <span className="muted">{kb(new Blob([page]).size)}</span>
       </div>
@@ -137,9 +138,9 @@ function ApkCard({ game, onChange }: { game: Game; onChange: (g: Game) => void }
       download(`${slug(game.title)}-v${app.versionCode}.apk`, blob, "application/vnd.android.package-archive");
       onChange({ ...game, app });
       if (newKey) setFreshKey(true);
-      toast(`App ready: ${kb(blob.size)}`);
+      toast(t("App ready: {size}", { size: kb(blob.size) }));
     } catch (e) {
-      setError((e as Error).message || "Couldn't build the app.");
+      setError((e as Error).message || t("Couldn't build the app."));
     } finally {
       setBusy(false);
     }
@@ -150,24 +151,24 @@ function ApkCard({ game, onChange }: { game: Game; onChange: (g: Game) => void }
       <header className="share-head">
         <span className="share-icon"><Icon name="android" size={22} /></span>
         <div>
-          <h2>Android app</h2>
-          <p className="muted">A small installable app (about 100 KB) for Android 7 and newer. Students allow “install unknown apps” once.</p>
+          <h2>{t("Android app")}</h2>
+          <p className="muted">{t("A small installable app (about 100 KB) for Android 7 and newer. Students allow “install unknown apps” once.")}</p>
         </div>
       </header>
       <div className="form-grid">
-        <Field label="App name">
+        <Field label={t("App name")}>
           <input value={name} maxLength={30} onChange={(e) => setName(e.target.value)} />
         </Field>
-        <Field label="App id" hint={sameApp ? `Version ${next} updates installed copies.` : game.app ? "A new id installs as a separate app." : undefined}>
+        <Field label={t("App id")} hint={sameApp ? t("Version {n} updates installed copies.", { n: next }) : game.app ? t("A new id installs as a separate app.") : undefined}>
           <input value={appId} spellCheck={false} aria-invalid={!validId} onChange={(e) => setAppId(e.target.value.trim())} />
         </Field>
       </div>
       <div className="toolbar">
         <button className="btn btn-primary btn-sm" disabled={busy || !validId} onClick={build}>
-          <Icon name="download" size={16} /> {busy ? "Building…" : sameApp ? `Build version ${next}` : "Build APK"}
+          <Icon name="download" size={16} /> {busy ? t("Building…") : sameApp ? t("Build version {n}", { n: next }) : t("Build APK")}
         </button>
         {print && (
-          <a className="muted key-print" href="#/settings" title="Signing key">
+          <a className="muted key-print" href="#/settings" title={t("Signing key")}>
             <Icon name="key" size={16} /> {print}…
           </a>
         )}
@@ -175,7 +176,7 @@ function ApkCard({ game, onChange }: { game: Game; onChange: (g: Game) => void }
       {error && <p className="form-error">{error}</p>}
       {freshKey && (
         <p className="note">
-          A signing key was made for your apps. <a href="#/settings">Back it up</a>: updates to these apps must be signed with the same key.
+          {tj("A signing key was made for your apps. {backup}: updates to these apps must be signed with the same key.", { backup: <a href="#/settings">{t("Back it up")}</a> })}
         </p>
       )}
     </section>
@@ -190,21 +191,21 @@ function TeacherCard({ game }: { game: Game }) {
       <header className="share-head">
         <span className="share-icon"><Icon name="edit" size={22} /></span>
         <div>
-          <h2>For other teachers</h2>
-          <p className="muted">They can import the link or this file in their own studio and adapt it.</p>
+          <h2>{t("For other teachers")}</h2>
+          <p className="muted">{t("They can import the link or this file in their own studio and adapt it.")}</p>
         </div>
       </header>
       <div className="toolbar">
         <button className="btn btn-ghost btn-sm" onClick={() => download(`${slug(game.title)}.json`, JSON.stringify(game, null, 1), "application/json")}>
-          <Icon name="download" size={16} /> Game file (.json)
+          <Icon name="download" size={16} /> {t("Game file (.json)")}
         </button>
         {csv && (
           <button className="btn btn-ghost btn-sm" onClick={() => download(`${slug(game.title)}.csv`, csv, "text/csv")}>
-            <Icon name="download" size={16} /> Spreadsheet (.csv)
+            <Icon name="download" size={16} /> {t("Spreadsheet (.csv)")}
           </button>
         )}
         {giftText && (
-          <button className="btn btn-ghost btn-sm" onClick={() => download(`${slug(game.title)}.gift.txt`, giftText, "text/plain")} title="Moodle and other platforms that import GIFT">
+          <button className="btn btn-ghost btn-sm" onClick={() => download(`${slug(game.title)}.gift.txt`, giftText, "text/plain")} title={t("Moodle and other platforms that import GIFT")}>
             <Icon name="download" size={16} /> Moodle (GIFT)
           </button>
         )}

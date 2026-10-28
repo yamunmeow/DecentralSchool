@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { DEFAULT_MODEL, listModels, modelName, setModel, type Model } from "../ai/openrouter";
+import { t } from "../i18n";
 import { Icon } from "../ui";
 import { useAi } from "../useAi";
 
@@ -43,7 +44,7 @@ export function ModelPicker({ align = "left" }: { align?: "left" | "right" }) {
         className="model-chip"
         aria-haspopup="menu"
         aria-expanded={open}
-        title="Model"
+        title={t("Model")}
         onClick={() => setOpen(!open)}
       >
         <Icon name="sparkle" size={16} />
@@ -56,7 +57,7 @@ export function ModelPicker({ align = "left" }: { align?: "left" | "right" }) {
           <div
             className={`menu model-menu${align === "left" ? " menu-left" : ""}`}
             role="menu"
-            aria-label="Model"
+            aria-label={t("Model")}
             onKeyDown={(e) => {
               if (e.key === "Escape") {
                 e.preventDefault();
@@ -66,18 +67,18 @@ export function ModelPicker({ align = "left" }: { align?: "left" | "right" }) {
             }}
           >
             <div className="model-menu-head">
-              <input ref={search} type="search" value={query} placeholder="Search models" aria-label="Search models" onChange={(e) => setQuery(e.target.value)} />
+              <input ref={search} type="search" value={query} placeholder={t("Search models")} aria-label={t("Search models")} onChange={(e) => setQuery(e.target.value)} />
               <label className="check">
                 <input type="checkbox" checked={freeOnly} onChange={(e) => setFreeOnly(e.target.checked)} />
-                Free only
+                {t("Free only")}
               </label>
             </div>
             <div className="model-menu-list">
-              {!q && <Option id={DEFAULT_MODEL} label="Best free models" note="recommended" on={ai.model === DEFAULT_MODEL} onPick={pick} />}
-              {models === null && <p className="model-menu-note muted">Loading…</p>}
-              {models !== null && !shown.length && <p className="model-menu-note muted">{models.length ? "No models match." : "Couldn't load the list."}</p>}
+              {!q && <Option id={DEFAULT_MODEL} label={t("Best free models")} note={t("recommended")} on={ai.model === DEFAULT_MODEL} onPick={pick} />}
+              {models === null && <p className="model-menu-note muted">{t("Loading…")}</p>}
+              {models !== null && !shown.length && <p className="model-menu-note muted">{models.length ? t("No models match.") : t("Couldn't load the list.")}</p>}
               {shown.map((m) => (
-                <Option key={m.id} id={m.id} label={m.name.replace(/\s*\(free\)$/i, "")} note={m.free ? "free" : ""} on={ai.model === m.id} onPick={pick} />
+                <Option key={m.id} id={m.id} label={m.name.replace(/\s*\(free\)$/i, "")} note={m.free ? t("free") : ""} on={ai.model === m.id} onPick={pick} />
               ))}
             </div>
           </div>

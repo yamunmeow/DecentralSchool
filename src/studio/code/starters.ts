@@ -3,13 +3,14 @@ import { blk, colour, menu, num, put, script, sub, txt, v, workspace } from "../
 import { newProject, spriteFromLibrary } from "../../code/project";
 import type { CodeProject } from "../../code/types";
 import { uid } from "../../shared/random";
+import { t } from "../i18n";
 
-/** Small finished projects to open, play and take apart. */
+/** Small finished projects to open, play and take apart, made in the studio's language. */
 
 const backdrop = (id: string) => BACKDROP_LIBRARY.find((b) => b.id === id)!.costume();
 
 function base(title: string, backdropId: string): CodeProject {
-  const p = newProject(title);
+  const p = newProject(t(title));
   p.stage = { ...p.stage, costumes: [backdrop(backdropId)], variables: [] };
   p.sprites = [];
   p.broadcasts = [];
@@ -35,14 +36,14 @@ function hello(): CodeProject {
         blk("control_wait", { DURATION: num(0.1, "math_positive_number") }),
       ) }),
       blk("looks_switchcostumeto", { COSTUME: menu("looks_costume", "COSTUME", "Zo wave") }),
-      blk("looks_sayforsecs", { MESSAGE: txt("Hello! I'm Zo. Click me!"), SECS: num(3) }),
+      blk("looks_sayforsecs", { MESSAGE: txt(t("Hello! I'm Zo. Click me!")), SECS: num(3) }),
       blk("looks_switchcostumeto", { COSTUME: menu("looks_costume", "COSTUME", "Zo stand") }),
     ),
     script(40, 520,
       blk("event_whenthisspriteclicked"),
       blk("looks_switchcostumeto", { COSTUME: menu("looks_costume", "COSTUME", "Zo cheer") }),
       blk("sound_play", { SOUND_MENU: menu("sound_sounds_menu", "SOUND_MENU", "Trumpet (Zo)") }),
-      blk("looks_sayforsecs", { MESSAGE: txt("Yay!"), SECS: num(1) }),
+      blk("looks_sayforsecs", { MESSAGE: txt(t("Yay!")), SECS: num(1) }),
       blk("looks_switchcostumeto", { COSTUME: menu("looks_costume", "COSTUME", "Zo stand") }),
     ),
   );
@@ -53,7 +54,7 @@ function hello(): CodeProject {
 function catcher(): CodeProject {
   const p = base("Catch the mangoes", "park");
   const score = uid();
-  p.stage.variables = [{ id: score, name: "score", value: 0 }];
+  p.stage.variables = [{ id: score, name: t("score"), value: 0 }];
   p.stage.watchers = { [score]: { visible: true, x: -232, y: 172 } };
   const zo = spriteFromLibrary("footballer", [], { x: 0, y: -120, size: 60 });
   zo.name = "Zo";
@@ -69,6 +70,7 @@ function catcher(): CodeProject {
     ),
   );
   const mango = spriteFromLibrary("mango", ["Zo"], { x: 0, y: 170, size: 80 });
+  mango.name = t("Mango");
   mango.sounds = [{ id: uid(), name: "Coin", synth: "coin" }];
   const randomX = () => put(blk("operator_random", { FROM: num(-220), TO: num(220) }), num(0));
   mango.blocks = workspace(
@@ -98,7 +100,7 @@ function spiral(): CodeProject {
   const step = uid();
   const zo = spriteFromLibrary("artist", [], { size: 40 });
   zo.name = "Zo";
-  zo.variables = [{ id: step, name: "step", value: 1 }];
+  zo.variables = [{ id: step, name: t("step"), value: 1 }];
   zo.blocks = workspace(
     script(40, 40,
       blk("event_whenflagclicked"),
@@ -130,14 +132,14 @@ function quiz(): CodeProject {
     script(40, 40,
       blk("event_whenflagclicked"),
       blk("looks_switchcostumeto", { COSTUME: menu("looks_costume", "COSTUME", "Zo Teacher stand") }),
-      blk("sensing_askandwait", { QUESTION: txt("What is 7 × 8?") }),
+      blk("sensing_askandwait", { QUESTION: txt(t("What is 7 × 8?")) }),
       blk("control_if_else", {
         CONDITION: { block: blk("operator_equals", { OPERAND1: put(blk("sensing_answer")), OPERAND2: txt("56") }) },
         SUBSTACK: sub(
           blk("looks_switchcostumeto", { COSTUME: menu("looks_costume", "COSTUME", "Zo Teacher cheer") }),
-          blk("looks_sayforsecs", { MESSAGE: txt("Correct! 🎉"), SECS: num(2) }),
+          blk("looks_sayforsecs", { MESSAGE: txt(t("Correct! 🎉")), SECS: num(2) }),
         ),
-        SUBSTACK2: sub(blk("looks_sayforsecs", { MESSAGE: put(blk("operator_join", { STRING1: txt("Not quite. It is "), STRING2: txt("56") })), SECS: num(2) })),
+        SUBSTACK2: sub(blk("looks_sayforsecs", { MESSAGE: put(blk("operator_join", { STRING1: txt(t("Not quite. It is ")), STRING2: txt("56") })), SECS: num(2) })),
       }),
     ),
   );
@@ -151,6 +153,7 @@ const thumbOf = (make: () => CodeProject) => () => {
   return svgUrl(costumeSvg(s.costumes[s.costume]));
 };
 
+// Titles and blurbs are English; show them through t().
 export const STARTERS = [
   { id: "hello", title: "Zo says hello", blurb: "Walk, talk and react to clicks", make: hello },
   { id: "catch", title: "Catch the mangoes", blurb: "A game with a score", make: catcher },

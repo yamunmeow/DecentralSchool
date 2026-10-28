@@ -65,7 +65,9 @@ To add more games laid out as `games/<name>/{game.json, icon.png, www/}`:
 npm run library -- "../CAEB Games/VocabGame/games/word-quest" …
 ```
 
-then list them in `src/studio/play/library.ts`.
+then list them in `src/studio/play/library.ts`. The import also writes French copies
+(`index.fr.html`, `content.fr.json`, `template.fr.json`, from `scripts/library-fr.mjs`), which the
+studio plays when it is in French; `npm run library -- --french` remakes only those.
 
 ## The randomizer
 
@@ -334,6 +336,25 @@ game, so a rebuilt app installs as an update.
   browser, each teacher's own key in `localStorage`), and, on a device that has signed in,
   a session check against `/api/auth`.
 
+## English and French
+
+The **EN | FR** switch in the header (and in Settings) turns the whole studio into French at
+once: menus, pages, the Game Lab's blocks and Blockly's own menus, Zo Wants to Learn, the legal
+pages and every message. It follows the device's language until someone picks one.
+
+- Strings are written in English in the code and passed through `t()` (`src/studio/i18n.ts`):
+  `t("Delete {name}?", { name })`, `tn(n, "{n} game", "{n} games")` for counts, `tj()` when a
+  link sits inside a sentence, and `tc("context", "Word")` when one English word needs two
+  French ones. A missing entry shows the English, so nothing ever breaks.
+- The French lives in `src/studio/i18n/fr/`, one file per area, loaded only when French is on.
+  Spaces before `? ! : ;` become non-breaking and apostrophes curly on load, so type them plainly.
+- `npm run i18n` lists strings with no French and keys translated two ways. The dev server
+  also logs `[fr] missing: …` for strings it meets at run time.
+- In French, new games get French buttons and voice, the example games, Zo's datasets and the
+  Game Lab starters are French, maths problems are worded in French (`src/shared/math.ts`),
+  country quizzes use French names, and the AI assistant replies and writes in French. Code
+  games and Zo apps exported in French show French buttons.
+
 ## Run it
 
 ```bash
@@ -341,6 +362,7 @@ cd DecentralSchool
 npm install
 npm run dev          # http://localhost:5173, student player at /p/, Game Lab player at /c/
 npm run build        # dist/: studio, /p/, /c/, sw.js, library
+npm run i18n         # check the French dictionary against the code
 npm run dev:api      # the sign-in Worker on :8787 (Vite proxies /api to it); needs .dev.vars
 npm run deploy       # build + D1 migrations + wrangler deploy to decentralschool.org (needs `npx wrangler login` once)
 ```

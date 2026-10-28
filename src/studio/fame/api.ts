@@ -1,5 +1,6 @@
 import type { CodeProject } from "../../code/types";
 import type { Game, Tint } from "../../shared/types";
+import { t } from "../i18n";
 
 /** Talks to the Worker's Wall of Fame routes (worker/fame.ts). They all need a signed-in account. */
 
@@ -60,10 +61,10 @@ async function call<T>(method: string, path: string, body?: unknown): Promise<T>
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch {
-    throw new FameError("No internet. The Wall of Fame needs a connection.");
+    throw new FameError(t("No internet. The Wall of Fame needs a connection."));
   }
   const data = await res.json().catch(() => null);
-  if (!res.ok) throw new FameError(data?.error || (res.status === 401 ? "Sign in again to use the Wall of Fame." : "The Wall of Fame isn't answering. Try again in a moment."));
+  if (!res.ok) throw new FameError(data?.error ? t(data.error) : res.status === 401 ? t("Sign in again to use the Wall of Fame.") : t("The Wall of Fame isn't answering. Try again in a moment."));
   return data as T;
 }
 

@@ -2,6 +2,8 @@ import { costumeSvg } from "../art";
 import { procedures, topBlocks, type ProcState } from "../compiler";
 import { soundWav } from "../sounds";
 import type { CodeProject, SoundAsset, Target } from "../types";
+// Comments written into the files speak the studio's language.
+import { getLang, t, t as words } from "../../studio/i18n";
 
 /**
  * A Game Lab project as a plain web page: index.html (the stage and its sprites as
@@ -268,7 +270,7 @@ class Translator {
       case "sensing_touchingcolor":
       case "sensing_coloristouchingcolor":
         this.warn("“touching color” has no web version (the page only knows the boxes around pictures).");
-        return bool("false /* touching a colour works only in Game Lab */");
+        return bool(`false /* ${t("touching a colour works only in Game Lab")} */`);
       case "sensing_distanceto": {
         const m = this.menu(b, "DISTANCETOMENU");
         return num(`${me}.distanceTo(${m === null ? '"mouse"' : this.sprite(m)})`);
@@ -280,7 +282,7 @@ class Translator {
       case "sensing_mousey": return num("mouse.y");
       case "sensing_loudness":
         this.warn("“loudness” has no web version here.");
-        return num("0 /* loudness works only in Game Lab */");
+        return num(`0 /* ${t("loudness works only in Game Lab")} */`);
       case "sensing_timer": return num("timer()");
       case "sensing_of": {
         const object = this.menu(b, "OBJECT") ?? "_stage_";
@@ -409,7 +411,7 @@ class Translator {
     const f = (name: string) => this.field(b, name);
     const me = this.me();
     const line = (text: string) => this.out.line(`${i}${text}`);
-    const sprite = (text: string) => (me ? line(text) : line(`// ${text.replace(/;$/, "")} (only sprites can do this)`));
+    const sprite = (text: string) => (me ? line(text) : line(`// ${text.replace(/;$/, "")} (${t("only sprites can do this")})`));
 
     switch (b.type) {
       case "motion_movesteps": sprite(`me.move(${n("STEPS")});`); break;
@@ -469,7 +471,7 @@ class Translator {
         const effect = f("EFFECT").toLowerCase();
         if (!["ghost", "brightness", "color"].includes(effect)) {
           this.warn(`The ${effect} effect has no web version here.`);
-          line(`// ${effect} effect: works only in Game Lab`);
+          line(`// ${t("{effect} effect: works only in Game Lab", { effect })}`);
         } else if (b.type === "looks_changeeffectby") sprite(`me.changeEffect(${q(effect)}, ${n("CHANGE")});`);
         else sprite(`me.setEffect(${q(effect)}, ${n("VALUE")});`);
         break;
@@ -496,7 +498,7 @@ class Translator {
       case "sound_seteffectto":
       case "sound_cleareffects":
         this.warn("Sound effects (pitch, pan) have no web version here.");
-        line("// sound effects work only in Game Lab");
+        line(`// ${t("sound effects work only in Game Lab")}`);
         break;
 
       case "event_broadcast": line(`broadcast(${this.broadcastName(b)});`); break;
@@ -530,7 +532,7 @@ class Translator {
         if (opt === "all") line("stopAll();");
         else if (opt.startsWith("other")) {
           this.warn("“stop other scripts” has no web version here.");
-          line("// stop other scripts: works only in Game Lab");
+          line(`// ${t("stop other scripts: works only in Game Lab")}`);
         } else line("return;");
         break;
       }
@@ -548,7 +550,7 @@ class Translator {
 
       case "sensing_askandwait": line(`await ask(${a("QUESTION")});`); break;
       case "sensing_resettimer": line("resetTimer();"); break;
-      case "sensing_setdragmode": line("// drag mode: works only in Game Lab"); break;
+      case "sensing_setdragmode": line(`// ${t("drag mode: works only in Game Lab")}`); break;
 
       case "data_setvariableto": line(`${this.varRef(f("VARIABLE"))} = ${a("VALUE")};`); break;
       case "data_changevariableby": {
@@ -581,7 +583,7 @@ class Translator {
       case "pen_changePenColorParamBy":
       case "pen_setPenColorParamTo":
         this.warn("Changing pen colour by numbers has no web version here; use “set pen color to”.");
-        line("// pen colour numbers: works only in Game Lab");
+        line(`// ${t("pen colour numbers: works only in Game Lab")}`);
         break;
       case "pen_changePenSizeBy": sprite(`me.setPenSize(me.penSize + ${n("SIZE")});`); break;
       case "pen_setPenSizeTo": sprite(`me.setPenSize(${n("SIZE")});`); break;
@@ -615,7 +617,7 @@ class Translator {
     if (t.isStage && !topBlocks(t).length) return null;
     const name = t.isStage ? "stage" : this.spriteName(t.id);
     const start = this.out.at;
-    this.out.line(`// ---------- ${t.isStage ? "The stage" : t.name} ----------`);
+    this.out.line(`// ---------- ${t.isStage ? words("The stage") : t.name} ----------`);
     if (!t.isStage) {
       for (const v of t.variables) this.out.line(`${name}.vars${prop(v.name)} = ${JSON.stringify(v.value)};`);
       for (const l of t.lists) this.out.line(`${name}.vars${prop(l.name)} = ${JSON.stringify(l.value)};`);
@@ -630,7 +632,7 @@ class Translator {
         const params = proc.parts.filter((p) => p.type !== "label");
         const argTaken = new Set<string>(["me"]);
         this.args = new Map(params.map((p) => [p.id!, unique(camel(p.name || "input", "input"), argTaken)]));
-        this.out.line(`// My Block: ${procLabel(proc)}`);
+        this.out.line(`// ${words("My Block: {name}", { name: procLabel(proc) })}`);
         this.out.line(`async function ${fn}(${["me", ...this.args.values()].join(", ")}) {`);
         this.out.mark([top.id], s);
         this.stack(top.next?.block, "  ");
@@ -641,7 +643,7 @@ class Translator {
       const hat = this.hat(top, name, t.isStage);
       if (!hat) {
         // Loose blocks that don't start with a hat don't run on their own.
-        this.out.line(`// (blocks without a hat block: they run only when clicked in Game Lab)`);
+        this.out.line(`// ${words("(blocks without a hat block: they run only when clicked in Game Lab)")}`);
         continue;
       }
       this.touched = [];
@@ -690,15 +692,15 @@ export function translate(project: CodeProject): WebTranslation {
   const names = new Map<string, string>();
   const sections = new Map<string, [number, number]>();
   const w = tr.out;
-  const title = project.title || "Untitled";
+  const title = project.title || t("Untitled");
 
   // script.js
-  w.line(`// script.js: what happens in "${title}". Made from the blocks in Game Lab.`);
-  w.line("// web.js (loaded first, see index.html) gives you Sprite, wait(), nextFrame(), vars and more.");
+  w.line(`// ${t("script.js: what happens in “{title}”. Made from the blocks in Game Lab.", { title })}`);
+  w.line(`// ${t("web.js (loaded first, see index.html) gives you Sprite, wait(), nextFrame(), vars and more.")}`);
   w.line();
   const stageVars = [...project.stage.variables, ...project.stage.lists];
   if (stageVars.length) {
-    w.line("// Variables for all sprites");
+    w.line(`// ${t("Variables for all sprites")}`);
     for (const v of project.stage.variables) w.line(`vars${prop(v.name)} = ${JSON.stringify(v.value)};`);
     for (const l of project.stage.lists) w.line(`vars${prop(l.name)} = ${JSON.stringify(l.value)};`);
     w.line();
@@ -706,10 +708,10 @@ export function translate(project: CodeProject): WebTranslation {
   const backdropSlugs = new Map<string, string>();
   const bdTaken = new Set<string>();
   for (const c of project.stage.costumes) backdropSlugs.set(c.name, unique(slug(c.name, "backdrop"), bdTaken));
-  w.line("// Backdrops: pictures in the backdrops folder");
+  w.line(`// ${t("Backdrops: pictures in the backdrops folder")}`);
   w.line(`const backdrop = new Backdrop(${JSON.stringify([...backdropSlugs.values()])});`);
   w.line();
-  w.line("// Sprites: each one is an <img> in index.html, with its costumes and sounds");
+  w.line(`// ${t("Sprites: each one is an <img> in index.html, with its costumes and sounds")}`);
   for (const s of project.sprites) {
     const n = tr.spriteName(s.id);
     names.set(s.id, n);
@@ -767,7 +769,7 @@ export function translate(project: CodeProject): WebTranslation {
     })
     .join("\n");
   const html = `<!doctype html>
-<html lang="en">
+<html lang="${getLang()}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -776,12 +778,12 @@ export function translate(project: CodeProject): WebTranslation {
 </head>
 <body>
   <header class="controls">
-    <button id="go" aria-label="Start">▶</button>
-    <button id="stop" aria-label="Stop">■</button>
+    <button id="go" aria-label="${t("Play")}">▶</button>
+    <button id="stop" aria-label="${t("Stop")}">■</button>
     <h1>${escapeHtml(title)}</h1>
   </header>
 
-  <!-- The stage. Each sprite is a picture (img) inside it. -->
+  <!-- ${t("The stage. Each sprite is a picture (img) inside it.")} -->
   <main id="stage">
 ${sprites}
     <div class="watchers">
@@ -806,7 +808,7 @@ ${watchers}
       const top = Math.round(180 - s.y);
       const width = Math.round((cw * s.size) / 100);
       const rotate = Math.round(s.direction - 90);
-      return `/* ${s.name} starts at x: ${Math.round(s.x)}, y: ${Math.round(s.y)}, size ${Math.round(s.size)}%. */
+      return `/* ${t("{name} starts at x: {x}, y: {y}, size {size}%.", { name: s.name, x: Math.round(s.x), y: Math.round(s.y), size: Math.round(s.size) })} */
 #${id} {
   left: ${left}px;
   top: ${top}px;
@@ -814,7 +816,7 @@ ${watchers}
 }`;
     })
     .join("\n\n");
-  const css = `/* style.css: how the page looks. */
+  const css = `/* ${t("style.css: how the page looks.")} */
 
 body {
   margin: 0;
@@ -858,8 +860,7 @@ body {
   color: white;
 }
 
-/* The stage is 480 × 360 pixels, like Scratch's. In Scratch (0, 0) is the middle;
-   in CSS (0, 0) is the top-left corner. */
+/* ${t("The stage is 480 × 360 pixels, like Scratch's. In Scratch (0, 0) is the middle;\n   in CSS (0, 0) is the top-left corner.")} */
 #stage {
   position: relative;
   width: 480px;
@@ -876,8 +877,7 @@ body {
   height: 100%;
 }
 
-/* Every sprite is placed by its middle point, so x: 0, y: 0 means
-   left: 240px, top: 180px. */
+/* ${t("Every sprite is placed by its middle point, so x: 0, y: 0 means\n   left: 240px, top: 180px.")} */
 .sprite {
   position: absolute;
   translate: -50% -50%;

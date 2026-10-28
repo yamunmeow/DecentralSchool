@@ -7,6 +7,7 @@ import { useApp } from "../store";
 import { Icon } from "../ui";
 import { foundSummary, KIND_LABEL, kindsFor, lessonGame, type Lesson, type LessonKind } from "./detect";
 import type { HtmlGame } from "./htmlGame";
+import { t, tj } from "../i18n";
 
 export type Upload =
   | { kind: "html"; file: string; game: HtmlGame; id: string }
@@ -29,7 +30,7 @@ export function UploadResult({ upload, onChange, onAgain }: { upload: Upload; on
   };
 
   return (
-    <section className="upload-result" ref={box} aria-label="Your uploaded game">
+    <section className="upload-result" ref={box} aria-label={t("Your uploaded game")}>
       <div className="upload-info">
         <div className="card">
           <div className="upload-head">
@@ -37,15 +38,15 @@ export function UploadResult({ upload, onChange, onAgain }: { upload: Upload; on
               <Icon name={upload.kind === "html" ? "code" : "file"} size={18} />
             </span>
             <div className="grow">
-              <small className="muted">From {upload.file}</small>
-              <input className="upload-title" value={game.title} aria-label="Game name" onChange={(e) => void save({ ...game, title: e.target.value })} />
+              <small className="muted">{t("From {file}", { file: upload.file })}</small>
+              <input className="upload-title" value={game.title} aria-label={t("Game name")} onChange={(e) => void save({ ...game, title: e.target.value })} />
             </div>
           </div>
 
           {upload.kind === "html" ? (
             <>
               <p>
-                <strong>Your HTML game</strong>, ready as it is · {kb(new Blob([upload.game.html]).size)}
+                {tj("{game}, ready as it is", { game: <strong>{t("Your HTML game")}</strong> })} · {kb(new Blob([upload.game.html]).size)}
               </p>
               {upload.game.warnings.map((w) => (
                 <p key={w} className="note">
@@ -56,33 +57,33 @@ export function UploadResult({ upload, onChange, onAgain }: { upload: Upload; on
           ) : (
             <>
               <p>
-                Looks like <strong>{KIND_LABEL[upload.lesson.best].toLowerCase()}</strong>. Found {foundSummary(upload.lesson, upload.chosen)}.
+                {tj("Looks like {kind}. Found {found}.", { kind: <strong>{t(KIND_LABEL[upload.lesson.best]).toLowerCase()}</strong>, found: foundSummary(upload.lesson, upload.chosen) })}
               </p>
-              <div className="kind-pick" role="radiogroup" aria-label="Make it a">
-                <span className="muted">Make it a</span>
+              <div className="kind-pick" role="radiogroup" aria-label={t("Make it a")}>
+                <span className="muted">{t("Make it a")}</span>
                 {(["reading", "quiz", "math", "grammar", "vocab"] as LessonKind[]).map((k) => {
                   const ok = kindsFor(upload.lesson).includes(k);
                   return (
-                    <button key={k} type="button" role="radio" aria-checked={upload.chosen === k} className={`chip-btn${upload.chosen === k ? " on" : ""}`} disabled={!ok} title={ok ? undefined : "Nothing of this kind was found in the file"} onClick={() => switchTo(k)}>
-                      {upload.chosen === k && <Icon name="check" size={14} />} {KIND_LABEL[k]}
+                    <button key={k} type="button" role="radio" aria-checked={upload.chosen === k} className={`chip-btn${upload.chosen === k ? " on" : ""}`} disabled={!ok} title={ok ? undefined : t("Nothing of this kind was found in the file")} onClick={() => switchTo(k)}>
+                      {upload.chosen === k && <Icon name="check" size={14} />} {t(KIND_LABEL[k])}
                     </button>
                   );
                 })}
               </div>
               {upload.lesson.unmarked > 0 && (upload.chosen === "quiz" || upload.chosen === "reading") && (
                 <p className="note">
-                  {upload.lesson.unmarked} question{upload.lesson.unmarked === 1 ? " had" : "s had"} no answer marked. Tick the right one in <a href={`#/game/${game.id}`}>Edit</a>.
+                  {tj(upload.lesson.unmarked === 1 ? "{n} question had no answer marked. Tick the right one in {edit}." : "{n} questions had no answer marked. Tick the right one in {edit}.", { n: upload.lesson.unmarked, edit: <a href={`#/game/${game.id}`}>{t("Edit")}</a> })}
                 </p>
               )}
             </>
           )}
           <div className="toolbar">
             <button type="button" className="link-btn" onClick={onAgain}>
-              <Icon name="upload" size={16} /> Upload another file
+              <Icon name="upload" size={16} /> {t("Upload another file")}
             </button>
             {upload.kind === "lesson" && (
-              <button type="button" className="link-btn" onClick={() => askAssistant(`Make a game from this lesson.\n\nText from “${upload.file}”:\n"""\n${upload.text.slice(0, 12000)}\n"""`)}>
-                <Icon name="sparkle" size={16} /> Let the AI make it instead
+              <button type="button" className="link-btn" onClick={() => askAssistant(`${t("Make a game from this lesson.")}\n\n${t("Text from “{file}”:", { file: upload.file })}\n"""\n${upload.text.slice(0, 12000)}\n"""`)}>
+                <Icon name="sparkle" size={16} /> {t("Let the AI make it instead")}
               </button>
             )}
           </div>

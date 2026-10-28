@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Question } from "../../shared/types";
 import { useApp } from "../store";
+import { getLang, t, tc, tn } from "../i18n";
 import { Field, Icon, Modal } from "../ui";
 import { COUNTRY_TOPICS, describe, fetchQuestions, REGIONS, TRIVIA_CATEGORIES, WORD_TOPICS, type CountryTopic, type Source } from "./sources";
 
@@ -28,7 +29,7 @@ function remember(gameId: string, src: Source) {
 export function SourcePicker({ value, onChange }: { value: Source; onChange: (s: Source) => void }) {
   return (
     <div className="source-picker">
-      <div className="seg seg-small" role="radiogroup" aria-label="Kind of questions">
+      <div className="seg seg-small" role="radiogroup" aria-label={t("Kind of questions")}>
         {(
           [
             ["countries", "Countries", { kind: "countries", topic: "mixed", region: "" }],
@@ -37,58 +38,61 @@ export function SourcePicker({ value, onChange }: { value: Source; onChange: (s:
           ] as const
         ).map(([kind, label, fresh]) => (
           <button key={kind} type="button" className={value.kind === kind ? "on" : ""} aria-pressed={value.kind === kind} onClick={() => value.kind !== kind && onChange(fresh as Source)}>
-            {label}
+            {t(label)}
           </button>
         ))}
       </div>
       {value.kind === "countries" && (
         <div className="form-grid">
-          <Field label="Questions about">
+          <Field label={t("Questions about")}>
             <select value={value.topic} onChange={(e) => onChange({ ...value, topic: e.target.value as CountryTopic })}>
-              {COUNTRY_TOPICS.map(([t, label]) => (
-                <option key={t} value={t}>
-                  {label}
+              {COUNTRY_TOPICS.map(([topic, label]) => (
+                <option key={topic} value={topic}>
+                  {t(label)}
                 </option>
               ))}
             </select>
           </Field>
-          <Field label="Part of the world">
+          <Field label={t("Part of the world")}>
             <select value={value.region} onChange={(e) => onChange({ ...value, region: e.target.value })}>
-              <option value="">Whole world</option>
+              <option value="">{t("Whole world")}</option>
               {REGIONS.map((r) => (
-                <option key={r}>{r}</option>
+                <option key={r} value={r}>
+                  {t(r)}
+                </option>
               ))}
             </select>
           </Field>
         </div>
       )}
+      {value.kind !== "countries" && getLang() === "fr" && <p className="muted">{t("These questions come in English.")}</p>}
       {value.kind === "trivia" && (
         <div className="form-grid">
-          <Field label="Subject">
+          <Field label={t("Subject")}>
             <select value={value.category} onChange={(e) => onChange({ ...value, category: Number(e.target.value) })}>
               {TRIVIA_CATEGORIES.map(([id, label]) => (
                 <option key={id} value={id}>
-                  {label}
+                  {t(label)}
                 </option>
               ))}
             </select>
           </Field>
-          <Field label="Level">
+          <Field label={t("Level")}>
             <select value={value.difficulty} onChange={(e) => onChange({ ...value, difficulty: e.target.value as typeof value.difficulty })}>
-              <option value="easy">Easy</option>
-              <option value="medium">Medium</option>
-              <option value="hard">Hard</option>
-              <option value="">Any</option>
+              <option value="easy">{t("easy")}</option>
+              <option value="medium">{t("medium")}</option>
+              <option value="hard">{t("hard")}</option>
+              <option value="">{t("Any")}</option>
             </select>
           </Field>
         </div>
       )}
       {value.kind === "words" && (
-        <Field label="Topic">
+        <Field label={tc("words", "Topic")}>
           <input list="word-topics" value={value.topic} onChange={(e) => onChange({ ...value, topic: e.target.value })} />
           <datalist id="word-topics">
-            {WORD_TOPICS.map((t) => (
-              <option key={t} value={t} />
+            {WORD_TOPICS.map((topic) => (
+              <option key={topic} value={topic} />
             ))}
           </datalist>
         </Field>
@@ -113,9 +117,9 @@ export function RandomizerButtons({ gameId, questions, onChange }: { gameId: str
     try {
       const got = await fetchQuestions(last, Math.max(10, Math.min(50, questions.length || 20)));
       onChange(got.questions);
-      toast(got.offline ? "No internet: made a set from saved words" : `New set: ${got.questions.length} questions`);
+      toast(got.offline ? t("No internet: made a set from saved words") : tn(got.questions.length, "New set: {n} question", "New set: {n} questions"));
     } catch (e) {
-      toast(e instanceof Error && e.message !== "Failed to fetch" ? e.message : "Couldn't reach the question service. Countries work offline.", "error");
+      toast(e instanceof Error && e.message !== "Failed to fetch" ? e.message : t("Couldn't reach the question service. Countries work offline."), "error");
     } finally {
       setBusy(false);
     }
@@ -124,11 +128,11 @@ export function RandomizerButtons({ gameId, questions, onChange }: { gameId: str
   return (
     <>
       <button type="button" className="btn btn-soft btn-sm" onClick={() => setOpen(true)}>
-        <Icon name="dice" size={16} /> Randomizer
+        <Icon name="dice" size={16} /> {t("Randomizer")}
       </button>
       {last && (
         <button type="button" className="btn btn-ghost btn-sm" onClick={newSet} disabled={busy} title={describe(last)}>
-          <Icon name="shuffle" size={16} /> {busy ? "Getting…" : "New set"}
+          <Icon name="shuffle" size={16} /> {busy ? t("Getting…") : t("New set")}
         </button>
       )}
       {open && (
@@ -137,7 +141,7 @@ export function RandomizerButtons({ gameId, questions, onChange }: { gameId: str
           onClose={() => setOpen(false)}
           onResult={(got, mode) => {
             onChange(mode === "add" ? [...questions, ...got] : got);
-            toast(mode === "add" ? `Added ${got.length} questions` : `New set: ${got.length} questions`);
+            toast(mode === "add" ? tn(got.length, "Added {n} question", "Added {n} questions") : tn(got.length, "New set: {n} question", "New set: {n} questions"));
           }}
         />
       )}
@@ -159,7 +163,7 @@ function RandomizerModal({ gameId, onClose, onResult }: { gameId: string; onClos
     try {
       setPreview(await fetchQuestions(src, count));
     } catch (e) {
-      setError(e instanceof Error && e.message !== "Failed to fetch" ? e.message : "Couldn't reach the question service. Countries work offline.");
+      setError(e instanceof Error && e.message !== "Failed to fetch" ? e.message : t("Couldn't reach the question service. Countries work offline."));
     } finally {
       setBusy(false);
     }
@@ -167,13 +171,13 @@ function RandomizerModal({ gameId, onClose, onResult }: { gameId: string; onClos
 
   return (
     <Modal
-      title="Randomizer"
+      title={t("Randomizer")}
       wide
       onClose={onClose}
       footer={
         <>
           <button type="button" className="btn btn-ghost" onClick={get} disabled={busy || (src.kind === "words" && !src.topic.trim())}>
-            <Icon name="shuffle" size={18} /> {busy ? "Getting…" : preview ? "Another set" : "Get questions"}
+            <Icon name="shuffle" size={18} /> {busy ? t("Getting…") : preview ? t("Another set") : t("Get questions")}
           </button>
           <span className="spacer" />
           <button
@@ -186,24 +190,24 @@ function RandomizerModal({ gameId, onClose, onResult }: { gameId: string; onClos
               onClose();
             }}
           >
-            {mode === "add" ? "Add" : "Use this set"}
+            {mode === "add" ? t("Add") : t("Use this set")}
           </button>
         </>
       }
     >
       <SourcePicker value={src} onChange={(s) => (setSrc(s), setPreview(null))} />
       <div className="form-grid">
-        <Field label="How many">
+        <Field label={t("How many")}>
           <select value={count} onChange={(e) => setCount(Number(e.target.value))}>
             {[10, 20, 30, 50].map((n) => (
               <option key={n}>{n}</option>
             ))}
           </select>
         </Field>
-        <Field label="Your questions">
+        <Field label={t("Your questions")}>
           <select value={mode} onChange={(e) => setMode(e.target.value as "add" | "replace")}>
-            <option value="replace">Replace them</option>
-            <option value="add">Keep them, add these</option>
+            <option value="replace">{t("Replace them")}</option>
+            <option value="add">{t("Keep them, add these")}</option>
           </select>
         </Field>
       </div>
@@ -214,12 +218,12 @@ function RandomizerModal({ gameId, onClose, onResult }: { gameId: string; onClos
             {preview.questions.slice(0, 6).map((q, i) => (
               <li key={i}>
                 <strong>{q.q}</strong>
-                <small>{q.type === "mcq" ? q.options[q.answer] : q.type === "tf" ? (q.answer ? "True" : "False") : ""}</small>
+                <small>{q.type === "mcq" ? q.options[q.answer] : q.type === "tf" ? (q.answer ? t("True") : t("False")) : ""}</small>
               </li>
             ))}
           </ol>
           <p className="muted">
-            {preview.questions.length} questions · {preview.credit}
+            {tn(preview.questions.length, "{n} question", "{n} questions")} · {preview.credit}
           </p>
         </div>
       )}

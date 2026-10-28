@@ -1,4 +1,5 @@
 import { deflateSync, inflateSync, strToU8 } from "fflate";
+import { t } from "../i18n";
 import { ICON_BG } from "../palette";
 import type { Game } from "../../shared/types";
 import { rewriteManifest, TEMPLATE_ID } from "./manifest";
@@ -26,7 +27,7 @@ export interface ApkOptions {
 let template: Promise<Uint8Array> | null = null;
 const loadTemplate = () =>
   (template ??= fetch("/shell-template.apk").then(async (r) => {
-    if (!r.ok) throw new Error("Couldn't load the Android shell. Check your connection and try again.");
+    if (!r.ok) throw new Error(t("Couldn't load the Android shell. Check your connection and try again."));
     return new Uint8Array(await r.arrayBuffer());
   }));
 
@@ -48,7 +49,7 @@ function iconCanvas(bg: string): [HTMLCanvasElement, CanvasRenderingContext2D] {
 
 async function png(canvas: HTMLCanvasElement): Promise<Uint8Array> {
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
-  if (!blob) throw new Error("Couldn't draw the app icon.");
+  if (!blob) throw new Error(t("Couldn't draw the app icon."));
   return new Uint8Array(await blob.arrayBuffer());
 }
 
@@ -77,7 +78,7 @@ export async function makeIconFromSvg(svgMarkup: string, bg = "#ece4fb"): Promis
 }
 
 export async function buildApk(icon: Uint8Array, page: string, opts: ApkOptions & { keepScreenOn?: boolean }, key: SigningKey): Promise<Blob> {
-  if (!APP_ID_RE.test(opts.id) || opts.id === TEMPLATE_ID) throw new Error("The app id must look like org.school.mygame.");
+  if (!APP_ID_RE.test(opts.id) || opts.id === TEMPLATE_ID) throw new Error(t("The app id must look like org.school.mygame."));
   const zip = await loadTemplate();
   const entries: ZipEntry[] = [];
   for (const e of readZip(zip)) {

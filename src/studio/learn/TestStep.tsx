@@ -9,6 +9,7 @@ import { Icon } from "../ui";
 import { Bars, Confusion, fmt, Scatter } from "./charts";
 import type { StepProps } from "./LearnPage";
 import { ZoGuide } from "./Zo";
+import { t, tn } from "../i18n";
 
 type Result = { value: number; text: string; pass: boolean } | null;
 
@@ -23,12 +24,12 @@ export function TestStep(props: StepProps & { result: Result }) {
   if (!m)
     return (
       <ZoGuide outfit="teacher" pose="stand">
-        Train me first, then test me here.
+        {t("Train me first, then test me here.")}
       </ZoGuide>
     );
   return (
     <>
-      {stale(project) && <p className="notice">The data changed since Zo was trained. Train again to test the new data.</p>}
+      {stale(project) && <p className="notice">{t("The data changed since Zo was trained. Train again to test the new data.")}</p>}
       {m.kind === "classifier" && <ClassifierTest {...props} model={m} result={result} />}
       {m.kind === "line" && <LineTest {...props} model={m} result={result} />}
       {m.kind === "writer" && <WriterTest {...props} model={m} result={result} />}
@@ -80,9 +81,9 @@ function ClassifierTest({ project, award, model, result }: StepProps & { model: 
 
   const say = result
     ? result.pass
-      ? `I got ${result.text} of my test right! Try me with something new.`
-      : `I got ${result.text} of my test right. Look at my mistakes: what could you feed me to help?`
-    : "There's nothing in my test. Keep some examples back on the Split step.";
+      ? t("I got {n} of my test right! Try me with something new.", { n: result.text })
+      : t("I got {n} of my test right. Look at my mistakes: what could you feed me to help?", { n: result.text })
+    : t("There's nothing in my test. Keep some examples back on the Split step.");
 
   return (
     <>
@@ -90,18 +91,18 @@ function ClassifierTest({ project, award, model, result }: StepProps & { model: 
         {say}
       </ZoGuide>
 
-      {result && <Hero value={result.text} label="right on the test" sub={`${judged.length - wrong.length} of ${judged.length}`} />}
+      {result && <Hero value={result.text} label={t("right on the test")} sub={t("{a} of {b}", { a: judged.length - wrong.length, b: judged.length })} />}
 
       <section className="card try-box">
-        <h2 className="card-title">{reply ? "Ask Zo" : "Try Zo"}</h2>
-        <input className="try-input" value={text} placeholder={reply ? "Type a question" : "Type something new"} onChange={(e) => setText(e.target.value)} aria-label={reply ? "Question" : "Text to sort"} />
+        <h2 className="card-title">{reply ? t("Ask Zo") : t("Try Zo")}</h2>
+        <input className="try-input" value={text} placeholder={reply ? t("Type a question") : t("Type something new")} onChange={(e) => setText(e.target.value)} aria-label={reply ? t("Question") : t("Text to sort")} />
         {out && top && (
           <div className="try-out" role="status">
             {reply ? (
               <p className={`zo-answer${sure ? "" : " is-unsure"}`}>{sure ? top.label : "I haven't learned that yet."}</p>
             ) : (
               <p className="zo-answer">
-                {out.known === 0 ? "These words are all new to me, so this is a wild guess: " : ""}
+                {out.known === 0 ? t("These words are all new to me, so this is a wild guess: ") : ""}
                 <strong>{top.label}</strong> ({pct(top.p)} sure)
               </p>
             )}
@@ -121,10 +122,10 @@ function ClassifierTest({ project, award, model, result }: StepProps & { model: 
               </p>
               <ul className="viz-legend">
                 <li>
-                  <span className="viz-key why-key is-for" aria-hidden /> towards
+                  <span className="viz-key why-key is-for" aria-hidden /> {t("towards")}
                 </li>
                 <li>
-                  <span className="viz-key why-key is-against" aria-hidden /> away
+                  <span className="viz-key why-key is-against" aria-hidden /> {t("away")}
                 </li>
               </ul>
             </div>
@@ -137,7 +138,7 @@ function ClassifierTest({ project, award, model, result }: StepProps & { model: 
       {wrong.length > 0 && (
         <section className="card">
           <h2 className="card-title">
-            Zo's mistakes <span className="pill">{wrong.length}</span>
+            {t("Zo's mistakes")} <span className="pill">{wrong.length}</span>
           </h2>
           <ul className="mistakes">
             {wrong.map((j) => (
@@ -145,10 +146,10 @@ function ClassifierTest({ project, award, model, result }: StepProps & { model: 
                 <span className="mistake-text">{j.row.text}</span>
                 <span className="mistake-labels">
                   <span>
-                    Real: <strong>{j.row.label}</strong>
+                    {t("Real:")} <strong>{j.row.label}</strong>
                   </span>
                   <span>
-                    Zo: <strong>{j.guess}</strong> ({pct(j.p)})
+                    {t("Zo:")} <strong>{j.guess}</strong> ({pct(j.p)})
                   </span>
                 </span>
               </li>
@@ -159,7 +160,7 @@ function ClassifierTest({ project, award, model, result }: StepProps & { model: 
 
       {!reply && (
         <section className="card">
-          <h2 className="card-title">What Zo looks for</h2>
+          <h2 className="card-title">{t("What Zo looks for")}</h2>
           <div className="looks-for">
             {model.labels.map((l) => (
               <div key={l}>
@@ -198,17 +199,17 @@ function LineTest({ project, award, model, result }: StepProps & { model: LineMo
   return (
     <>
       <ZoGuide outfit={result?.pass ? "graduate" : "teacher"} pose={result?.pass ? "cheer" : "stand"}>
-        {isFinite(miss) ? `On the test my guesses were about ${fmt(miss)} off on average.` : "There's nothing in my test. Keep some rows back on the Split step."}
-        {result && ` My line explains ${result.text} of the ups and downs.`}
+        {isFinite(miss) ? t("On the test my guesses were about {n} off on average.", { n: fmt(miss) }) : t("There's nothing in my test. Keep some rows back on the Split step.")}
+        {result && ` ${t("My line explains {n} of the ups and downs.", { n: result.text })}`}
       </ZoGuide>
 
       <div className="hero-row">
-        {isFinite(miss) && <Hero value={fmt(miss)} label={`average miss (${yn})`} />}
-        {result && <Hero value={result.text} label="of the spread explained" sub={`R² = ${explained(model, tp).toFixed(2)}`} />}
+        {isFinite(miss) && <Hero value={fmt(miss)} label={t("average miss ({unit})", { unit: yn })} />}
+        {result && <Hero value={result.text} label={t("of the spread explained")} sub={`R² = ${explained(model, tp).toFixed(2)}`} />}
       </div>
 
       <section className="card try-box">
-        <h2 className="card-title">Try Zo</h2>
+        <h2 className="card-title">{t("Try Zo")}</h2>
         <label className="field">
           <span className="field-label">{xn}</span>
           <input className="try-input" inputMode="decimal" value={x} onChange={(e) => setX(e.target.value)} />
@@ -228,7 +229,7 @@ function LineTest({ project, award, model, result }: StepProps & { model: LineMo
       </section>
 
       <Scatter
-        title="Zo's line and the test"
+        title={t("Zo's line and the test")}
         xName={xn}
         yName={yn}
         dots={[...pointsOf(train).map((d) => ({ ...d, slot: 1 as const })), ...tp.map((d) => ({ ...d, slot: 2 as const }))]}
@@ -237,15 +238,15 @@ function LineTest({ project, award, model, result }: StepProps & { model: LineMo
 
       {tp.length > 0 && (
         <section className="card">
-          <h2 className="card-title">Test rows</h2>
+          <h2 className="card-title">{t("Test rows")}</h2>
           <div className="viz-table-scroll">
             <table className="plain-table">
               <thead>
                 <tr>
                   <th>{xn}</th>
                   <th>{yn}</th>
-                  <th>Zo's guess</th>
-                  <th>Miss</th>
+                  <th>{t("Zo's guess")}</th>
+                  <th>{t("Miss")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -283,35 +284,35 @@ function WriterTest({ project, award, model, result }: StepProps & { model: Writ
       <ZoGuide outfit={result?.pass ? "graduate" : "teacher"} pose={out ? "cheer" : "stand"}>
         {out
           ? copied > 0.6
-            ? `${pct(copied)} of what I wrote is copied word for word from your text. I'm mostly remembering, not writing.`
-            : `Only ${pct(copied)} is copied word for word. The rest I put together myself!`
-          : "Give me a few words to start and I'll carry on."}
+            ? t("{n} of what I wrote is copied word for word from your text. I'm mostly remembering, not writing.", { n: pct(copied) })
+            : t("Only {n} is copied word for word. The rest I put together myself!", { n: pct(copied) })
+          : t("Give me a few words to start and I'll carry on.")}
       </ZoGuide>
 
-      {result && <Hero value={result.text} label="less surprised than guessing blindly" sub={`${model.vocab} words known`} />}
+      {result && <Hero value={result.text} label={t("less surprised than guessing blindly")} sub={tn(model.vocab, "{n} word known", "{n} words known")} />}
 
       <section className="card try-box">
         <label className="field">
-          <span className="field-label">Start with</span>
+          <span className="field-label">{t("Start with")}</span>
           <input className="try-input" value={prompt} onChange={(e) => setPrompt(e.target.value)} />
         </label>
         <div className="settings-grid">
           <label className="field">
             <span className="field-label">
-              Creativity: <strong>{heat.toFixed(1)}</strong>
+              {t("Creativity:")} <strong>{heat.toFixed(1)}</strong>
             </span>
             <input type="range" min={0.1} max={2} step={0.1} value={heat} onChange={(e) => setHeat(Number(e.target.value))} />
           </label>
           <label className="field">
             <span className="field-label">
-              Words: <strong>{length}</strong>
+              {t("Words:")} <strong>{length}</strong>
             </span>
             <input type="range" min={5} max={80} step={5} value={length} onChange={(e) => setLength(Number(e.target.value))} />
           </label>
         </div>
         <div className="toolbar">
           <button className="btn btn-primary" onClick={() => setOut(generate(model, prompt, heat, length))}>
-            <Icon name="sparkle" size={18} /> Write
+            <Icon name="sparkle" size={18} /> {t("Write")}
           </button>
         </div>
         {out && (
@@ -321,7 +322,7 @@ function WriterTest({ project, award, model, result }: StepProps & { model: Writ
         )}
       </section>
 
-      {next.length > 0 && <Bars title={`What Zo thinks comes after “${prompt.trim().split(/\s+/).slice(-3).join(" ") || "…"}”`} items={next.map((n) => ({ label: n.word, value: n.p }))} format={pct} max={Math.max(...next.map((n) => n.p))} />}
+      {next.length > 0 && <Bars title={t("What Zo thinks comes after “{words}”", { words: prompt.trim().split(/\s+/).slice(-3).join(" ") || "…" })} items={next.map((n) => ({ label: n.word, value: n.p }))} format={pct} max={Math.max(...next.map((n) => n.p))} />}
     </>
   );
 }

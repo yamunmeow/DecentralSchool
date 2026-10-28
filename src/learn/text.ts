@@ -81,20 +81,23 @@ const NUMBER_WORDS: Record<string, number> = {
   zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
   eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20,
   thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90, hundred: 100,
+  zéro: 0, un: 1, une: 1, deux: 2, trois: 3, quatre: 4, cinq: 5, sept: 7, huit: 8, neuf: 9, dix: 10,
+  onze: 11, douze: 12, treize: 13, quatorze: 14, quinze: 15, seize: 16, vingt: 20,
+  trente: 30, quarante: 40, cinquante: 50, soixante: 60, cent: 100,
 };
 
 /** A strict number: only digits, a sign and one decimal point (comma or dot). */
 export const isNumber = (s: string) => /^\s*[-+]?(\d+([.,]\d+)?|[.,]\d+)\s*$/.test(s);
 export const toNumber = (s: string) => Number(s.trim().replace(",", "."));
 
-/** Rescue a number someone typed loosely: "7 hrs", "5.5%", "five". NaN when there isn't one. */
+/** Rescue a number someone typed loosely: "7 hrs", "5.5%", "five", "cinq". NaN when there isn't one. */
 export function rescueNumber(s: string): number {
   const t = s.trim().toLowerCase();
   if (isNumber(t)) return toNumber(t);
   const m = t.match(/^[^\d+.\-]*([-+]?\d+(?:[.,]\d+)?)\s*[\p{L}%°$€£₹.]*$/u);
   if (m) return toNumber(m[1]);
   const parts = t.split(/[\s-]+/).filter(Boolean);
-  if (parts.length && parts.every((p) => p in NUMBER_WORDS)) return parts.reduce((s, p) => (p === "hundred" ? Math.max(1, s) * 100 : s + NUMBER_WORDS[p]), 0);
+  if (parts.length && parts.every((p) => p in NUMBER_WORDS)) return parts.reduce((s, p) => (p === "hundred" || p === "cent" ? Math.max(1, s) * 100 : s + NUMBER_WORDS[p]), 0);
   return NaN;
 }
 

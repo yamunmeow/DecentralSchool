@@ -7,6 +7,8 @@
  * such as safety classifiers ("User Safety: safe").
  */
 
+import { t } from "../i18n";
+
 const API = "https://openrouter.ai/api/v1";
 const KEY = "ds-openrouter-key";
 const MODEL = "ds-openrouter-model";
@@ -30,7 +32,7 @@ export interface Model {
 }
 
 /** What a model is called on screen. */
-export const modelName = (id: string) => (id === DEFAULT_MODEL ? "best free models" : id.replace(/:free$/, "").replace(/^[^/]+\//, ""));
+export const modelName = (id: string) => (id === DEFAULT_MODEL ? t("best free models") : id.replace(/:free$/, "").replace(/^[^/]+\//, ""));
 
 const local = {
   get: (k: string) => {
@@ -98,11 +100,11 @@ export const KEYS_PAGE = "https://openrouter.ai/settings/keys";
 export async function checkKey(key: string): Promise<"ok" | string> {
   try {
     const res = await fetch(`${API}/key`, { headers: { Authorization: `Bearer ${key}` } });
-    if (res.status === 401 || res.status === 403) return "OpenRouter doesn't know that key. Copy it again from the keys page.";
-    if (!res.ok) return `OpenRouter answered ${res.status}. Try again in a moment.`;
+    if (res.status === 401 || res.status === 403) return t("OpenRouter doesn't know that key. Copy it again from the keys page.");
+    if (!res.ok) return t("OpenRouter answered {status}. Try again in a moment.", { status: res.status });
     return "ok";
   } catch {
-    return "Couldn't reach OpenRouter. Check your connection.";
+    return t("Couldn't reach OpenRouter. Check your connection.");
   }
 }
 
@@ -119,8 +121,8 @@ export async function finishSignIn(): Promise<"none" | "ok" | string> {
   sessionStorage.removeItem(RETURN);
   window.history.replaceState(null, "", window.location.pathname + back);
   window.dispatchEvent(new HashChangeEvent("hashchange"));
-  if (!verifier) return "The sign-in expired. Please try again.";
-  if (params.get("state") !== state) return "That sign-in didn't start here. Please try again.";
+  if (!verifier) return t("The sign-in expired. Please try again.");
+  if (params.get("state") !== state) return t("That sign-in didn't start here. Please try again.");
   try {
     const res = await fetch(`${API}/auth/keys`, {
       method: "POST",
@@ -128,11 +130,11 @@ export async function finishSignIn(): Promise<"none" | "ok" | string> {
       body: JSON.stringify({ code, code_verifier: verifier, code_challenge_method: "S256" }),
     });
     const body = await res.json().catch(() => ({}));
-    if (!res.ok || typeof body.key !== "string") return body?.error?.message || "OpenRouter didn't accept the sign-in. Please try again.";
+    if (!res.ok || typeof body.key !== "string") return body?.error?.message || t("OpenRouter didn't accept the sign-in. Please try again.");
     setKey(body.key);
     return "ok";
   } catch {
-    return "Couldn't reach OpenRouter. Check your connection.";
+    return t("Couldn't reach OpenRouter. Check your connection.");
   }
 }
 
@@ -205,12 +207,12 @@ async function modelFields(): Promise<{ model: string; models?: string[] }> {
   return list.length > 1 ? { model: list[0], models: list } : { model: list[0] };
 }
 
-const SAFETY_ONLY = "That model only checks messages for safety and can't write games. Pick another model, or use “best free models”.";
+const SAFETY_ONLY = () => t("That model only checks messages for safety and can't write games. Pick another model, or use “best free models”.");
 
 /** Streams the reply; onText gets the whole text so far. Resolves with the final text. */
 export async function chat(messages: Message[], onText: (text: string) => void, signal?: AbortSignal): Promise<string> {
   const key = getKey();
-  if (!key) throw new AiError("Connect OpenRouter in Settings first.", 401);
+  if (!key) throw new AiError(t("Connect OpenRouter in Settings first."), 401);
   let res: Response;
   try {
     res = await fetch(`${API}/chat/completions`, {
@@ -226,18 +228,18 @@ export async function chat(messages: Message[], onText: (text: string) => void, 
     });
   } catch (e) {
     if ((e as Error).name === "AbortError") throw e;
-    throw new AiError("Couldn't reach OpenRouter. Check your connection.");
+    throw new AiError(t("Couldn't reach OpenRouter. Check your connection."));
   }
   if (!res.ok || !res.body) {
     const body = await res.json().catch(() => ({}));
     const msg = body?.error?.message as string | undefined;
     if (res.status === 401) {
       setKey(null);
-      throw new AiError("Your OpenRouter sign-in has ended. Connect again in Settings.", 401);
+      throw new AiError(t("Your OpenRouter sign-in has ended. Connect again in Settings."), 401);
     }
-    if (res.status === 402) throw new AiError("This model needs credits on your OpenRouter account. Pick a free model.", 402);
-    if (res.status === 429) throw new AiError("The free models are busy right now. Wait a minute and try again, or pick another model.", 429);
-    throw new AiError(msg || `OpenRouter error ${res.status}`, res.status);
+    if (res.status === 402) throw new AiError(t("This model needs credits on your OpenRouter account. Pick a free model."), 402);
+    if (res.status === 429) throw new AiError(t("The free models are busy right now. Wait a minute and try again, or pick another model."), 429);
+    throw new AiError(msg || t("OpenRouter error {status}", { status: res.status }), res.status);
   }
 
   const reader = res.body.getReader();
@@ -255,12 +257,12 @@ export async function chat(messages: Message[], onText: (text: string) => void, 
       if (!line.startsWith("data:")) continue;
       const data = line.slice(5).trim();
       if (data === "[DONE]") {
-        if (verdict(text)) throw new AiError(SAFETY_ONLY);
+        if (verdict(text)) throw new AiError(SAFETY_ONLY());
         return text;
       }
       try {
         const json = JSON.parse(data);
-        if (json.error) throw new AiError(json.error.message || "The model stopped with an error.");
+        if (json.error) throw new AiError(json.error.message || t("The model stopped with an error."));
         const delta = json.choices?.[0]?.delta?.content;
         if (delta) {
           text += delta;
@@ -271,6 +273,6 @@ export async function chat(messages: Message[], onText: (text: string) => void, 
       }
     }
   }
-  if (verdict(text)) throw new AiError(SAFETY_ONLY);
+  if (verdict(text)) throw new AiError(SAFETY_ONLY());
   return text;
 }

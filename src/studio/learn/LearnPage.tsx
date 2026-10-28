@@ -5,6 +5,7 @@ import { testResult, usableRows } from "../../learn/project";
 import type { LearnProject } from "../../learn/types";
 import { models as table } from "../db";
 import { go, useApp } from "../store";
+import { t, tc } from "../i18n";
 import { Icon } from "../ui";
 import { CleanStep, FeedStep, SplitStep } from "./DataSteps";
 import { TestStep } from "./TestStep";
@@ -28,9 +29,9 @@ export function LearnPage({ id, step }: { id: string; step?: string }) {
   if (project === null)
     return (
       <div className="page">
-        <p>This model isn't in this browser.</p>
+        <p>{t("This model isn't in this browser.")}</p>
         <a className="btn btn-primary" href="#/learn">
-          Zo Wants to Learn
+          {t("Zo Wants to Learn")}
         </a>
       </div>
     );
@@ -46,7 +47,7 @@ function Learn({ initial, step }: { initial: LearnProject; step: Step }) {
 
   const persist = useCallback(() => {
     window.clearTimeout(timer.current);
-    table.put(ref.current).catch(() => toast("Couldn't save in this browser.", "error"));
+    table.put(ref.current).catch(() => toast(t("Couldn't save in this browser."), "error"));
   }, [toast]);
 
   const update = useCallback(
@@ -75,7 +76,7 @@ function Learn({ initial, step }: { initial: LearnProject; step: Step }) {
       if (ref.current.badges.includes(badge)) return;
       update((p) => (p.badges.includes(badge) ? p : { ...p, badges: [...p.badges, badge] }));
       const b = BADGES.find((x) => x.id === badge);
-      if (b) toast(`Badge: ${b.name}`);
+      if (b) toast(t("Badge: {name}", { name: t(b.name) }));
     },
     [update, toast],
   );
@@ -116,21 +117,21 @@ function Learn({ initial, step }: { initial: LearnProject; step: Step }) {
   return (
     <div className="page learn-page">
       <header className="learn-head">
-        <a href="#/learn" className="icon-btn" aria-label="All models">
+        <a href="#/learn" className="icon-btn" aria-label={t("All models")}>
           <Icon name="arrowL" />
         </a>
-        <input className="learn-title" value={project.title} aria-label="Model name" onChange={(e) => update((p) => ({ ...p, title: e.target.value }))} />
+        <input className="learn-title" value={project.title} aria-label={t("Model name")} onChange={(e) => update((p) => ({ ...p, title: e.target.value }))} />
         <span className="pill">
-          {mode.name}: {mode.blurb}
+          {t(mode.name)}{t(": ")}{t(mode.blurb)}
         </span>
       </header>
 
-      <nav className="learn-steps" aria-label="Steps" ref={nav}>
+      <nav className="learn-steps" aria-label={t("Steps")} ref={nav}>
         {STEPS.map((s, i) => (
           <a key={s.id} href={`#/learn/${project.id}/${s.id}`} className={`learn-step${s.id === step ? " on" : ""}${done[s.id] ? " is-done" : ""}`} aria-current={s.id === step ? "step" : undefined}>
             <ZoPic outfit={s.zo} size={30} />
             <span>
-              <small>{done[s.id] ? "✓" : i + 1}</small> {s.name}
+              <small>{done[s.id] ? "✓" : i + 1}</small> {tc("step", s.name)}
             </span>
           </a>
         ))}
@@ -152,13 +153,13 @@ function Learn({ initial, step }: { initial: LearnProject; step: Step }) {
       <footer className="learn-foot">
         {index > 0 && (
           <a className="btn btn-ghost" href={`#/learn/${project.id}/${STEPS[index - 1].id}`}>
-            <Icon name="arrowL" size={18} /> {STEPS[index - 1].name}
+            <Icon name="arrowL" size={18} /> {tc("step", STEPS[index - 1].name)}
           </a>
         )}
         <span className="spacer" />
         {index < STEPS.length - 1 && (
           <button className="btn btn-primary" onClick={() => (persist(), go(`learn/${project.id}/${STEPS[index + 1].id}`))}>
-            {STEPS[index + 1].name} <Icon name="arrowR" size={18} />
+            {tc("step", STEPS[index + 1].name)} <Icon name="arrowR" size={18} />
           </button>
         )}
       </footer>
@@ -174,8 +175,8 @@ function Quiz({ q, chosen, onChoose }: { q: Question; chosen?: number; onChoose:
       <div className="quiz-head">
         <ZoPic outfit="wizard" pose={answered && chosen === q.answer ? "cheer" : "stand"} size={44} />
         <div>
-          <small className="muted">Zo asks</small>
-          <h3 id={`q-${q.id}`}>{q.q}</h3>
+          <small className="muted">{t("Zo asks")}</small>
+          <h3 id={`q-${q.id}`}>{t(q.q)}</h3>
         </div>
       </div>
       <div className="quiz-options">
@@ -187,14 +188,14 @@ function Quiz({ q, chosen, onChoose }: { q: Question; chosen?: number; onChoose:
             onClick={() => onChoose(i)}
           >
             {answered && i === chosen && <Icon name={i === q.answer ? "check" : "undo"} size={16} />}
-            {o}
+            {t(o)}
           </button>
         ))}
       </div>
       {answered && (
         <p className={`quiz-explain ${chosen === q.answer ? "is-right" : "is-wrong"}`} role="status">
-          <strong>{chosen === q.answer ? "Yes! " : "Not quite. "}</strong>
-          {q.explain}
+          <strong>{chosen === q.answer ? t("Yes! ") : t("Not quite. ")}</strong>
+          {t(q.explain)}
         </p>
       )}
     </section>

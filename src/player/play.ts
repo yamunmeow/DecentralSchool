@@ -162,7 +162,9 @@ function typeView(task: Extract<Task, { k: "type" }>, t: Strings, done: Done): V
     paint();
   };
   const key = (k: string, cls = "") => (k ? h("button", { class: `key ${cls}`, onclick: () => press(k), "aria-label": k === "⌫" ? t.clear : k }, k) : h("span", { class: "key key-blank" }));
-  const [x1, x2] = PAD_EXTRA[task.pad];
+  const [x1, pad2] = PAD_EXTRA[task.pad];
+  // French and Spanish write decimals with a comma; checking reads either.
+  const x2 = pad2 === "." ? t.decimal : pad2;
   box = h(
     "div",
     { class: "pad" },
@@ -174,7 +176,7 @@ function typeView(task: Extract<Task, { k: "type" }>, t: Strings, done: Done): V
     else if (e.key === "Backspace") press("⌫");
     else if (/^[0-9]$/.test(e.key)) press(e.key);
     else if (e.key === "-" && x1 === "−") press("−");
-    else if ((e.key === "." || e.key === ",") && x2 === ".") press(".");
+    else if ((e.key === "." || e.key === ",") && pad2 === ".") press(x2);
     else if (e.key === "/" && x2 === "/") press("/");
     else if (e.key === ":" && x1 === ":") press(":");
   });

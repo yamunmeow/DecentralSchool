@@ -42,6 +42,7 @@ const en = {
   empty: "This game has no questions yet.",
   of: "of",
   streak: "in a row",
+  decimal: ".",
   ask: {
     judge: "Is this sentence correct?",
     "word-for": "Which word means this?",
@@ -109,6 +110,7 @@ const hi: Strings = {
   empty: "इस खेल में अभी कोई प्रश्न नहीं है।",
   of: "में से",
   streak: "लगातार",
+  decimal: ".",
   ask: {
     judge: "क्या यह वाक्य सही है?",
     "word-for": "किस शब्द का यह अर्थ है?",
@@ -174,6 +176,7 @@ const fr: Strings = {
   empty: "Ce jeu n'a pas encore de questions.",
   of: "sur",
   streak: "d'affilée",
+  decimal: ",",
   ask: {
     judge: "Cette phrase est-elle correcte ?",
     "word-for": "Quel mot veut dire ceci ?",
@@ -239,6 +242,7 @@ const es: Strings = {
   empty: "Este juego aún no tiene preguntas.",
   of: "de",
   streak: "seguidas",
+  decimal: ",",
   ask: {
     judge: "¿Es correcta esta oración?",
     "word-for": "¿Qué palabra significa esto?",

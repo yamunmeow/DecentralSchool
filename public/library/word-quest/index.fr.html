@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f8f6f2">
+<title>Défi Vocabulaire</title>
+<style>
+:root {
+  --ink: #24335a;
+  --muted: #5e6f88;
+  --navy: #2e3e72;
+  --navy-deep: #1b284d;
+  --teal: #087d78;
+  --orange: #f5ae4f;
+  --orange-deep: #c47d22;
+  --paper: #ffffff;
+  --bg: #f8f6f2;
+  --line: #dfe6ef;
+  --good: #e4f7ed;
+  --good-line: #57b98d;
+  --good-ink: #0d6b45;
+  --bad: #ffefed;
+  --bad-line: #e47b70;
+  --bad-ink: #a53b37;
+  --shadow: 0 10px 30px #2030561a;
+  --radius: 22px;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  background: radial-gradient(circle at 8% 0%, #ffecd4, transparent 34%),
+              radial-gradient(circle at 95% 4%, #ddf4ed, transparent 32%), var(--bg);
+  background-attachment: fixed;
+  color: var(--ink);
+  font: 17px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  overscroll-behavior-y: none;
+}
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; border: 0; background: none; padding: 0; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+button:disabled { cursor: default; }
+.hidden { display: none !important; }
+.muted { color: var(--muted); }
+
+/* ---------- layout ---------- */
+.top, main { max-width: 640px; margin: 0 auto; padding-left: 16px; padding-right: 16px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 14px; padding-bottom: 6px; }
+main { padding-bottom: 40px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 1.2rem; letter-spacing: -.03em; color: var(--navy); }
+.logo { display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: var(--orange); box-shadow: 0 3px 0 var(--orange-deep); transform: rotate(-7deg); font-size: .95rem; }
+.player-chip { display: flex; align-items: center; gap: 6px; background: var(--paper); border: 2px solid var(--line); border-radius: 999px; padding: 6px 12px 6px 8px; font-weight: 800; font-size: .9rem; max-width: 60%; }
+.player-chip .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.avatar { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #e7f5ef; color: var(--teal); font-weight: 900; font-size: .8rem; flex: none; }
+.card { background: var(--paper); border: 1px solid #e8eaf0; border-radius: var(--radius); box-shadow: var(--shadow); }
+.section-title { font-size: 1.15rem; margin: 26px 2px 12px; letter-spacing: -.02em; }
+
+/* ---------- buttons ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 12px 20px; border-radius: 15px; font-weight: 850; transition: transform .12s, box-shadow .12s; }
+.btn:active:not(:disabled) { transform: translateY(2px); }
+.btn.primary { background: var(--navy); color: #fff; box-shadow: 0 5px 0 var(--navy-deep); }
+.btn.primary:active:not(:disabled) { box-shadow: 0 3px 0 var(--navy-deep); }
+.btn.secondary { background: var(--paper); color: var(--navy); border: 2px solid var(--line); }
+.btn.wide { width: 100%; }
+.btn:disabled { opacity: .45; }
+.icon-btn { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 13px; background: var(--paper); border: 2px solid var(--line); font-size: 1.1rem; flex: none; }
+.speak { display: inline-grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: #e7f5ef; color: var(--teal); font-size: 1.3rem; flex: none; }
+.speak.big { width: 96px; height: 96px; font-size: 2.6rem; box-shadow: 0 5px 0 #b8ded2; }
+.back-link { color: var(--teal); font-weight: 850; padding: 10px 2px; margin: 4px 0; }
+
+/* ---------- home ---------- */
+.hello { padding: 20px; display: grid; gap: 12px; }
+.hello h1 { margin: 0; font-size: 1.6rem; letter-spacing: -.04em; color: var(--navy); }
+.stats { display: flex; flex-wrap: wrap; gap: 8px; }
+.stat { background: #f3f5f9; border-radius: 12px; padding: 6px 10px; font-size: .85rem; font-weight: 750; }
+.bar { height: 10px; background: #edf0f5; border-radius: 99px; overflow: hidden; }
+.bar > span { display: block; height: 100%; background: var(--teal); border-radius: inherit; transition: width .4s; }
+.bar.orange > span { background: var(--orange); }
+.xp-line { display: flex; justify-content: space-between; font-size: .8rem; color: var(--muted); font-weight: 700; margin-bottom: 5px; }
+.actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.action-card { text-align: left; padding: 16px; display: grid; gap: 4px; min-height: 112px; align-content: start; }
+.action-card .big-emoji { font-size: 1.8rem; }
+.action-card strong { font-size: 1.02rem; }
+.action-card span.muted { font-size: .82rem; }
+.action-card.quick { background: var(--navy); color: #fff; border-color: var(--navy); box-shadow: 0 6px 0 var(--navy-deep); }
+.action-card.quick span.muted { color: #c9d3ee; }
+.action-card:disabled { box-shadow: none; opacity: .6; }
+.deck-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.deck-card { text-align: left; padding: 14px; display: grid; gap: 6px; align-content: start; }
+.deck-card .row { display: flex; justify-content: space-between; align-items: center; }
+.deck-card .icon { font-size: 1.9rem; }
+.deck-card h3 { margin: 2px 0 0; font-size: 1rem; line-height: 1.2; }
+.tag { display: inline-block; border-radius: 99px; background: #eaf4f3; color: #08716a; font-size: .72rem; font-weight: 850; padding: 3px 8px; }
+.stars { color: var(--orange); letter-spacing: 1px; font-size: .95rem; }
+.stars .off { color: #d9dee8; }
+
+/* ---------- deck ---------- */
+.deck-head { padding: 20px; display: grid; gap: 14px; }
+.deck-title { display: flex; align-items: center; gap: 14px; }
+.deck-title .icon { font-size: 2.4rem; background: #e7f5ef; border-radius: 16px; width: 64px; height: 64px; display: grid; place-items: center; flex: none; }
+.deck-title h1 { margin: 0; font-size: 1.5rem; letter-spacing: -.03em; color: var(--navy); }
+.two-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.word-list { list-style: none; margin: 0; padding: 0; }
+.word-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--line); }
+.word-row:first-child { border-top: 0; }
+.word-row .emoji { font-size: 1.5rem; width: 32px; text-align: center; flex: none; }
+.word-row .text { flex: 1; min-width: 0; }
+.word-row strong { display: block; }
+.word-row .meaning { color: var(--muted); font-size: .85rem; }
+.dots { display: flex; gap: 3px; flex: none; }
+.dots i { width: 8px; height: 8px; border-radius: 50%; background: #dfe4ec; }
+.dots i.on { background: var(--teal); }
+
+/* ---------- flashcards ---------- */
+.flash { padding: 26px 22px; text-align: center; display: grid; gap: 12px; justify-items: center; min-height: 360px; align-content: center; touch-action: pan-y; }
+.flash .emoji { font-size: 4rem; line-height: 1; }
+.flash .word { font-size: 2.2rem; font-weight: 900; letter-spacing: -.03em; color: var(--navy); }
+.flash .meaning { font-size: 1.1rem; }
+.example { background: #fffaf0; border-left: 5px solid var(--orange); border-radius: 0 14px 14px 0; padding: 10px 14px; text-align: left; font-size: 1rem; }
+.example b { color: var(--navy); }
+.counter { text-align: center; font-weight: 800; color: var(--muted); margin: 14px 0; }
+.nav-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* ---------- quiz ---------- */
+.quiz-top { display: flex; align-items: center; gap: 12px; margin: 6px 0 16px; }
+.quiz-top .bar { flex: 1; height: 14px; }
+.quiz-top .count { font-weight: 850; font-size: .9rem; color: var(--muted); min-width: 44px; text-align: right; }
+.combo { text-align: center; font-weight: 900; color: var(--orange-deep); min-height: 24px; margin: -6px 0 6px; }
+.prompt { padding: 22px 20px; text-align: center; display: grid; gap: 10px; justify-items: center; }
+.prompt .kicker { color: var(--teal); font-weight: 850; text-transform: uppercase; font-size: .76rem; letter-spacing: .09em; }
+.prompt .big { font-size: 2.1rem; font-weight: 900; letter-spacing: -.03em; color: var(--navy); line-height: 1.15; overflow-wrap: anywhere; }
+.prompt .clue { font-size: 1.2rem; font-weight: 700; }
+.prompt .emoji { font-size: 3rem; line-height: 1; }
+.prompt .sentence { font-size: 1.2rem; font-weight: 650; line-height: 1.5; }
+.prompt .sentence .gap { display: inline-block; min-width: 80px; border-bottom: 3px solid var(--orange); }
+.options { display: grid; gap: 10px; margin-top: 16px; }
+.options.words { grid-template-columns: 1fr 1fr; }
+.option { background: var(--paper); border: 2px solid var(--line); border-radius: 16px; padding: 14px 16px; min-height: 60px; font-weight: 750; text-align: left; box-shadow: 0 3px 0 var(--line); transition: transform .1s; }
+.options.words .option { text-align: center; font-size: 1.12rem; }
+.option:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 var(--line); }
+.option.correct { background: var(--good); border-color: var(--good-line); box-shadow: 0 3px 0 var(--good-line); color: var(--good-ink); }
+.option.wrong { background: var(--bad); border-color: var(--bad-line); box-shadow: 0 3px 0 var(--bad-line); color: var(--bad-ink); animation: shake .35s; }
+.option.dim { opacity: .5; }
+.spell-slots { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 18px 0 8px; }
+.slot { width: 40px; height: 50px; border-radius: 11px; border: 2px dashed #c9d2df; display: grid; place-items: center; font-size: 1.4rem; font-weight: 900; text-transform: lowercase; background: var(--paper); }
+.slot.filled { border-style: solid; border-color: var(--navy); color: var(--navy); }
+.slot.space { width: 16px; border: 0; background: none; }
+.slot.fixed { border: 0; background: none; }
+.spell-slots.correct .slot.filled { border-color: var(--good-line); background: var(--good); color: var(--good-ink); }
+.spell-slots.wrong .slot.filled { border-color: var(--bad-line); background: var(--bad); color: var(--bad-ink); animation: shake .35s; }
+.tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 14px 0; }
+.tile { width: 48px; height: 52px; border-radius: 12px; background: var(--orange); box-shadow: 0 4px 0 var(--orange-deep); font-size: 1.4rem; font-weight: 900; color: var(--navy); text-transform: lowercase; }
+.tile:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 var(--orange-deep); }
+.tile.used { visibility: hidden; }
+.spell-tools { display: flex; justify-content: center; gap: 10px; }
+.spell-tools .btn { min-height: 44px; padding: 8px 16px; }
+
+/* ---------- feedback panel ---------- */
+.feedback { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; padding: 18px 16px 22px; border-radius: 24px 24px 0 0; box-shadow: 0 -10px 30px #2030562a; animation: rise .22s ease-out; max-height: 75vh; overflow-y: auto; }
+.feedback.good { background: var(--good); }
+.feedback.bad { background: var(--bad); }
+.feedback-inner { max-width: 608px; margin: 0 auto; display: grid; gap: 12px; }
+.feedback h2 { margin: 0; font-size: 1.35rem; }
+.feedback.good h2 { color: var(--good-ink); }
+.feedback.bad h2 { color: var(--bad-ink); }
+.word-card { background: var(--paper); border-radius: 16px; padding: 14px; display: grid; gap: 8px; }
+.word-card .head { display: flex; align-items: center; gap: 12px; }
+.word-card .head .emoji { font-size: 2rem; }
+.word-card .head strong { font-size: 1.3rem; color: var(--navy); }
+.word-card .head .text { flex: 1; }
+.quiz-spacer { height: 260px; }
+
+/* ---------- results ---------- */
+.results { padding: 26px 20px; text-align: center; display: grid; gap: 10px; justify-items: center; }
+.results .stars { font-size: 2.6rem; letter-spacing: 4px; }
+.results h1 { margin: 0; color: var(--navy); font-size: 1.8rem; letter-spacing: -.03em; }
+.results .score { font-size: 1.1rem; font-weight: 800; }
+.pill-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.pill { background: #fff4e3; color: var(--orange-deep); font-weight: 850; border-radius: 99px; padding: 6px 12px; }
+.stack { display: grid; gap: 10px; margin-top: 16px; }
+
+/* ---------- sheet (players, confirm) ---------- */
+.sheet { position: fixed; inset: 0; z-index: 20; background: #1b284d66; display: flex; align-items: flex-end; justify-content: center; }
+.sheet-body { background: var(--paper); width: 100%; max-width: 640px; border-radius: 24px 24px 0 0; padding: 20px 16px 24px; max-height: 85vh; overflow-y: auto; animation: rise .22s ease-out; display: grid; gap: 14px; }
+.sheet-body h2 { margin: 0; font-size: 1.3rem; color: var(--navy); }
+.player-list { display: grid; gap: 8px; }
+.player-item { display: flex; align-items: center; gap: 10px; border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; text-align: left; width: 100%; font-weight: 800; }
+.player-item.selected { border-color: var(--teal); background: #e9f8f3; }
+.player-item .grow { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.add-row { display: flex; gap: 8px; }
+.add-row input { flex: 1; min-width: 0; border: 2px solid var(--line); border-radius: 14px; padding: 12px; }
+.setting { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 800; }
+.toggle { border: 2px solid var(--line); border-radius: 99px; padding: 8px 16px; font-weight: 850; min-width: 72px; }
+.toggle[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: #fff; }
+.danger { color: var(--bad-ink); font-weight: 800; padding: 10px 0; text-align: left; }
+
+.error { padding: 24px; display: grid; gap: 10px; }
+.error h1 { margin: 0; color: var(--bad-ink); font-size: 1.3rem; }
+.error ul { margin: 0; padding-left: 20px; }
+.error code { background: #f3f5f9; padding: 2px 6px; border-radius: 6px; font-size: .85rem; }
+.center-msg { text-align: center; padding: 80px 0; color: var(--muted); font-weight: 700; }
+
+@keyframes shake { 0%,100% { transform: translateX(0) } 25% { transform: translateX(-6px) } 75% { transform: translateX(6px) } }
+@keyframes rise { from { transform: translateY(40px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes pop { 0% { transform: scale(.6) } 70% { transform: scale(1.12) } 100% { transform: scale(1) } }
+.pop { animation: pop .35s ease-out; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+@media (max-width: 370px) {
+  .options.words, .actions-row, .deck-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <button class="brand" type="button" data-action="home"><span class="logo" aria-hidden="true">Aa</span><span id="brandTitle">Défi Vocabulaire</span></button>
+  <button class="player-chip hidden" type="button" data-action="players" id="playerChip"></button>
+</header>
+<main id="app"><p class="center-msg">Chargement…</p></main>
+<div id="feedback" class="hidden" role="status" aria-live="polite"></div>
+<div id="sheet" class="sheet hidden" role="dialog" aria-modal="true"></div>
+
+<script>
+'use strict';
+/*
+ * Word Quest: a vocabulary game driven by content.json.
+ *
+ *   content.json  the words and settings (edit this to make a new word game)
+ *   index.html    this file: screens, question types and scoring (edit this to change the game)
+ *
+ * Sections below: 1 text, 2 helpers, 3 speech and sound, 4 saved progress, 5 content,
+ * 6 building rounds, 7 screens, 8 quiz flow, 9 players and settings, 10 back button, 11 start.
+ *
+ * When packed as an Android app (tools/build_game.py), window.AndroidShell gives offline
+ * text-to-speech, and window.onShellBack() receives the system back gesture.
+ */
+
+/* ============ 1. Text. content.json "text": { ... } can replace any of these. ============ */
+let TEXT = {
+  hello: 'Hi, {name}!',
+  level: 'Level {n}',
+  xpToNext: '{n} XP to level {next}',
+  streak: '🔥 {n}-day streak',
+  mastered: '⭐ {n} / {total} words mastered',
+  quickPlay: 'Quick play',
+  quickPlayHint: '{n} words from all packs',
+  review: 'Fix mistakes',
+  reviewHint: '{n} words to practise',
+  reviewNone: 'No mistakes yet',
+  packs: 'Word packs',
+  words: '{n} words',
+  learn: '📖 Learn',
+  play: '▶ Play',
+  back: '← Back',
+  next: 'Next →',
+  previous: '← Back',
+  startQuiz: 'Start the quiz ▶',
+  listen: 'Listen',
+  qMeaning: 'What does it mean?',
+  qWord: 'Which word means…',
+  qGap: 'Complete the sentence',
+  qListen: 'Which word do you hear?',
+  qSpell: 'Spell the word',
+  qOpposite: 'What is the opposite of…',
+  clear: 'Clear',
+  skip: "I don't know",
+  correct: ['Correct!', 'Great job!', 'Well done!', 'Brilliant!', 'Yes, that’s it!'],
+  wrong: 'Not quite',
+  answerWas: 'The answer is “{answer}”.',
+  oppositeWas: 'The opposite of “{word}” is “{answer}”.',
+  continue: 'Continue',
+  seeResults: 'See my score',
+  combo: '🔥 {n} in a row!',
+  resultTitle: ['Keep practising!', 'Good try!', 'Well done!', 'Amazing!'],
+  score: '{n} of {total} correct',
+  xpEarned: '+{n} XP',
+  bestCombo: 'Best run: {n}',
+  missedWords: 'Words to practise',
+  playAgain: 'Play again',
+  practiseMissed: 'Practise these words',
+  allPacks: 'All packs',
+  leaveTitle: 'Leave this round?',
+  leaveBody: 'Your answers so far will not be saved.',
+  leave: 'Leave',
+  keepPlaying: 'Keep playing',
+  players: 'Who is playing?',
+  addPlayer: 'Add',
+  newPlayer: 'New player name',
+  sound: 'Sound effects',
+  on: 'On',
+  off: 'Off',
+  resetPlayer: 'Reset {name}’s progress',
+  removePlayer: 'Remove {name}',
+  resetTitle: 'Reset progress?',
+  resetBody: 'This clears every score and star for {name}.',
+  removeTitle: 'Remove player?',
+  removeBody: '{name} and all their progress will be removed.',
+  reset: 'Reset',
+  remove: 'Remove',
+  cancel: 'Cancel',
+  done: 'Done',
+  defaultPlayer: 'Player',
+  loadError: 'The game could not start',
+  previewHint: 'Opened this file straight from disk? Browsers block content.json that way. Preview with: python3 tools/preview.py games/word-quest'
+};
+
+/* ============ 2. Helpers ============ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = (s, vars = {}) => String(s).replace(/\{(\w+)\}/g, (_, k) => k in vars ? vars[k] : '');
+const pickOne = a => a[Math.floor(Math.random() * a.length)];
+const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function dayKey(date = new Date()) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+function starsHtml(n) {
+  return `<span class="stars" aria-label="${n} étoile${n > 1 ? 's' : ''} sur 3">${[1, 2, 3].map(i => i <= n ? '★' : '<span class="off">★</span>').join('')}</span>`;
+}
+/** The example sentence with the word blanked out, or null if the word isn't in it. */
+function wordPattern(word) {
+  return new RegExp(`(?<![\\p{L}])${escRe(word)}(?![\\p{L}])`, 'iu');
+}
+function gapSentence(entry) {
+  return entry.example && wordPattern(entry.word).test(entry.example)
+    ? entry.example.replace(wordPattern(entry.word), '\u0000') : null;
+}
+function exampleHtml(entry) {
+  if (!entry.example) return '';
+  return esc(entry.example).replace(wordPattern(esc(entry.word)), m => `<b>${m}</b>`);
+}
+
+/* ============ 3. Speech and sound ============ */
+let content = null;
+const Speech = {
+  available: () => !!window.AndroidShell || 'speechSynthesis' in window,
+  say(text) {
+    const lang = content?.speechLang || 'en-GB';
+    try {
+      if (window.AndroidShell) return window.AndroidShell.speak(String(text), lang, 0.9);
+      if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(String(text));
+        u.lang = lang;
+        u.rate = 0.9;
+        speechSynthesis.speak(u);
+      }
+    } catch (e) { /* no voice available; the game still works without it */ }
+  }
+};
+
+let audio = null;
+function playNotes(notes, type = 'sine') {
+  if (!state.sound) return;
+  try {
+    audio ||= new (window.AudioContext || window.webkitAudioContext)();
+    let t = audio.currentTime;
+    for (const [freq, dur] of notes) {
+      const osc = audio.createOscillator(), gain = audio.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.12, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      osc.connect(gain).connect(audio.destination);
+      osc.start(t);
+      osc.stop(t + dur + 0.02);
+      t += dur * 0.8;
+    }
+  } catch (e) { /* audio blocked */ }
+}
+const Sound = {
+  good: () => playNotes([[660, 0.12], [990, 0.18]]),
+  bad: () => { playNotes([[220, 0.25]], 'triangle'); try { navigator.vibrate?.(70); } catch (e) {} },
+  done: () => playNotes([[523, 0.12], [659, 0.12], [784, 0.12], [1047, 0.3]])
+};
+
+/* ============ 4. Saved progress (localStorage, per player) ============ */
+let storeKey = 'wordquest';
+let state = { current: '', sound: true, players: {} };
+const newPlayer = () => ({ xp: 0, streak: 0, lastDay: null, decks: {}, words: {} });
+function loadState() {
+  try { state = { ...state, ...JSON.parse(localStorage.getItem(storeKey) || '{}') }; } catch (e) {}
+  state.players ||= {};
+  for (const name of content.players || []) state.players[name] ||= newPlayer();
+  if (!state.current || !state.players[state.current]) {
+    state.current = Object.keys(state.players)[0] || TEXT.defaultPlayer;
+  }
+  state.players[state.current] ||= newPlayer();
+}
+function saveState() {
+  try { localStorage.setItem(storeKey, JSON.stringify(state)); } catch (e) {}
+}
+const me = () => state.players[state.current];
+const wordStat = entry => me().words[entry.key] || { box: 0, seen: 0, wrong: 0 };
+const isMastered = entry => wordStat(entry).box >= 3;
+const needsReview = entry => { const s = wordStat(entry); return s.wrong > 0 && s.box === 0; };
+const levelOf = xp => Math.floor(xp / 100) + 1;
+
+function recordAnswer(entry, correct) {
+  const s = { ...wordStat(entry) };
+  s.seen++;
+  if (correct) s.box = Math.min(5, s.box + 1);
+  else { s.box = 0; s.wrong++; }
+  me().words[entry.key] = s;
+}
+function finishDay() {
+  const p = me(), today = dayKey();
+  if (p.lastDay === today) return;
+  const y = new Date(); y.setDate(y.getDate() - 1);
+  p.streak = p.lastDay === dayKey(y) ? p.streak + 1 : 1;
+  p.lastDay = today;
+}
+
+/* ============ 5. Content ============ */
+let decks = [], allEntries = [];
+const QUESTION_TYPES = ['meaning', 'word', 'gap', 'listen', 'spell', 'opposite'];
+
+function checkContent(c) {
+  const problems = [];
+  if (!c || typeof c !== 'object') return ['content.json must be a JSON object { ... }'];
+  if (!Array.isArray(c.decks) || !c.decks.length) problems.push('"decks" must be a list with at least one deck');
+  const ids = new Set();
+  (c.decks || []).forEach((d, i) => {
+    const where = `deck ${i + 1}${d?.title ? ` (“${d.title}”)` : ''}`;
+    if (!d?.id) problems.push(`${where}: missing "id"`);
+    else if (ids.has(d.id)) problems.push(`${where}: "id" "${d.id}" is used twice`);
+    ids.add(d?.id);
+    if (!d?.title) problems.push(`${where}: missing "title"`);
+    if (!Array.isArray(d?.words) || d.words.length < 4) problems.push(`${where}: needs at least 4 "words"`);
+    (d?.words || []).forEach((w, j) => {
+      if (!w?.word) problems.push(`${where}, word ${j + 1}: missing "word"`);
+      if (!w?.meaning) problems.push(`${where}, word ${j + 1}${w?.word ? ` (“${w.word}”)` : ''}: missing "meaning"`);
+    });
+  });
+  for (const t of c.questionTypes || []) {
+    if (!QUESTION_TYPES.includes(t)) problems.push(`questionTypes: unknown type "${t}" (use ${QUESTION_TYPES.join(', ')})`);
+  }
+  return problems;
+}
+
+async function loadContent() {
+  const res = await fetch('content.fr.json', { cache: 'no-store' });
+  if (!res.ok) throw new Error(`content.json: ${res.status} ${res.statusText}`);
+  let c;
+  try { c = await res.json(); } catch (e) { throw new Error('content.json is not valid JSON: ' + e.message); }
+  const problems = checkContent(c);
+  if (problems.length) throw Object.assign(new Error('content.json has problems'), { problems });
+  content = c;
+  if (c.text) TEXT = { ...TEXT, ...c.text };
+  storeKey = 'wordquest:' + (c.id || 'default');
+  decks = c.decks.map(d => ({
+    ...d,
+    entries: d.words.map(w => ({ ...w, deckId: d.id, key: `${d.id}:${w.word}` }))
+  }));
+  allEntries = decks.flatMap(d => d.entries);
+  for (const e of allEntries) {
+    if (e.example && !gapSentence(e)) console.warn(`"${e.word}": example does not contain the word, so no gap-fill question`);
+  }
+}
+
+/* ============ 6. Building rounds ============ */
+const roundLength = () => Math.max(3, Number(content.roundLength) || 10);
+const deckOf = entry => decks.find(d => d.id === entry.deckId);
+
+/** Pick n entries, favouring words the player has missed or not seen yet. */
+function pickEntries(pool, n) {
+  const weight = e => { const s = wordStat(e); return s.seen === 0 ? 3 : [5, 3, 2, 1, 1, 1][s.box]; };
+  const bag = pool.map(e => ({ e, w: weight(e) }));
+  const out = [];
+  while (out.length < n && bag.length) {
+    let r = Math.random() * bag.reduce((t, b) => t + b.w, 0);
+    const i = bag.findIndex(b => (r -= b.w) <= 0);
+    out.push(bag.splice(i < 0 ? bag.length - 1 : i, 1)[0].e);
+  }
+  return out;
+}
+
+function spellable(word) {
+  const letters = [...word].filter(ch => /\p{L}/u.test(ch));
+  return letters.length >= 2 && letters.length <= 12;
+}
+
+function availableTypes(entry) {
+  const wanted = content.questionTypes?.length ? content.questionTypes : QUESTION_TYPES;
+  return wanted.filter(t =>
+    t === 'meaning' || t === 'word' ||
+    (t === 'gap' && gapSentence(entry)) ||
+    (t === 'listen' && Speech.available()) ||
+    (t === 'spell' && spellable(entry.word)) ||
+    (t === 'opposite' && entry.opposite));
+}
+
+/** Up to n distinct values from other words, same deck first (closer, so harder). */
+function distractors(entry, n, valueOf, prefer = () => true, exclude = []) {
+  const skip = new Set([valueOf(entry), ...exclude].map(v => String(v).toLowerCase()));
+  const own = deckOf(entry).entries.filter(e => e !== entry);
+  const others = allEntries.filter(e => e.deckId !== entry.deckId);
+  const ordered = [...shuffle(own.filter(prefer)), ...shuffle(own.filter(e => !prefer(e))), ...shuffle(others)];
+  const out = [];
+  for (const e of ordered) {
+    const v = valueOf(e), k = String(v).toLowerCase();
+    if (!skip.has(k)) { skip.add(k); out.push(v); }
+    if (out.length === n) break;
+  }
+  return out;
+}
+
+const TYPE_WEIGHT = { meaning: 3, word: 3, gap: 3, listen: 2, spell: 2, opposite: 4 };
+function makeQuestion(entry, previousType) {
+  let types = availableTypes(entry);
+  if (types.length > 1) types = types.filter(t => t !== previousType);
+  let r = Math.random() * types.reduce((t, k) => t + TYPE_WEIGHT[k], 0);
+  const type = types.find(k => (r -= TYPE_WEIGHT[k]) <= 0) || types[0];
+  const q = { type, entry, answer: entry.word };
+  const samePos = e => e.type === entry.type;
+  if (type === 'meaning') {
+    q.answer = entry.meaning;
+    q.options = shuffle([entry.meaning, ...distractors(entry, 3, e => e.meaning)]);
+  } else if (type === 'opposite') {
+    q.answer = entry.opposite;
+    const pool = deckOf(entry).entries.flatMap(e => [e.word, e.opposite]).filter(Boolean);
+    const wrong = shuffle([...new Set(pool.filter(w => w !== entry.word && w !== entry.opposite))]).slice(0, 3);
+    q.options = shuffle([entry.opposite, ...wrong]);
+  } else if (type === 'spell') {
+    q.letters = shuffle([...entry.word].map((ch, i) => ({ ch, i })).filter(x => /\p{L}/u.test(x.ch)));
+    if (q.letters.map(x => x.ch).join('') === [...entry.word].filter(ch => /\p{L}/u.test(ch)).join('')) q.letters.reverse();
+    q.typed = [];
+  } else {
+    q.options = shuffle([entry.word, ...distractors(entry, 3, e => e.word, samePos)]);
+  }
+  return q;
+}
+
+function makeRound(kind, entries, title, deckId = null) {
+  const qs = [];
+  for (const e of entries) qs.push(makeQuestion(e, qs.at(-1)?.type));
+  return { kind, title, deckId, questions: qs, index: 0, correct: 0, combo: 0, bestCombo: 0, xp: 0, missed: [], answered: false };
+}
+
+/* ============ 7. Screens ============ */
+let screen = { name: 'home' };
+let round = null;
+const app = $('app');
+
+function show(name, data = {}) {
+  screen = { name, ...data };
+  hideFeedback();
+  render();
+  window.scrollTo(0, 0);
+}
+
+function render() {
+  renderChip();
+  ({ home: renderHome, deck: renderDeck, learn: renderLearn, quiz: renderQuestion, results: renderResults })[screen.name]();
+}
+
+function renderChip() {
+  const chip = $('playerChip');
+  chip.classList.remove('hidden');
+  chip.innerHTML = `<span class="avatar" aria-hidden="true">${esc([...state.current][0] || '?').toUpperCase()}</span><span class="name">${esc(state.current)}</span><span aria-hidden="true">· ${fmt(TEXT.level, { n: levelOf(me().xp) })}</span>`;
+  chip.setAttribute('aria-label', `${state.current}, ${fmt(TEXT.level, { n: levelOf(me().xp) })}. ${TEXT.players}`);
+}
+
+function renderHome() {
+  const p = me();
+  const mastered = allEntries.filter(isMastered).length;
+  const review = allEntries.filter(needsReview).length;
+  const inLevel = p.xp % 100;
+  app.innerHTML = `
+    <section class="card hello">
+      <h1>${esc(fmt(TEXT.hello, { name: state.current }))}</h1>
+      ${content.subtitle ? `<p class="muted" style="margin:0">${esc(content.subtitle)}</p>` : ''}
+      <div>
+        <div class="xp-line"><span>${esc(fmt(TEXT.level, { n: levelOf(p.xp) }))}</span><span>${esc(fmt(TEXT.xpToNext, { n: 100 - inLevel, next: levelOf(p.xp) + 1 }))}</span></div>
+        <div class="bar orange"><span style="width:${inLevel}%"></span></div>
+      </div>
+      <div class="stats">
+        ${p.streak ? `<span class="stat">${esc(fmt(TEXT.streak, { n: p.streak }))}</span>` : ''}
+        <span class="stat">${esc(fmt(TEXT.mastered, { n: mastered, total: allEntries.length }))}</span>
+      </div>
+    </section>
+    <div class="actions-row">
+      <button type="button" class="card action-card quick" data-action="quick">
+        <span class="big-emoji" aria-hidden="true">⚡</span><strong>${esc(TEXT.quickPlay)}</strong>
+        <span class="muted">${esc(fmt(TEXT.quickPlayHint, { n: Math.min(roundLength(), allEntries.length) }))}</span>
+      </button>
+      <button type="button" class="card action-card" data-action="review" ${review ? '' : 'disabled'}>
+        <span class="big-emoji" aria-hidden="true">🔁</span><strong>${esc(TEXT.review)}</strong>
+        <span class="muted">${esc(review ? fmt(TEXT.reviewHint, { n: review }) : TEXT.reviewNone)}</span>
+      </button>
+    </div>
+    <h2 class="section-title">${esc(TEXT.packs)}</h2>
+    <div class="deck-grid">
+      ${decks.map(d => {
+        const done = d.entries.filter(isMastered).length;
+        return `<button type="button" class="card deck-card" data-action="deck" data-id="${esc(d.id)}">
+          <div class="row"><span class="icon" aria-hidden="true">${esc(d.icon || '📘')}</span>${starsHtml(p.decks[d.id]?.stars || 0)}</div>
+          <h3>${esc(d.title)}</h3>
+          <div class="row"><span class="muted" style="font-size:.8rem">${esc(fmt(TEXT.words, { n: d.entries.length }))}</span>${d.level ? `<span class="tag">${esc(d.level)}</span>` : ''}</div>
+          <div class="bar" aria-hidden="true"><span style="width:${Math.round(100 * done / d.entries.length)}%"></span></div>
+        </button>`;
+      }).join('')}
+    </div>`;
+}
+
+function renderDeck() {
+  const d = decks.find(x => x.id === screen.id);
+  app.innerHTML = `
+    <button type="button" class="back-link" data-action="home">${esc(TEXT.back)}</button>
+    <section class="card deck-head">
+      <div class="deck-title">
+        <span class="icon" aria-hidden="true">${esc(d.icon || '📘')}</span>
+        <div><h1>${esc(d.title)}</h1><div class="muted">${esc(fmt(TEXT.words, { n: d.entries.length }))}${d.level ? ' · ' + esc(d.level) : ''} · ${starsHtml(me().decks[d.id]?.stars || 0)}</div></div>
+      </div>
+      <div class="two-btns">
+        <button type="button" class="btn secondary" data-action="learn" data-id="${esc(d.id)}">${esc(TEXT.learn)}</button>
+        <button type="button" class="btn primary" data-action="play" data-id="${esc(d.id)}">${esc(TEXT.play)}</button>
+      </div>
+    </section>
+    <ul class="card word-list" style="margin-top:14px">
+      ${d.entries.map(e => {
+        const box = Math.min(3, wordStat(e).box);
+        return `<li class="word-row">
+          <span class="emoji" aria-hidden="true">${esc(e.emoji || '')}</span>
+          <span class="text"><strong>${esc(e.word)}</strong><span class="meaning">${esc(e.meaning)}</span></span>
+          <span class="dots" aria-label="${box} of 3">${[1, 2, 3].map(i => `<i class="${i <= box ? 'on' : ''}"></i>`).join('')}</span>
+          ${Speech.available() ? `<button type="button" class="speak" data-action="say" data-text="${esc(e.word)}" aria-label="${esc(TEXT.listen)}: ${esc(e.word)}">🔊</button>` : ''}
+        </li>`;
+      }).join('')}
+    </ul>`;
+}
+
+function wordCardHtml(e) {
+  return `<div class="word-card">
+    <div class="head">
+      ${e.emoji ? `<span class="emoji" aria-hidden="true">${esc(e.emoji)}</span>` : ''}
+      <span class="text"><strong>${esc(e.word)}</strong>${e.type ? ` <span class="tag">${esc(e.type)}</span>` : ''}<br><span>${esc(e.meaning)}</span></span>
+      ${Speech.available() ? `<button type="button" class="speak" data-action="say" data-text="${esc(e.word)}" aria-label="${esc(TEXT.listen)}">🔊</button>` : ''}
+    </div>
+    ${e.example ? `<div class="example">${exampleHtml(e)}</div>` : ''}
+  </div>`;
+}
+
+function renderLearn() {
+  const d = decks.find(x => x.id === screen.id);
+  const i = screen.index, e = d.entries[i], last = i === d.entries.length - 1;
+  app.innerHTML = `
+    <button type="button" class="back-link" data-action="deck" data-id="${esc(d.id)}">${esc(TEXT.back)}</button>
+    <section class="card flash" id="flash">
+      ${e.emoji ? `<span class="emoji" aria-hidden="true">${esc(e.emoji)}</span>` : ''}
+      <span class="word">${esc(e.word)}</span>
+      ${e.type ? `<span class="tag">${esc(e.type)}</span>` : ''}
+      ${Speech.available() ? `<button type="button" class="speak" data-action="say" data-text="${esc(e.word)}" aria-label="${esc(TEXT.listen)}">🔊</button>` : ''}
+      <span class="meaning">${esc(e.meaning)}</span>
+      ${e.example ? `<div class="example">${exampleHtml(e)}</div>` : ''}
+      ${e.opposite ? `<span class="muted">↔ ${esc(e.opposite)}</span>` : ''}
+    </section>
+    <div class="counter">${i + 1} / ${d.entries.length}</div>
+    <div class="nav-row">
+      <button type="button" class="btn secondary" data-action="card" data-step="-1" ${i === 0 ? 'disabled' : ''}>${esc(TEXT.previous)}</button>
+      ${last
+        ? `<button type="button" class="btn primary" data-action="play" data-id="${esc(d.id)}">${esc(TEXT.startQuiz)}</button>`
+        : `<button type="button" class="btn primary" data-action="card" data-step="1">${esc(TEXT.next)}</button>`}
+    </div>`;
+  let startX = null;
+  const flash = $('flash');
+  flash.addEventListener('touchstart', ev => { startX = ev.touches[0].clientX; }, { passive: true });
+  flash.addEventListener('touchend', ev => {
+    if (startX === null) return;
+    const dx = ev.changedTouches[0].clientX - startX;
+    startX = null;
+    if (Math.abs(dx) > 60) stepCard(dx < 0 ? 1 : -1);
+  });
+}
+
+function stepCard(step) {
+  const d = decks.find(x => x.id === screen.id);
+  const index = screen.index + step;
+  if (index >= 0 && index < d.entries.length) show('learn', { id: d.id, index });
+}
+
+function promptHtml(q) {
+  const e = q.entry;
+  const listenBtn = Speech.available() ? `<button type="button" class="speak" data-action="say" data-text="${esc(e.word)}" aria-label="${esc(TEXT.listen)}">🔊</button>` : '';
+  switch (q.type) {
+    case 'meaning':
+      return `<span class="kicker">${esc(TEXT.qMeaning)}</span>${e.emoji ? `<span class="emoji" aria-hidden="true">${esc(e.emoji)}</span>` : ''}<span class="big">${esc(e.word)}</span>${listenBtn}`;
+    case 'word':
+      return `<span class="kicker">${esc(TEXT.qWord)}</span>${e.emoji ? `<span class="emoji" aria-hidden="true">${esc(e.emoji)}</span>` : ''}<span class="clue">“${esc(e.meaning)}”</span>`;
+    case 'gap':
+      return `<span class="kicker">${esc(TEXT.qGap)}</span><span class="sentence">${esc(gapSentence(e)).replace('\u0000', '<span class="gap" aria-label="mot manquant">&nbsp;</span>')}</span>`;
+    case 'listen':
+      return `<span class="kicker">${esc(TEXT.qListen)}</span><button type="button" class="speak big" data-action="say" data-text="${esc(e.word)}" aria-label="${esc(TEXT.listen)}">🔊</button>`;
+    case 'spell':
+      return `<span class="kicker">${esc(TEXT.qSpell)}</span>${e.emoji ? `<span class="emoji" aria-hidden="true">${esc(e.emoji)}</span>` : ''}<span class="clue">“${esc(e.meaning)}”</span>${listenBtn}`;
+    case 'opposite':
+      return `<span class="kicker">${esc(TEXT.qOpposite)}</span><span class="big">${esc(e.word)}</span>${listenBtn}`;
+  }
+}
+
+function spellHtml(q) {
+  const word = [...q.entry.word];
+  let n = 0;
+  const slots = word.map(ch => {
+    if (ch === ' ') return '<span class="slot space"></span>';
+    if (!/\p{L}/u.test(ch)) return `<span class="slot fixed">${esc(ch)}</span>`;
+    const t = q.typed[n++];
+    return t === undefined ? '<span class="slot"></span>'
+      : `<button type="button" class="slot filled" data-action="untype" data-pos="${n - 1}" ${q.result ? 'disabled' : ''}>${esc(q.letters[t].ch)}</button>`;
+  }).join('');
+  return `
+    <div class="spell-slots ${q.result || ''}" id="slots">${slots}</div>
+    <div class="tiles">${q.letters.map((l, i) => `<button type="button" class="tile ${q.typed.includes(i) ? 'used' : ''}" data-action="type" data-i="${i}" ${q.result ? 'disabled' : ''}>${esc(l.ch)}</button>`).join('')}</div>
+    <div class="spell-tools ${q.result ? 'hidden' : ''}">
+      <button type="button" class="btn secondary" data-action="clear">${esc(TEXT.clear)}</button>
+      <button type="button" class="btn secondary" data-action="skip">${esc(TEXT.skip)}</button>
+    </div>`;
+}
+
+function renderQuestion() {
+  const q = round.questions[round.index];
+  const pct = Math.round(100 * round.index / round.questions.length);
+  const wordsLayout = q.type !== 'meaning';
+  app.innerHTML = `
+    <div class="quiz-top">
+      <button type="button" class="icon-btn" data-action="quit" aria-label="${esc(TEXT.leave)}">✕</button>
+      <div class="bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><span style="width:${pct}%"></span></div>
+      <span class="count">${round.index + 1}/${round.questions.length}</span>
+    </div>
+    <div class="combo" aria-live="polite">${round.combo >= 2 ? esc(fmt(TEXT.combo, { n: round.combo })) : ''}</div>
+    <section class="card prompt">${promptHtml(q)}</section>
+    ${q.type === 'spell' ? spellHtml(q) : `
+      <div class="options ${wordsLayout ? 'words' : ''}">
+        ${q.options.map((o, i) => `<button type="button" class="option ${optionClass(q, o)}" data-action="answer" data-i="${i}" ${q.picked !== undefined ? 'disabled' : ''}>${esc(o)}</button>`).join('')}
+      </div>`}
+    <div class="quiz-spacer"></div>`;
+  if (q.type === 'listen' && q.picked === undefined && !q.spoken) {
+    q.spoken = true;
+    setTimeout(() => Speech.say(q.entry.word), 250);
+  }
+}
+
+function optionClass(q, option) {
+  if (q.picked === undefined) return '';
+  if (option === q.answer) return 'correct';
+  if (option === q.picked) return 'wrong';
+  return 'dim';
+}
+
+function renderResults() {
+  const r = round, total = r.questions.length;
+  const stars = r.correct / total >= 0.9 ? 3 : r.correct / total >= 0.7 ? 2 : r.correct / total >= 0.5 ? 1 : 0;
+  r.stars = stars;
+  app.innerHTML = `
+    <section class="card results">
+      <div class="pop">${starsHtml(stars)}</div>
+      <h1>${esc(TEXT.resultTitle[stars] || '')}</h1>
+      <div class="score">${esc(fmt(TEXT.score, { n: r.correct, total }))}</div>
+      <div class="pill-row">
+        <span class="pill">${esc(fmt(TEXT.xpEarned, { n: r.xp }))}</span>
+        ${r.bestCombo >= 2 ? `<span class="pill">${esc(fmt(TEXT.bestCombo, { n: r.bestCombo }))}</span>` : ''}
+      </div>
+    </section>
+    ${r.missed.length ? `<h2 class="section-title">${esc(TEXT.missedWords)}</h2><div style="display:grid;gap:10px">${r.missed.map(wordCardHtml).join('')}</div>` : ''}
+    <div class="stack">
+      ${r.missed.length ? `<button type="button" class="btn primary wide" data-action="practise-missed">${esc(TEXT.practiseMissed)}</button>` : ''}
+      <button type="button" class="btn ${r.missed.length ? 'secondary' : 'primary'} wide" data-action="again">${esc(TEXT.playAgain)}</button>
+      <button type="button" class="btn secondary wide" data-action="home">${esc(TEXT.allPacks)}</button>
+    </div>`;
+}
+
+/* ============ 8. Quiz flow ============ */
+function startRound(kind, deckId = null, entries = null) {
+  let title = TEXT.quickPlay;
+  if (kind === 'deck') {
+    const d = decks.find(x => x.id === deckId);
+    title = d.title;
+    entries = pickEntries(d.entries, Math.min(roundLength(), d.entries.length));
+  } else if (kind === 'quick') {
+    entries = pickEntries(allEntries, Math.min(roundLength(), allEntries.length));
+  } else if (kind === 'review') {
+    title = TEXT.review;
+    entries ||= shuffle(allEntries.filter(needsReview)).slice(0, roundLength());
+  }
+  if (!entries?.length) return show('home');
+  round = makeRound(kind, shuffle(entries), title, deckId);
+  show('quiz');
+}
+
+function answer(picked) {
+  const q = round.questions[round.index];
+  if (q.picked !== undefined || q.result) return;
+  const correct = q.type === 'spell'
+    ? picked.toLowerCase() === [...q.entry.word].filter(ch => /\p{L}/u.test(ch)).join('').toLowerCase()
+    : picked === q.answer;
+  if (q.type === 'spell') q.result = correct ? 'correct' : 'wrong';
+  else q.picked = picked;
+  recordAnswer(q.entry, correct);
+  if (correct) {
+    round.correct++;
+    round.combo++;
+    round.bestCombo = Math.max(round.bestCombo, round.combo);
+    round.xp += 10 + (round.combo >= 3 ? 5 : 0);
+    Sound.good();
+  } else {
+    round.combo = 0;
+    round.missed.push(q.entry);
+    Sound.bad();
+  }
+  saveState();
+  renderQuestion();
+  showFeedback(q, correct);
+}
+
+function showFeedback(q, correct) {
+  const last = round.index === round.questions.length - 1;
+  const e = q.entry;
+  const detail = correct ? '' : q.type === 'opposite'
+    ? fmt(TEXT.oppositeWas, { word: e.word, answer: e.opposite })
+    : fmt(TEXT.answerWas, { answer: q.type === 'meaning' ? e.meaning : e.word });
+  const box = $('feedback');
+  box.className = `feedback ${correct ? 'good' : 'bad'}`;
+  box.innerHTML = `<div class="feedback-inner">
+    <h2>${correct ? '✓ ' + esc(pickOne(TEXT.correct)) : '✗ ' + esc(TEXT.wrong)}</h2>
+    ${detail ? `<div>${esc(detail)}</div>` : ''}
+    ${wordCardHtml(e)}
+    <button type="button" class="btn primary wide" data-action="continue" id="continueBtn">${esc(last ? TEXT.seeResults : TEXT.continue)}</button>
+  </div>`;
+  $('continueBtn').focus({ preventScroll: true });
+}
+
+function hideFeedback() {
+  $('feedback').className = 'hidden';
+  $('feedback').innerHTML = '';
+}
+
+function nextQuestion() {
+  hideFeedback();
+  if (round.index < round.questions.length - 1) {
+    round.index++;
+    renderQuestion();
+    window.scrollTo(0, 0);
+    return;
+  }
+  const p = me();
+  p.xp += round.xp;
+  finishDay();
+  show('results');
+  if (round.kind === 'deck') {
+    const best = p.decks[round.deckId] || { stars: 0, best: 0 };
+    p.decks[round.deckId] = { stars: Math.max(best.stars, round.stars), best: Math.max(best.best, round.correct) };
+  }
+  saveState();
+  renderChip();
+  Sound.done();
+}
+
+function typeLetter(i) {
+  const q = round.questions[round.index];
+  if (q.result || q.typed.includes(i)) return;
+  q.typed.push(i);
+  if (q.typed.length === q.letters.length) answer(q.typed.map(t => q.letters[t].ch).join(''));
+  else renderQuestion();
+}
+
+/* ============ 9. Players and settings ============ */
+function openSheet(html) {
+  const sheet = $('sheet');
+  sheet.innerHTML = `<div class="sheet-body">${html}</div>`;
+  sheet.classList.remove('hidden');
+}
+function closeSheet() {
+  $('sheet').classList.add('hidden');
+  $('sheet').innerHTML = '';
+}
+const sheetOpen = () => !$('sheet').classList.contains('hidden');
+
+let confirmAction = null;
+function ask(title, body, okLabel, onOk) {
+  confirmAction = onOk;
+  openSheet(`<h2>${esc(title)}</h2><p style="margin:0">${esc(body)}</p>
+    <div class="two-btns">
+      <button type="button" class="btn secondary" data-action="close-sheet">${esc(TEXT.cancel)}</button>
+      <button type="button" class="btn primary" data-action="confirm">${esc(okLabel)}</button>
+    </div>`);
+}
+
+function openPlayers() {
+  const names = Object.keys(state.players);
+  openSheet(`
+    <h2>${esc(TEXT.players)}</h2>
+    <div class="player-list">
+      ${names.map(n => `<button type="button" class="player-item ${n === state.current ? 'selected' : ''}" data-action="switch-player" data-name="${esc(n)}">
+        <span class="avatar" aria-hidden="true">${esc([...n][0] || '?').toUpperCase()}</span>
+        <span class="grow">${esc(n)}</span>
+        <span class="muted">${esc(fmt(TEXT.level, { n: levelOf(state.players[n].xp) }))}</span>
+      </button>`).join('')}
+    </div>
+    <form class="add-row" id="addPlayer">
+      <input id="newName" maxlength="24" autocomplete="off" placeholder="${esc(TEXT.newPlayer)}" aria-label="${esc(TEXT.newPlayer)}">
+      <button type="submit" class="btn primary">${esc(TEXT.addPlayer)}</button>
+    </form>
+    <div class="setting"><span>${esc(TEXT.sound)}</span>
+      <button type="button" class="toggle" data-action="toggle-sound" aria-pressed="${state.sound}">${esc(state.sound ? TEXT.on : TEXT.off)}</button>
+    </div>
+    <div>
+      <button type="button" class="danger" data-action="reset-player">${esc(fmt(TEXT.resetPlayer, { name: state.current }))}</button><br>
+      ${names.length > 1 ? `<button type="button" class="danger" data-action="remove-player">${esc(fmt(TEXT.removePlayer, { name: state.current }))}</button>` : ''}
+    </div>
+    <button type="button" class="btn secondary wide" data-action="close-sheet">${esc(TEXT.done)}</button>`);
+  $('addPlayer').addEventListener('submit', ev => {
+    ev.preventDefault();
+    const name = $('newName').value.trim();
+    if (!name) return;
+    state.players[name] ||= newPlayer();
+    state.current = name;
+    saveState();
+    openPlayers();
+    render();
+  });
+}
+
+/* ============ 10. Back button (Android back gesture, and Escape in a browser) ============ */
+function goBack() {
+  if (sheetOpen()) { closeSheet(); return true; }
+  switch (screen.name) {
+    case 'quiz': confirmQuit(); return true;
+    case 'learn': show('deck', { id: screen.id }); return true;
+    case 'deck': case 'results': show('home'); return true;
+    default: return false;
+  }
+}
+function confirmQuit() {
+  const leave = () => { closeSheet(); round.kind === 'deck' ? show('deck', { id: round.deckId }) : show('home'); };
+  if (round.index === 0 && round.questions[0].picked === undefined && !round.questions[0].result) return leave();
+  ask(TEXT.leaveTitle, TEXT.leaveBody, TEXT.leave, leave);
+}
+window.onShellBack = goBack;
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape') goBack(); });
+
+/* ============ 11. Clicks and start-up ============ */
+const actions = {
+  home: () => show('home'),
+  deck: el => show('deck', { id: el.dataset.id }),
+  learn: el => show('learn', { id: el.dataset.id, index: 0 }),
+  card: el => stepCard(Number(el.dataset.step)),
+  play: el => startRound('deck', el.dataset.id),
+  quick: () => startRound('quick'),
+  review: () => startRound('review'),
+  say: el => Speech.say(el.dataset.text),
+  answer: el => answer(round.questions[round.index].options[Number(el.dataset.i)]),
+  type: el => typeLetter(Number(el.dataset.i)),
+  untype: el => { const q = round.questions[round.index]; q.typed.splice(Number(el.dataset.pos), 1); renderQuestion(); },
+  clear: () => { round.questions[round.index].typed = []; renderQuestion(); },
+  skip: () => answer(''),
+  continue: () => nextQuestion(),
+  quit: () => confirmQuit(),
+  again: () => round.kind === 'deck' ? startRound('deck', round.deckId) : startRound(round.kind, null, round.kind === 'review' ? round.questions.map(q => q.entry) : null),
+  'practise-missed': () => startRound('review', null, round.missed),
+  players: () => openPlayers(),
+  'switch-player': el => { state.current = el.dataset.name; saveState(); closeSheet(); show('home'); },
+  'toggle-sound': () => { state.sound = !state.sound; saveState(); openPlayers(); },
+  'reset-player': () => ask(TEXT.resetTitle, fmt(TEXT.resetBody, { name: state.current }), TEXT.reset, () => {
+    state.players[state.current] = newPlayer(); saveState(); closeSheet(); show('home');
+  }),
+  'remove-player': () => ask(TEXT.removeTitle, fmt(TEXT.removeBody, { name: state.current }), TEXT.remove, () => {
+    delete state.players[state.current];
+    state.current = Object.keys(state.players)[0];
+    saveState(); closeSheet(); show('home');
+  }),
+  'close-sheet': () => closeSheet(),
+  confirm: () => { const fn = confirmAction; confirmAction = null; fn?.(); }
+};
+document.addEventListener('click', ev => {
+  const el = ev.target.closest('[data-action]');
+  if (el && !el.disabled && actions[el.dataset.action]) actions[el.dataset.action](el);
+});
+$('sheet').addEventListener('click', ev => { if (ev.target === $('sheet')) closeSheet(); });
+
+function showError(err) {
+  app.innerHTML = `<section class="card error">
+    <h1>${esc(TEXT.loadError)}</h1>
+    ${err.problems ? `<ul>${err.problems.map(p => `<li>${esc(p)}</li>`).join('')}</ul>` : `<p style="margin:0">${esc(err.message)}</p>`}
+    <p class="muted" style="margin:0">${esc(TEXT.previewHint)}</p>
+  </section>`;
+}
+
+(async function start() {
+  try {
+    await loadContent();
+  } catch (err) {
+    console.error(err);
+    return showError(err);
+  }
+  document.title = content.title || document.title;
+  $('brandTitle').textContent = content.title || 'Défi Vocabulaire';
+  loadState();
+  saveState();
+  show('home');
+})();
+</script>
+</body>
+</html>

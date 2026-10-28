@@ -4,6 +4,7 @@ import { compileProject } from "../../code/compiler";
 import { encodeProject } from "../../code/link";
 import type { CodeProject } from "../../code/types";
 import { buildCodePage } from "../../shared/page";
+import { getLang } from "../i18n";
 
 /**
  * How Game Lab projects leave the studio. The main format is one .html "app file":
@@ -11,7 +12,7 @@ import { buildCodePage } from "../../shared/page";
  * again in the studio to keep editing. Also: a link, an Android app, and plain JSON.
  */
 
-export const appFile = (p: CodeProject) => buildCodePage(codeRuntime, p, compileProject(p));
+export const appFile = (p: CodeProject) => buildCodePage(codeRuntime, p, compileProject(p), { lang: getLang() });
 
 export const projectLink = (p: CodeProject) => `${new URL("/c/", window.location.origin).href}#${encodeProject(p)}`;
 

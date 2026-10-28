@@ -3,10 +3,12 @@ import { READING_ACTIVITIES } from "../../shared/normalize";
 import type { Passage, ReadingActivity, ReadingGame } from "../../shared/types";
 import { ACCEPT_TEXT, splitPassages, textFromFile, wordCount } from "../importText";
 import { useApp } from "../store";
+import { t, tn } from "../i18n";
 import { Field, Icon, Modal } from "../ui";
 import { GenerateButton, move, removeAt, replaceAt, Section } from "./common";
 import { QuestionList } from "./QuestionList";
 
+// English; shown through t().
 const ACTIVITY_LABEL: Record<ReadingActivity, string> = {
   questions: "Your questions",
   cloze: "Fill the gaps",
@@ -36,29 +38,29 @@ export function ReadingEditor({ game, onChange }: { game: ReadingGame; onChange:
       if (wordCount(text) > 450) setPending({ title, text });
       else add(splitPassages(title, text, Infinity));
     } catch {
-      toast(`Couldn't read text from ${f.name}`, "error");
+      toast(t("Couldn't read text from {file}", { file: f.name }), "error");
     }
   };
 
   return (
     <>
-      <Section title="Activities">
+      <Section title={t("Activities")}>
         <div className="chips">
           {READING_ACTIVITIES.map((a) => (
             <button key={a} type="button" className={`chip-btn${game.activities.includes(a) ? " on" : ""}`} aria-pressed={game.activities.includes(a)} onClick={() => toggle(a)}>
-              {game.activities.includes(a) && <Icon name="check" size={16} />} {ACTIVITY_LABEL[a]}
+              {game.activities.includes(a) && <Icon name="check" size={16} />} {t(ACTIVITY_LABEL[a])}
             </button>
           ))}
         </div>
       </Section>
 
       <Section
-        title="Texts"
-        count={passages.length > 1 ? `${passages.length} · one per round` : undefined}
+        title={t("Texts")}
+        count={passages.length > 1 ? t("{n} · one per round", { n: passages.length }) : undefined}
         actions={
           <>
             <button type="button" className="btn btn-soft btn-sm" onClick={() => file.current?.click()}>
-              <Icon name="upload" size={16} /> Upload
+              <Icon name="upload" size={16} /> {t("Upload")}
             </button>
             <input
               ref={file}
@@ -80,49 +82,49 @@ export function ReadingEditor({ game, onChange }: { game: ReadingGame; onChange:
               <div className="passage-head">
                 <button type="button" className="passage-toggle" aria-expanded={open === i} onClick={() => setOpen(open === i ? -1 : i)}>
                   <Icon name="book" />
-                  <strong>{p.title || `Text ${i + 1}`}</strong>
+                  <strong>{p.title || t("Text {n}", { n: i + 1 })}</strong>
                   <small>
-                    {wordCount(p.text)} words · {p.questions.length} questions
+                    {tn(wordCount(p.text), "{n} word", "{n} words")} · {tn(p.questions.length, "{n} question", "{n} questions")}
                   </small>
                 </button>
-                <button type="button" className="icon-btn icon-btn-sm" disabled={i === 0} aria-label="Move up" onClick={() => onChange({ ...game, passages: move(passages, i, -1) })}>
+                <button type="button" className="icon-btn icon-btn-sm" disabled={i === 0} aria-label={t("Move up")} onClick={() => onChange({ ...game, passages: move(passages, i, -1) })}>
                   <Icon name="up" size={18} />
                 </button>
-                <button type="button" className="icon-btn icon-btn-sm" aria-label="Delete text" onClick={() => onChange({ ...game, passages: removeAt(passages, i) })}>
+                <button type="button" className="icon-btn icon-btn-sm" aria-label={t("Delete text")} onClick={() => onChange({ ...game, passages: removeAt(passages, i) })}>
                   <Icon name="trash" size={18} />
                 </button>
               </div>
               {open === i && (
                 <div className="passage-body">
-                  <Field label="Title">
+                  <Field label={t("Title")}>
                     <input value={p.title} onChange={(e) => setP(i, { ...p, title: e.target.value })} />
                   </Field>
-                  <Field label="Text">
-                    <textarea rows={12} value={p.text} placeholder="Paste or type the text. Leave a blank line between paragraphs." onChange={(e) => setP(i, { ...p, text: e.target.value })} />
+                  <Field label={t("Text")}>
+                    <textarea rows={12} value={p.text} placeholder={t("Paste or type the text. Leave a blank line between paragraphs.")} onChange={(e) => setP(i, { ...p, text: e.target.value })} />
                   </Field>
                   <div className="section-bar">
-                    <h3 className="sub-head">Questions</h3>
+                    <h3 className="sub-head">{t("Questions")}</h3>
                     <span className="spacer" />
                     <GenerateButton
-                      label="Questions from text"
+                      label={t("Questions from text")}
                       request={{ template: "reading", passage: p, topic: p.title, count: 8 }}
                       onResult={(r) => setP(i, { ...p, questions: [...p.questions, ...(r.questions || [])], glossary: [...p.glossary, ...(r.glossary || []).filter((g) => !p.glossary.some((x) => x.word === g.word))] })}
                     />
                   </div>
                   <QuestionList questions={p.questions} onChange={(questions) => setP(i, { ...p, questions })} />
-                  <h3 className="sub-head">Glossary</h3>
+                  <h3 className="sub-head">{t("Glossary")}</h3>
                   <div className="glossary">
                     {p.glossary.map((w, j) => (
                       <div key={j} className="pair-row">
-                        <input value={w.word} placeholder="word" aria-label="Word" onChange={(e) => setP(i, { ...p, glossary: replaceAt(p.glossary, j, { ...w, word: e.target.value }) })} />
-                        <input value={w.meaning} placeholder="meaning" aria-label="Meaning" onChange={(e) => setP(i, { ...p, glossary: replaceAt(p.glossary, j, { ...w, meaning: e.target.value }) })} />
-                        <button type="button" className="icon-btn icon-btn-sm" aria-label="Remove word" onClick={() => setP(i, { ...p, glossary: removeAt(p.glossary, j) })}>
+                        <input value={w.word} placeholder={t("word")} aria-label={t("Word")} onChange={(e) => setP(i, { ...p, glossary: replaceAt(p.glossary, j, { ...w, word: e.target.value }) })} />
+                        <input value={w.meaning} placeholder={t("meaning")} aria-label={t("Meaning")} onChange={(e) => setP(i, { ...p, glossary: replaceAt(p.glossary, j, { ...w, meaning: e.target.value }) })} />
+                        <button type="button" className="icon-btn icon-btn-sm" aria-label={t("Remove word")} onClick={() => setP(i, { ...p, glossary: removeAt(p.glossary, j) })}>
                           <Icon name="trash" size={16} />
                         </button>
                       </div>
                     ))}
                     <button type="button" className="link-btn" onClick={() => setP(i, { ...p, glossary: [...p.glossary, { word: "", meaning: "" }] })}>
-                      + Word
+                      + {t("Word")}
                     </button>
                   </div>
                 </div>
@@ -132,7 +134,7 @@ export function ReadingEditor({ game, onChange }: { game: ReadingGame; onChange:
         </ol>
         <div className="add-row">
           <button type="button" className="chip-btn" onClick={() => add([{ title: "", text: "", questions: [], glossary: [] }])}>
-            <Icon name="plus" size={16} /> Text
+            <Icon name="plus" size={16} /> {t("Text")}
           </button>
         </div>
       </Section>
@@ -147,28 +149,28 @@ function SplitModal({ pending, onClose, onAdd }: { pending: { title: string; tex
   const parts = splitPassages(pending.title, pending.text, size);
   return (
     <Modal
-      title="A long text"
+      title={t("A long text")}
       onClose={onClose}
       footer={
         <>
           <button className="btn btn-ghost" onClick={() => onAdd(splitPassages(pending.title, pending.text, Infinity))}>
-            Keep as one text
+            {t("Keep as one text")}
           </button>
           <span className="spacer" />
           <button className="btn btn-primary" onClick={() => onAdd(parts)}>
-            Split into {parts.length}
+            {t("Split into {n}", { n: parts.length })}
           </button>
         </>
       }
     >
       <p>
-        {wordCount(pending.text)} words. Shorter parts suit small screens, and each round picks a different part.
+        {t("{n} words. Shorter parts suit small screens, and each round picks a different part.", { n: wordCount(pending.text) })}
       </p>
-      <Field label="Words per part">
+      <Field label={t("Words per part")}>
         <select value={size} onChange={(e) => setSize(Number(e.target.value))}>
           {[150, 200, 300, 400, 600].map((n) => (
             <option key={n} value={n}>
-              about {n}
+              {t("about {n}", { n })}
             </option>
           ))}
         </select>

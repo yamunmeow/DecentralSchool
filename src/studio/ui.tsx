@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, type ReactNode } from "react";
+import { t } from "./i18n";
 
 export function Modal({
   title,
@@ -34,7 +35,7 @@ export function Modal({
       <div className="modal-inner">
         <header className="modal-head">
           <h2 id={titleId}>{title}</h2>
-          <button className="icon-btn" onClick={onClose} aria-label="Close">
+          <button className="icon-btn" onClick={onClose} aria-label={t("Close")}>
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden>
               <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
             </svg>

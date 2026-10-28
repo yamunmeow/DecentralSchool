@@ -47,11 +47,67 @@ export const MATH_KINDS: Record<MathKind, Meta> = {
 
 const NAMES = ["Asha", "Ravi", "Meera", "Kofi", "Lina", "Omar", "Sam", "Mei", "Ana", "Tariq", "Zara", "Arjun", "Nia", "Leo"];
 const THINGS = ["apples", "pencils", "marbles", "stickers", "books", "mangoes", "stamps", "shells", "cards", "beads"];
+// All start with a consonant, so "de" never needs eliding.
+const THINGS_FR = ["pommes", "crayons", "billes", "cahiers", "livres", "mangues", "timbres", "coquillages", "cartes", "perles"];
+
+/** The problems' wording. French follows the player's "tu"; other player languages use English. */
+const EN = {
+  value: (d: string, n: string) => `What is the value of the digit ${d} in ${n}?`,
+  places: ["ones", "tens", "hundreds", "thousands", "ten thousands", "hundred thousands", "millions"],
+  digit: (place: string, n: string) => `Which digit is in the ${place} place of ${n}?`,
+  round: (n: string, p: number) => `Round ${n} to the nearest ${p.toLocaleString("en-US")}.`,
+  mulFirst: (b: number, c: number, a: number) => `Multiply first: ${b} × ${c} = ${b * c}, then add ${a}.`,
+  brackets: (a: number, b: number, c: number) => `Brackets first: ${a} + ${b} = ${a + b}, then × ${c}.`,
+  mulSub: (a: number, b: number, d: number) => `Multiply first: ${a} × ${b} = ${a * b}, then subtract ${d}.`,
+  divFirst: (cq: number, c: number, q: number, a: number) => `Divide first: ${cq} ÷ ${c} = ${q}, then add ${a}.`,
+  fracOf: (f: string, n: number) => `What is ${f} of ${n}?`,
+  common: (d: number, answer: string) => `Common denominator ${d}; answer in lowest terms: ${answer}`,
+  simplify: (f: string) => `Simplify ${f}`,
+  divideBoth: (g: number) => `Divide top and bottom by ${g}.`,
+  percent: (p: number, y: number) => `What is ${p}% of ${y}?`,
+  linear: (add: boolean, b: number, a: number) => `${add ? "Add" : "Subtract"} ${b}, then divide by ${a}.`,
+  rectArea: (l: number, w: number) => `A rectangle is ${l} cm long and ${w} cm wide. What is its area in cm²?`,
+  rectPerimeter: (l: number, w: number) => `A rectangle is ${l} cm long and ${w} cm wide. What is its perimeter in cm?`,
+  square: (l: number) => `A square has sides of ${l} cm. What is its area in cm²?`,
+  triangle: (b: number, h: number) => `A triangle has a base of ${b} cm and a height of ${h} cm. What is its area in cm²?`,
+  time: (add: number, at: string) => `What time is it ${add} minutes after ${at}?`,
+  things: THINGS,
+  gets: (who: string, other: string, a: number, b: number, what: string) => `${who} has ${a} ${what}. ${other} gives ${who} ${b} more. How many ${what} does ${who} have now?`,
+  gave: (who: string, other: string, x: number, y: number, what: string) => `${who} had ${x} ${what} and gave ${y} to ${other}. How many are left?`,
+  bags: (who: string, bags: number, each: number, what: string) => `${who} has ${bags} bags with ${each} ${what} in each. How many ${what} altogether?`,
+  shares: (who: string, total: number, kids: number, what: string) => `${who} shares ${total} ${what} equally between ${kids} friends. How many does each friend get?`,
+};
+
+const FR: typeof EN = {
+  value: (d, n) => `Quelle est la valeur du chiffre ${d} dans ${n}\u00a0?`,
+  places: ["unités", "dizaines", "centaines", "unités de mille", "dizaines de mille", "centaines de mille", "millions"],
+  digit: (place, n) => `Quel est le chiffre des ${place} dans ${n}\u00a0?`,
+  round: (n, p) => `Arrondis ${n} ${({ 10: "à la dizaine la plus proche", 100: "à la centaine la plus proche", 1000: "au millier le plus proche", 10000: "à la dizaine de milliers la plus proche" } as Record<number, string>)[p]}.`,
+  mulFirst: (b, c, a) => `Multiplie d'abord\u00a0: ${b} × ${c} = ${b * c}, puis ajoute ${a}.`,
+  brackets: (a, b, c) => `Les parenthèses d'abord\u00a0: ${a} + ${b} = ${a + b}, puis × ${c}.`,
+  mulSub: (a, b, d) => `Multiplie d'abord\u00a0: ${a} × ${b} = ${a * b}, puis soustrais ${d}.`,
+  divFirst: (cq, c, q, a) => `Divise d'abord\u00a0: ${cq} ÷ ${c} = ${q}, puis ajoute ${a}.`,
+  fracOf: (f, n) => `Combien font les ${f} de ${n}\u00a0?`,
+  common: (d, answer) => `Dénominateur commun\u00a0: ${d}\u00a0; réponse sous forme irréductible\u00a0: ${answer}`,
+  simplify: (f) => `Simplifie ${f}`,
+  divideBoth: (g) => `Divise le numérateur et le dénominateur par ${g}.`,
+  percent: (p, y) => `Combien font ${p}\u00a0% de ${y}\u00a0?`,
+  linear: (add, b, a) => `${add ? "Ajoute" : "Soustrais"} ${b}, puis divise par ${a}.`,
+  rectArea: (l, w) => `Un rectangle mesure ${l} cm de long et ${w} cm de large. Quelle est son aire en cm²\u00a0?`,
+  rectPerimeter: (l, w) => `Un rectangle mesure ${l} cm de long et ${w} cm de large. Quel est son périmètre en cm\u00a0?`,
+  square: (l) => `Un carré a des côtés de ${l} cm. Quelle est son aire en cm²\u00a0?`,
+  triangle: (b, h) => `Un triangle a une base de ${b} cm et une hauteur de ${h} cm. Quelle est son aire en cm²\u00a0?`,
+  time: (add, at) => `Quelle heure est-il ${add} minutes après ${at}\u00a0?`,
+  things: THINGS_FR,
+  gets: (who, other, a, b, what) => `${who} a ${a} ${what}. ${other} lui en donne ${b} de plus. Combien en a ${who} maintenant\u00a0?`,
+  gave: (who, other, x, y, what) => `${who} avait ${x} ${what} et en a donné ${y} à ${other}. Combien en reste-t-il\u00a0?`,
+  bags: (who, bags, each, what) => `${who} a ${bags} sacs contenant chacun ${each} ${what}. Combien de ${what} y a-t-il en tout\u00a0?`,
+  shares: (who, total, kids, what) => `${who} partage ${total} ${what} équitablement entre ${kids} amis. Combien chaque ami en reçoit-il\u00a0?`,
+};
 
 const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : Math.abs(a) || 1);
 const fmt = (n: number) => (n < 0 ? `(−${-n})` : String(n));
 const minus = (n: number) => (n < 0 ? `−${-n}` : String(n));
-const thousands = (n: number) => n.toLocaleString("en-US");
 const frac = (n: number, d: number) => {
   const g = gcd(n, d);
   return d / g === 1 ? String(n / g) : `${n / g}/${d / g}`;
@@ -63,7 +119,12 @@ function range(set: MathSet): [number, number] {
   return lo <= hi ? [lo, hi] : [hi, lo];
 }
 
-export function generate(set: MathSet): Problem {
+export function generate(set: MathSet, lang = "en"): Problem {
+  const fr = lang === "fr";
+  const T = fr ? FR : EN;
+  // French groups thousands with a space and writes decimals with a comma.
+  const thousands = (n: number) => (fr ? n.toLocaleString("fr-FR").replace(/\s/g, "\u00a0") : n.toLocaleString("en-US"));
+  const dec = (n: number) => (fr ? String(n).replace(".", ",") : String(n));
   const [lo, hi] = range(set);
   const num = (prompt: string, answer: number, explain?: string): Problem => ({ prompt, answer: String(answer), pad: "number", explain });
 
@@ -86,9 +147,9 @@ export function generate(set: MathSet): Problem {
     }
     case "mixed": {
       const op = rand(4);
-      if (op < 2) return generate({ ...set, kind: op ? "sub" : "add" });
+      if (op < 2) return generate({ ...set, kind: op ? "sub" : "add" }, lang);
       const small: MathSet = { ...set, min: Math.max(1, Math.min(lo, 10)), max: Math.max(2, Math.min(hi, 12)) };
-      return generate({ ...small, kind: op === 2 ? "mul" : "div" });
+      return generate({ ...small, kind: op === 2 ? "mul" : "div" }, lang);
     }
     case "missing": {
       const a = between(lo, hi), b = between(lo, hi);
@@ -120,40 +181,40 @@ export function generate(set: MathSet): Problem {
     case "place": {
       const n = between(Math.max(10, lo), Math.max(10, hi));
       const digits = String(n).split("").reverse();
-      const places = ["ones", "tens", "hundreds", "thousands", "ten thousands", "hundred thousands", "millions"];
+      const places = T.places;
       const unique = digits.map((d, i) => ({ d, i })).filter(({ d }) => d !== "0" && digits.filter((x) => x === d).length === 1);
       if (unique.length && rand(2)) {
         const { d, i } = pick(unique);
-        return num(`What is the value of the digit ${d} in ${thousands(n)}?`, Number(d) * 10 ** i);
+        return num(T.value(d, thousands(n)), Number(d) * 10 ** i);
       }
       const i = rand(Math.min(digits.length, places.length));
-      return num(`Which digit is in the ${places[i]} place of ${thousands(n)}?`, Number(digits[i]));
+      return num(T.digit(places[i], thousands(n)), Number(digits[i]));
     }
     case "round": {
       const n = between(Math.max(10, lo), Math.max(10, hi));
       const options = [10, 100, 1000, 10000].filter((p) => p < n);
       const p = pick(options.length ? options : [10]);
-      return num(`Round ${thousands(n)} to the nearest ${thousands(p)}.`, Math.round(n / p) * p);
+      return num(T.round(thousands(n), p), Math.round(n / p) * p);
     }
     case "order-ops": {
       const a = between(lo, hi), b = between(lo, hi), c = between(Math.max(1, lo), Math.max(2, hi));
       switch (rand(4)) {
-        case 0: return num(`${a} + ${b} × ${c} = ?`, a + b * c, `Multiply first: ${b} × ${c} = ${b * c}, then add ${a}.`);
-        case 1: return num(`(${a} + ${b}) × ${c} = ?`, (a + b) * c, `Brackets first: ${a} + ${b} = ${a + b}, then × ${c}.`);
+        case 0: return num(`${a} + ${b} × ${c} = ?`, a + b * c, T.mulFirst(b, c, a));
+        case 1: return num(`(${a} + ${b}) × ${c} = ?`, (a + b) * c, T.brackets(a, b, c));
         case 2: {
           const d = Math.min(c, a * b);
-          return num(`${a} × ${b} − ${d} = ?`, a * b - d, `Multiply first: ${a} × ${b} = ${a * b}, then subtract ${d}.`);
+          return num(`${a} × ${b} − ${d} = ?`, a * b - d, T.mulSub(a, b, d));
         }
         default: {
           const q = between(1, 10);
-          return num(`${a} + ${c * q} ÷ ${c} = ?`, a + q, `Divide first: ${c * q} ÷ ${c} = ${q}, then add ${a}.`);
+          return num(`${a} + ${c * q} ÷ ${c} = ?`, a + q, T.divFirst(c * q, c, q, a));
         }
       }
     }
     case "frac-of": {
       const d = pick([2, 3, 4, 5, 6, 8, 10]), m = between(1, d - 1), k = between(Math.max(1, lo), Math.max(1, hi));
       const g = gcd(m, d);
-      return num(`What is ${m / g}/${d / g} of ${k * d}?`, (k * d * m) / d, `${k * d} ÷ ${d / g} × ${m / g}`);
+      return num(T.fracOf(`${m / g}/${d / g}`, k * d), (k * d * m) / d, `${k * d} ÷ ${d / g} × ${m / g}`);
     }
     case "frac-add": {
       const d1 = between(Math.max(2, lo), Math.max(2, hi));
@@ -163,7 +224,7 @@ export function generate(set: MathSet): Problem {
       if (!add && a / b < c / d) [a, b, c, d] = [c, d, a, b];
       const top = add ? a * d + c * b : a * d - c * b;
       const answer = frac(top, b * d);
-      return { prompt: `${a}/${b} ${add ? "+" : "−"} ${c}/${d} = ?`, answer, pad: "fraction", explain: `Common denominator ${(b * d) / gcd(b, d)}; answer in lowest terms: ${answer}` };
+      return { prompt: `${a}/${b} ${add ? "+" : "−"} ${c}/${d} = ?`, answer, pad: "fraction", explain: T.common((b * d) / gcd(b, d), answer) };
     }
     case "frac-simplify": {
       const d = between(Math.max(2, lo), Math.max(2, hi));
@@ -172,7 +233,7 @@ export function generate(set: MathSet): Problem {
       if (gcd(n, d) !== 1) k = 1;
       n *= k;
       const den = d * k;
-      return { prompt: `Simplify ${n}/${den}`, answer: frac(n, den), pad: "fraction", lowest: true, explain: `Divide top and bottom by ${gcd(n, den)}.` };
+      return { prompt: T.simplify(`${n}/${den}`), answer: frac(n, den), pad: "fraction", lowest: true, explain: T.divideBoth(gcd(n, den)) };
     }
     case "decimal": {
       const places = pick([1, 1, 2]);
@@ -181,19 +242,19 @@ export function generate(set: MathSet): Problem {
       const [x, y] = a >= b ? [a, b] : [b, a];
       const add = rand(2) === 0;
       const value = Math.round((add ? x + y : x - y) * f) / f;
-      return { prompt: `${x} ${add ? "+" : "−"} ${y} = ?`, answer: String(value), pad: "number" };
+      return { prompt: `${dec(x)} ${add ? "+" : "−"} ${dec(y)} = ?`, answer: String(value), pad: "number" };
     }
     case "percent": {
       const p = pick([10, 20, 25, 50, 75, 5, 30, 40, 60, 15]);
       const unit = 100 / gcd(p, 100);
       const y = Math.max(unit, Math.round(between(lo, hi) / unit) * unit);
-      return num(`What is ${p}% of ${y}?`, (p * y) / 100, `${y} ÷ 100 × ${p}`);
+      return num(T.percent(p, y), (p * y) / 100, `${y} ÷ 100 × ${p}`);
     }
     case "linear": {
       const x = between(lo, hi), a = between(2, 9), b = between(-12, 12);
       const c = a * x + b;
       const left = b === 0 ? `${a}x` : `${a}x ${b < 0 ? "−" : "+"} ${Math.abs(b)}`;
-      return num(`${left} = ${minus(c)}.  x = ?`, x, `${b < 0 ? "Add" : "Subtract"} ${Math.abs(b)}, then divide by ${a}.`);
+      return num(`${left} = ${minus(c)}.  x = ?`, x, T.linear(b < 0, Math.abs(b), a));
     }
     case "powers": {
       const n = between(Math.max(0, lo), Math.max(1, hi));
@@ -205,12 +266,12 @@ export function generate(set: MathSet): Problem {
     case "area": {
       const l = between(Math.max(1, lo), Math.max(1, hi)), w = between(Math.max(1, lo), Math.max(1, hi));
       switch (rand(4)) {
-        case 0: return num(`A rectangle is ${l} cm long and ${w} cm wide. What is its area in cm²?`, l * w, `${l} × ${w}`);
-        case 1: return num(`A rectangle is ${l} cm long and ${w} cm wide. What is its perimeter in cm?`, 2 * (l + w), `2 × (${l} + ${w})`);
-        case 2: return num(`A square has sides of ${l} cm. What is its area in cm²?`, l * l, `${l} × ${l}`);
+        case 0: return num(T.rectArea(l, w), l * w, `${l} × ${w}`);
+        case 1: return num(T.rectPerimeter(l, w), 2 * (l + w), `2 × (${l} + ${w})`);
+        case 2: return num(T.square(l), l * l, `${l} × ${l}`);
         default: {
           const base = l * 2;
-          return num(`A triangle has a base of ${base} cm and a height of ${w} cm. What is its area in cm²?`, (base * w) / 2, `${base} × ${w} ÷ 2`);
+          return num(T.triangle(base, w), (base * w) / 2, `${base} × ${w} ÷ 2`);
         }
       }
     }
@@ -220,24 +281,24 @@ export function generate(set: MathSet): Problem {
       const total = (h % 12) * 60 + m + add;
       const hh = Math.floor(total / 60) % 12 || 12, mm = total % 60;
       const show = (a: number, b: number) => `${a}:${String(b).padStart(2, "0")}`;
-      return { prompt: `What time is it ${add} minutes after ${show(h, m)}?`, answer: show(hh, mm), pad: "time" };
+      return { prompt: T.time(add, show(h, m)), answer: show(hh, mm), pad: "time" };
     }
     case "word": {
-      const who = pick(NAMES), other = pick(NAMES.filter((n) => n !== who)), what = pick(THINGS);
+      const who = pick(NAMES), other = pick(NAMES.filter((n) => n !== who)), what = pick(T.things);
       const a = between(lo, hi), b = between(lo, hi);
       switch (rand(4)) {
-        case 0: return num(`${who} has ${a} ${what}. ${other} gives ${who} ${b} more. How many ${what} does ${who} have now?`, a + b, `${a} + ${b}`);
+        case 0: return num(T.gets(who, other, a, b, what), a + b, `${a} + ${b}`);
         case 1: {
           const [x, y] = a >= b ? [a, b] : [b, a];
-          return num(`${who} had ${x} ${what} and gave ${y} to ${other}. How many are left?`, x - y, `${x} − ${y}`);
+          return num(T.gave(who, other, x, y, what), x - y, `${x} − ${y}`);
         }
         case 2: {
           const bags = between(2, 10), each = between(2, Math.max(3, Math.min(hi, 12)));
-          return num(`${who} has ${bags} bags with ${each} ${what} in each. How many ${what} altogether?`, bags * each, `${bags} × ${each}`);
+          return num(T.bags(who, bags, each, what), bags * each, `${bags} × ${each}`);
         }
         default: {
           const kids = between(2, 10), each = between(2, Math.max(3, Math.min(hi, 12)));
-          return num(`${who} shares ${kids * each} ${what} equally between ${kids} friends. How many does each friend get?`, each, `${kids * each} ÷ ${kids}`);
+          return num(T.shares(who, kids * each, kids, what), each, `${kids * each} ÷ ${kids}`);
         }
       }
     }

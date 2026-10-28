@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Game } from "../shared/types";
 import { games as table, persist } from "./db";
+import { t } from "./i18n";
 
 interface Toast {
   id: number;
@@ -53,7 +54,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       try {
         await table.put(stamped);
       } catch {
-        toast("Couldn't save in this browser. Is it in private mode?", "error");
+        toast(t("Couldn't save in this browser. Is it in private mode?"), "error");
       }
     },
     [toast],

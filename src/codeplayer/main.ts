@@ -23,6 +23,12 @@ const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls: string, text = "
   return e;
 };
 
+/** The page's language (set by the studio), or the device's on the hosted page. */
+const FR = /^fr/i.test(document.documentElement.lang || navigator.language || "");
+const T = FR
+  ? { start: "Jouer", stop: "Arrêter", full: "Plein écran", broken: "Ce projet n'a pas pu démarrer.", empty: "Ouvre un lien de l'Atelier de jeux envoyé par ton professeur ou un ami." }
+  : { start: "Start", stop: "Stop", full: "Full screen", broken: "This project could not start.", empty: "Open a Game Lab link from your teacher or a friend." };
+
 function start(project: CodeProject, factory: ClassFactory) {
   const style = document.createElement("style");
   style.textContent = leopardCss + css;
@@ -33,14 +39,14 @@ function start(project: CodeProject, factory: ClassFactory) {
 
   const bar = el("header", "cp-bar");
   const flag = el("button", "cp-btn cp-flag");
-  flag.setAttribute("aria-label", "Start");
+  flag.setAttribute("aria-label", T.start);
   flag.innerHTML = `<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M5 3v18" stroke="#2f7d32" stroke-width="2.4" stroke-linecap="round"/><path d="M6 4c4-2 6 2 10 0 2-1 3-1 3-1v9s-1 0-3 1c-4 2-6-2-10 0z" fill="#4cbf56" stroke="#2f7d32" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
   const stop = el("button", "cp-btn cp-stop");
-  stop.setAttribute("aria-label", "Stop");
+  stop.setAttribute("aria-label", T.stop);
   stop.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8z" fill="#ec5959" stroke="#b84848" stroke-width="1.5"/></svg>`;
   const title = el("h1", "cp-title", project.title);
   const full = el("button", "cp-btn", "⛶");
-  full.setAttribute("aria-label", "Full screen");
+  full.setAttribute("aria-label", T.full);
   bar.append(flag, stop, title, full);
 
   const wrap = el("main", "cp-stage-wrap");
@@ -54,7 +60,7 @@ function start(project: CodeProject, factory: ClassFactory) {
   try {
     rp = buildRuntime(project, factory, { onError: (t, m) => console.error(`${t}: ${m}`) });
   } catch (e) {
-    stage.textContent = "This project could not start.";
+    stage.textContent = T.broken;
     console.error(e);
     return;
   }
@@ -110,7 +116,7 @@ if (!document.getElementById("project")) {
     const project = decodeProject(location.hash);
     start(project, factoryFor(project));
   } catch {
-    document.getElementById("app")!.innerHTML = `<p class="cp-empty">Open a Game Lab link from your teacher or a friend.</p>`;
+    document.getElementById("app")!.innerHTML = `<p class="cp-empty">${T.empty}</p>`;
     const s = document.createElement("style");
     s.textContent = css;
     document.head.appendChild(s);

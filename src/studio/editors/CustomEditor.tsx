@@ -1,16 +1,17 @@
 import type { CustomGame } from "../../shared/types";
 import { kb } from "../exporting";
+import { t } from "../i18n";
 import { Icon } from "../ui";
 import { Section } from "./common";
 
 export function CustomEditor({ game, onChange, onAsk }: { game: CustomGame; onChange: (g: CustomGame) => void; onAsk: () => void }) {
   return (
     <Section
-      title="Game code"
+      title={t("Game code")}
       count={game.html ? kb(new Blob([game.html]).size) : undefined}
       actions={
         <button type="button" className="btn btn-soft btn-sm" onClick={onAsk}>
-          <Icon name="sparkle" size={16} /> Ask the assistant
+          <Icon name="sparkle" size={16} /> {t("Ask the assistant")}
         </button>
       }
     >

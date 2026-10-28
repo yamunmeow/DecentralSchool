@@ -6,11 +6,13 @@ import { GameReady } from "../components/GameReady";
 import { PhonePreview } from "../components/PhonePreview";
 import { kv } from "../db";
 import { useApp } from "../store";
+import { t } from "../i18n";
 import { Icon } from "../ui";
 import { PROMPT_KEY } from "./Home";
 
 const GAME_KEY = "ds-assistant-game";
 
+// English; shown through t().
 const SUGGESTIONS = [
   "A times-tables race for class 3 with a 10 second timer",
   "Vocabulary game on fruits and vegetables, English with Hindi translations",
@@ -59,10 +61,10 @@ export function AssistantPage() {
   return (
     <div className="page assistant-page">
       <div className="page-head">
-        <h1>Assistant</h1>
+        <h1>{t("Assistant")}</h1>
         <span className="spacer" />
         <button className="btn btn-ghost btn-sm" onClick={restart}>
-          <Icon name="plus" size={16} /> New chat
+          <Icon name="plus" size={16} /> {t("New chat")}
         </button>
       </div>
       {game && <GameReady game={game} />}
@@ -75,7 +77,7 @@ export function AssistantPage() {
             storageKey={`chat:new:${session}`}
             initial={initial.text}
             draft={initial.draft}
-            suggestions={SUGGESTIONS}
+            suggestions={SUGGESTIONS.map((s) => t(s))}
           />
         </div>
         {game && <PhonePreview game={game} />}
