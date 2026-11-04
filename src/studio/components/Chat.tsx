@@ -23,11 +23,13 @@ interface Props {
   draft?: boolean;
   placeholder?: string;
   suggestions?: string[];
+  /** The teacher asked for a game of their own: the assistant may write it from scratch. */
+  own?: boolean;
 }
 
 const MAX_ATTACH = 12000;
 
-export function Chat({ game, onGame, storageKey, initial, draft, placeholder, suggestions = [] }: Props) {
+export function Chat({ game, onGame, storageKey, initial, draft, placeholder, suggestions = [], own = false }: Props) {
   const ai = useAi();
   const [messages, setMessages] = useState<Message[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -72,17 +74,18 @@ export function Chat({ game, onGame, storageKey, initial, draft, placeholder, su
     const current = gameRef.current;
     // Earlier games are dropped from the history: the current one is in the system prompt.
     const context: Message[] = [
-      { role: "system", content: assistantSystem(current) },
+      { role: "system", content: assistantSystem(current, own) },
       ...next.slice(-16).map((m) => (m.role === "assistant" ? { ...m, content: m.content.replace(/```(game|json|html)[\s\S]*?```/g, "[game written]") } : m)),
     ];
     try {
       const reply = await chat(context, (text) => setStreaming(text), ctrl.signal);
       remember([...next, { role: "assistant", content: reply }]);
-      const parsed = readReply(reply, current);
+      const parsed = readReply(reply, current, own);
       if (parsed.game) {
         if (current) setHistory((h) => [...h, current].slice(-10));
         onGame(parsed.game);
-      } else if (parsed.broken) setError(t("The game in that reply was cut off or malformed. Ask again, or try another model."));
+      } else if (parsed.refused) setError(t("The assistant wrote a new game from scratch instead of using a template. Ask again."));
+      else if (parsed.broken) setError(t("The game in that reply was cut off or malformed. Ask again, or try another model."));
     } catch (e) {
       if ((e as Error).name !== "AbortError") setError(e instanceof AiError ? e.message : t("Something went wrong. Try again."));
       remember(next);
@@ -157,10 +160,10 @@ export function Chat({ game, onGame, storageKey, initial, draft, placeholder, su
               {m.content.length > 600 ? `${m.content.slice(0, 600)}…` : m.content}
             </div>
           ) : (
-            <AssistantBubble key={i} raw={m.content} game={game} canUndo={m === lastReply && history.length > 0} onUndo={undo} />
+            <AssistantBubble key={i} raw={m.content} game={game} own={own} canUndo={m === lastReply && history.length > 0} onUndo={undo} />
           ),
         )}
-        {streaming !== null && <AssistantBubble raw={streaming} game={game} live />}
+        {streaming !== null && <AssistantBubble raw={streaming} game={game} own={own} live />}
       </div>
       {error && (
         <p className="chat-error" role="alert">
@@ -217,8 +220,8 @@ export function Chat({ game, onGame, storageKey, initial, draft, placeholder, su
   );
 }
 
-function AssistantBubble({ raw, game, live, canUndo, onUndo }: { raw: string; game: Game | null; live?: boolean; canUndo?: boolean; onUndo?: () => void }) {
-  const reply = readReply(raw, game);
+function AssistantBubble({ raw, game, own, live, canUndo, onUndo }: { raw: string; game: Game | null; own: boolean; live?: boolean; canUndo?: boolean; onUndo?: () => void }) {
+  const reply = readReply(raw, game, own);
   const wrote = /```(game|json|html)/.test(raw);
   return (
     <div className="bubble bubble-ai">

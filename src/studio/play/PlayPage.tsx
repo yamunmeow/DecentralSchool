@@ -10,7 +10,7 @@ import { download, pageFor, slug } from "../exporting";
 import { SourcePicker, DEFAULT_SOURCE } from "../random/Randomizer";
 import { describe, fetchQuestions, type Source } from "../random/sources";
 import { go, useApp } from "../store";
-import { fromStarter, startersFor, TEMPLATE_INFO } from "../templates";
+import { coverOf, fromStarter, startersFor, TEMPLATE_INFO } from "../templates";
 import { getLang, t } from "../i18n";
 import { Icon, Modal } from "../ui";
 import { PlayerSheet, type Playing, type Show } from "../components/PlayerSheet";
@@ -151,7 +151,6 @@ export function PlayPage({ id }: { id?: string }) {
               blurb={describe(r.source)}
               tags={[t("Quiz"), r.source.kind === "countries" ? t("Works offline") : getLang() === "fr" ? t("In English") : t("Online")]}
               cover={{ emoji: r.emoji }}
-              tint="sky"
               onOpen={() => playRandom(r.title, r.emoji, r.source)}
             />
           ))}
@@ -182,8 +181,7 @@ export function PlayPage({ id }: { id?: string }) {
                 title={game.title}
                 blurb={game.subtitle || summary(game)}
                 tags={[t(tpl.name)]}
-                cover={{ emoji: game.emoji }}
-                tint={game.tint}
+                cover={coverOf(game)}
                 coverExtra={<Critter kind={TEMPLATE_CRITTER[game.template]} color={game.tint} size={56} className="play-critter" />}
                 onOpen={() => playQuick(game)}
                 actions={
@@ -211,7 +209,6 @@ export function PlayPage({ id }: { id?: string }) {
               blurb={t(s.blurb)}
               tags={[t("Game Lab")]}
               cover={{ img: s.thumb(), framed: true }}
-              tint="mint"
               onOpen={() => playCode(s.make())}
               actions={
                 <button className="btn btn-ghost btn-sm" onClick={() => openBlocks(s.make())}>

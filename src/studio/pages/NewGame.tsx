@@ -5,9 +5,9 @@ import { Critter } from "../Critter";
 import { ACCEPT_TEXT, textFromFile } from "../importText";
 import { PALETTE, TEMPLATE_CRITTER } from "../palette";
 import { fromLibrary, LIBRARY, libraryUrl } from "../play/library";
-import { GameTile } from "../components/GameCard";
+import { CoverPicture, GameTile } from "../components/GameCard";
 import { go, useApp } from "../store";
-import { blankGame, fromStarter, startersFor, TEMPLATE_INFO } from "../templates";
+import { blankGame, coverOf, fromStarter, startersFor, TEMPLATE_INFO } from "../templates";
 import { t } from "../i18n";
 import { Icon } from "../ui";
 import { useAi } from "../useAi";
@@ -46,7 +46,7 @@ export function NewGame({ template }: { template?: string }) {
     go(`game/${game.id}`);
   };
 
-  const askFor = (id: Template, name: string) => askAssistant(id === "custom" ? t("Make a game where ") : t(`Make a ${name.toLowerCase()} game about `), true);
+  const askFor = (id: Template, name: string) => (id === "custom" ? askAssistant(t("Make a game where "), true, true) : askAssistant(t(`Make a ${name.toLowerCase()} game about `), true));
 
   /** No AI needed: an HTML game becomes the game as it is; a lesson is read and turned into the template it fits. */
   const take = async (f: File) => {
@@ -149,28 +149,28 @@ export function NewGame({ template }: { template?: string }) {
           const p = PALETTE[tpl.tint];
           return (
             <section id={`t-${tpl.id}`} key={tpl.id} className={`template-card${template === tpl.id ? " is-picked" : ""}`} style={{ "--tint": p.tint, "--ink-t": p.ink, "--deep": p.deep } as CSSProperties}>
-              <header className="template-head">
-                <span className="template-emoji">{tpl.emoji}</span>
-                <div className="grow">
-                  <h2>{t(tpl.name)}</h2>
-                  <p>{t(tpl.blurb)}</p>
+              <div className="play-cover">
+                <CoverPicture cover={coverOf({ template: tpl.id, emoji: tpl.emoji })} />
+                <Critter kind={TEMPLATE_CRITTER[tpl.id]} color={tpl.tint} size={56} className="play-critter" />
+              </div>
+              <div className="template-body">
+                <h2>{t(tpl.name)}</h2>
+                <p>{t(tpl.blurb)}</p>
+                <div className="template-actions">
+                  {tpl.id !== "custom" && (
+                    <button className="btn btn-ghost btn-sm" onClick={() => create(blankGame(tpl.id))}>
+                      <Icon name="plus" size={16} /> {t("Empty")}
+                    </button>
+                  )}
+                  {startersFor(tpl).map((s) => (
+                    <button key={s.title} className="btn btn-ghost btn-sm" onClick={() => create(fromStarter(s))}>
+                      <Icon name="star" size={16} /> {s.title}
+                    </button>
+                  ))}
+                  <button className="btn btn-soft btn-sm" onClick={() => askFor(tpl.id, tpl.name)}>
+                    <Icon name="sparkle" size={16} /> {t("With AI")}
+                  </button>
                 </div>
-                <Critter kind={TEMPLATE_CRITTER[tpl.id]} color={tpl.tint} size={60} />
-              </header>
-              <div className="template-actions">
-                {tpl.id !== "custom" && (
-                  <button className="btn btn-ghost btn-sm" onClick={() => create(blankGame(tpl.id))}>
-                    <Icon name="plus" size={16} /> {t("Empty")}
-                  </button>
-                )}
-                {startersFor(tpl).map((s) => (
-                  <button key={s.title} className="btn btn-ghost btn-sm" onClick={() => create(fromStarter(s))}>
-                    <Icon name="star" size={16} /> {s.title}
-                  </button>
-                ))}
-                <button className="btn btn-soft btn-sm" onClick={() => askFor(tpl.id, tpl.name)}>
-                  <Icon name="sparkle" size={16} /> {t("With AI")}
-                </button>
               </div>
             </section>
           );

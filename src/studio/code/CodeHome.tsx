@@ -88,7 +88,7 @@ export function CodeHome() {
       </div>
       <div className="play-grid">
         {STARTERS.map((s) => (
-          <GameCard key={s.id} title={t(s.title)} blurb={t(s.blurb)} tags={[t("Example")]} cover={{ img: s.thumb(), framed: true }} tint="mint" badge={{ label: t("Open"), icon: "edit" }} onOpen={() => open(s.make())} />
+          <GameCard key={s.id} title={t(s.title)} blurb={t(s.blurb)} tags={[t("Example")]} cover={{ img: s.thumb(), framed: true }} badge={{ label: t("Open"), icon: "edit" }} onOpen={() => open(s.make())} />
         ))}
       </div>
 
@@ -107,7 +107,6 @@ export function CodeHome() {
                 blurb={`${tn(p.sprites.length, "{n} sprite", "{n} sprites")} · ${dateText(p.updated)}`}
                 tags={[t("Game Lab")]}
                 cover={thumb ? { img: svgUrl(costumeSvg(thumb)), framed: true } : { emoji: "🎮" }}
-                tint="mint"
                 href={`#/code/${p.id}`}
                 badge={{ label: t("Open"), icon: "edit" }}
                 actions={

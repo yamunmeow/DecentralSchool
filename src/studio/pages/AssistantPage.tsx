@@ -26,18 +26,22 @@ export function AssistantPage() {
   const [initial] = useState(() => {
     const text = sessionStorage.getItem(PROMPT_KEY) || "";
     const draft = !!sessionStorage.getItem(`${PROMPT_KEY}-draft`);
+    const own = !!sessionStorage.getItem(`${PROMPT_KEY}-own`);
     // Without a key the teacher is about to sign in; keep the idea for when they come back.
     if (getKey()) {
       sessionStorage.removeItem(PROMPT_KEY);
       sessionStorage.removeItem(`${PROMPT_KEY}-draft`);
+      sessionStorage.removeItem(`${PROMPT_KEY}-own`);
     }
     // A new idea from elsewhere starts a new conversation.
     if (text) {
       sessionStorage.removeItem(GAME_KEY);
       sessionStorage.removeItem(`${GAME_KEY}-chat`);
     }
-    return { text, draft };
+    return { text, draft, own };
   });
+  // "Your own game" is the one way in where the assistant writes a game from scratch.
+  const [own, setOwn] = useState(initial.own);
   const [gameId, setGameId] = useState(() => sessionStorage.getItem(GAME_KEY) || "");
   const [session, setSession] = useState(() => sessionStorage.getItem(`${GAME_KEY}-chat`) || String(Date.now()));
   const game = gameId ? byId(gameId) || null : null;
@@ -55,6 +59,7 @@ export function AssistantPage() {
     sessionStorage.removeItem(GAME_KEY);
     kv.remove(`chat:new:${session}`);
     setGameId("");
+    setOwn(false);
     setSession(String(Date.now()));
   };
 
@@ -77,6 +82,7 @@ export function AssistantPage() {
             storageKey={`chat:new:${session}`}
             initial={initial.text}
             draft={initial.draft}
+            own={own}
             suggestions={SUGGESTIONS.map((s) => t(s))}
           />
         </div>

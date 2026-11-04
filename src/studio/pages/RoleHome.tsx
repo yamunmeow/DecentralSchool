@@ -245,7 +245,7 @@ function TeacherHome() {
       <section className="template-row" aria-label={t("Quick game templates")}>
         {TEMPLATE_INFO.map((tpl) => (
           <a key={tpl.id} href={`#/new/${tpl.id}`} className="template-tile" style={{ "--tint": PALETTE[tpl.tint].tint, "--ink-t": PALETTE[tpl.tint].ink } as CSSProperties}>
-            <span className="template-emoji">{tpl.emoji}</span>
+            {tpl.art ? <img className="template-art" src={tpl.art} alt="" width={84} height={58} /> : <span className="template-emoji">{tpl.emoji}</span>}
             <strong>{t(tpl.name)}</strong>
           </a>
         ))}

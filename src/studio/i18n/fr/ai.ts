@@ -42,6 +42,7 @@ export default {
   "The model stopped with an error.": "Le modèle s'est arrêté sur une erreur.",
   "New game": "Nouveau jeu",
   "The game in that reply was cut off or malformed. Ask again, or try another model.": "Le jeu de cette réponse est incomplet ou mal formé. Redemandez, ou essayez un autre modèle.",
+  "The assistant wrote a new game from scratch instead of using a template. Ask again.": "L'assistant a écrit un nouveau jeu de zéro au lieu d'utiliser un modèle. Redemandez.",
   "Something went wrong. Try again.": "Un problème est survenu. Réessayez.",
   "Text from “{file}”:": "Texte de « {file} » :",
   "Couldn't read text from {file}.": "Impossible de lire le texte de {file}.",

@@ -350,6 +350,15 @@
   line-height: 1;
 }
 
+.template-art {
+  width: 58px;
+  height: 40px;
+  object-fit: cover;
+  border: 2px solid var(--paper);
+  border-radius: 10px;
+  box-shadow: 0 6px 14px -8px rgb(0 0 0 / 0.5);
+}
+
 .game-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -470,14 +479,13 @@
   gap: 16px;
 }
 
+/* The same card as a game's: yellow cover with the template's picture, then what it is and how to start. */
 .template-card {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 20px;
   border-radius: var(--r-lg);
   background: var(--paper);
-  border: 1.5px solid var(--line);
+  border: 2px solid var(--line);
   box-shadow: var(--shadow);
   scroll-margin: 90px;
 }
@@ -487,27 +495,19 @@
   box-shadow: 0 0 0 4px var(--tint), var(--shadow-lift);
 }
 
-.template-head {
+.template-body {
   display: flex;
-  align-items: center;
-  gap: 14px;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 20px 20px;
+  flex: 1;
 }
 
-.template-head .template-emoji {
-  flex: none;
-  width: 60px;
-  height: 60px;
-  display: grid;
-  place-items: center;
-  border-radius: 18px;
-  background: var(--tint);
+.template-body h2 {
+  font-size: 1.45rem;
 }
 
-.template-head h2 {
-  font-size: 1.4rem;
-}
-
-.template-head p {
+.template-body p {
   color: var(--ink-2);
   font-size: 0.95rem;
 }
@@ -516,6 +516,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
 }
 
 /* ---------- editor ---------- */
@@ -2094,8 +2096,8 @@
 
 .play-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
 }
 
 /* No overflow clipping, so a card's menus can open past its edge; the cover rounds its own top corners instead. */
@@ -2117,7 +2119,7 @@
   position: relative;
   display: grid;
   place-items: center;
-  height: 168px;
+  height: 232px;
   border: 0;
   border-radius: calc(var(--r-lg) - 2px) calc(var(--r-lg) - 2px) 0 0;
   overflow: hidden;
@@ -2128,27 +2130,23 @@
   text-decoration: none;
 }
 
-.play-cover.is-tinted {
-  background-color: var(--cover);
-}
-
 /* An emoji or a thumbnail, in the same rounded square as an app icon. */
 .play-pic {
   display: grid;
   place-items: center;
-  width: 104px;
-  height: 104px;
-  border-radius: 24px;
+  width: 124px;
+  height: 124px;
+  border-radius: 28px;
   background: var(--paper);
   box-shadow: 0 12px 28px -12px rgb(0 0 0 / 0.45);
-  font-size: 3.4rem;
+  font-size: 4rem;
   line-height: 1;
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .play-pic img {
-  width: 84px;
-  height: 84px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
   border-radius: 0;
   box-shadow: none;
@@ -2175,11 +2173,26 @@
 }
 
 .play-cover img {
-  width: 104px;
-  height: 104px;
-  border-radius: 24px;
+  width: 124px;
+  height: 124px;
+  border-radius: 28px;
   box-shadow: 0 12px 28px -12px rgb(0 0 0 / 0.45);
   transition: transform 0.2s ease;
+}
+
+/* A game's own picture: a painted scene, framed like a photo stuck on the cover, above the Play badge. */
+.play-cover .play-art {
+  align-self: start;
+  margin-top: 14px;
+  width: auto;
+  height: 160px;
+  max-width: calc(100% - 40px);
+  aspect-ratio: 840 / 576;
+  object-fit: cover;
+  border: 5px solid var(--paper);
+  border-radius: 22px;
+  box-shadow: 0 16px 30px -14px rgb(0 0 0 / 0.5);
+  transform: rotate(-2deg);
 }
 
 .play-cover:hover img {
@@ -2210,7 +2223,7 @@
 }
 
 .play-body h3 {
-  font-size: 1.35rem;
+  font-size: 1.45rem;
 }
 
 .play-body p {
@@ -2565,6 +2578,7 @@
 .quiz-tile img,
 .quiz-emoji,
 .template-emoji,
+.template-art,
 .game-emoji,
 .mini-pic img,
 .mode-card .zo-pic,
@@ -2585,8 +2599,13 @@
   transform: scale(1.08) rotate(-4deg);
 }
 
+.play-card:hover .play-cover .play-art {
+  transform: scale(1.04) rotate(1.5deg);
+}
+
 .quiz-tile:hover .quiz-emoji,
 .template-tile:hover .template-emoji,
+.template-tile:hover .template-art,
 .game-card:hover .game-emoji,
 .belief:hover .icon {
   transform: rotate(-10deg) scale(1.15);

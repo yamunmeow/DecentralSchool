@@ -60,7 +60,7 @@ export default {
   "Add 10 more questions": "Ajoutez 10 questions de plus",
   "Make it harder": "Rendez-le plus difficile",
   "Translate it into Hindi": "Traduisez-le en anglais",
-  "Turn this into a custom game with a race": "Transformez-le en jeu personnalisé avec une course",
+  "Add a 10 second timer": "Ajoutez un minuteur de 10 secondes",
   "Change emoji": "Changer l'emoji",
   "Any emoji": "Autre emoji",
   Look: "Apparence",

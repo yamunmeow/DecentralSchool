@@ -15,8 +15,8 @@ const GRAMMAR_FORMAT = `         { "type": "fix", "text": "sentence with exactly
          { "type": "judge", "text": "sentence", "correct": true | false, "fix": "corrected sentence if false", "explain": "..." }
          { "type": "unscramble", "text": "a correct sentence (shown shuffled)" }`;
 
-const SCHEMA = `GAME FORMAT (JSON). Every game has:
-  "template": "quiz" | "math" | "balloon" | "grammar" | "vocab" | "reading" | "custom"
+const schema = (own: boolean) => `GAME FORMAT (JSON). Every game has:
+  "template": "quiz" | "math" | "balloon" | "grammar" | "vocab" | "reading"${own ? ' | "custom"' : ""}
   "title": short title; "subtitle": optional one line; "emoji": one emoji
   "tint": "lilac" | "sky" | "peach" | "mint" | "lemon" | "sage" | "rose" | "sand"
   "settings": { "round": questions per round (default 10), "timer": seconds per question, 0 = none,
@@ -29,37 +29,52 @@ ${QUESTION_FORMAT}
 
 quiz:    { "questions": [question, ...] }
 math:    { "sets": [{ "kind": K, "min": n, "max": n, "weight": 1-5 }], "answer": "type" | "choose", "questions": [question, ...] }
-         Problems are generated fresh each round from "sets". K is one of:
+         Problems are generated fresh each round from "sets". min and max limit each number in a problem, not
+         the answer: for additions with answers up to 20, use "add" with max 10. K is one of:
          ${Object.entries(MATH_KINDS).map(([k, m]) => `${k} (${m.label}; min/max = ${m.range.join("/").toLowerCase()}; e.g. ${m.example})`).join("\n         ")}
          Use "questions" only for topic-specific word problems the generators can't make.
-balloon: the math fields plus "speed": 1 (gentle) | 2 | 3 (fast). A cannon game: each right answer loads a
-         cannonball, the student fires at balloons coming down, and "round" is the number of balloons.
+balloon: { "sets": [...], "answer": "type" | "choose", "questions": [...], "speed": 1 (gentle) | 2 | 3 (fast) }
+         The same "sets" and "questions" as math, at the top level of the game (not inside a "math" object).
+         A cannon game: each right answer loads a cannonball, the student fires at balloons coming down,
+         and "round" is the number of balloons.
 grammar: { "items": [item, ...] } where item is one of
 ${GRAMMAR_FORMAT}
 vocab:   { "words": [{ "word", "meaning", "example": "sentence containing the word exactly", "emoji", "opposite", "translation" }],
            "modes": any of ["meaning", "word", "gap", "spell", "listen", "opposite", "translate", "pairs"] }
 reading: { "passages": [{ "title", "text": "paragraphs separated by blank lines", "questions": [question, ...], "glossary": [{ "word", "meaning" }] }],
            "activities": any of ["questions", "cloze", "sequence", "truefalse", "glossary"] }
-         One passage is picked per round. cloze, sequence and truefalse are made automatically from the text.
-custom:  { "html": "a complete single-file HTML game" }`;
+         One passage is picked per round. cloze, sequence and truefalse are made automatically from the text.${own ? '\ncustom:  { "html": "a complete single-file HTML game" }' : ""}`;
+
+/** When each ready-made template is the right one. */
+const CHOOSING = `Every game is built from one of these ready-made templates. Each already has its own screens, animations and sounds; you only choose the template and write what goes in it. Never write HTML or code.
+  balloon: adding and subtracting, and other quick number drills (times tables, mental maths), as an action game: each right answer loads a cannon that pops falling balloons. Always use it for adding and subtracting, at any age, unless the teacher asks for a game without the cannon.
+  math:    maths beyond quick sums: fractions, decimals, percentages, time, area, algebra, word problems.
+  quiz:    facts on any subject: multiple choice, true/false, short answers, ordering and matching (memory or matching games too).
+  grammar: spotting and fixing mistakes, gap fills, unscrambling sentences.
+  vocab:   learning words: meanings, spelling, listening, opposites, translations.
+  reading: a text to read, then questions about it.
+If the idea doesn't fit one exactly (a race, a board game, a puzzle), use the closest template and say in one short sentence which one you used.`;
 
 const RULES = `RULES
 - Facts and answers must be correct and unambiguous; exactly one option is right.
 - Make the bank bigger than one round (about 2-3x "round") so each round differs.
 - Suit the age, level and language the teacher asks for. Write the game in that language and set "speech" and "ui" to match.
-- Keep explanations to one short sentence that teaches why.
-- For "custom" games: one self-contained HTML document, inline CSS and JS only. No external files, fonts, images, CDNs or network requests (the network is switched off when it runs). No frameworks. Portrait phone first (360 px wide), big touch targets, readable on cheap Android phones, playable in 2-5 minutes, randomised each play, with a clear score and a "Play again" button. Use emoji or CSS/SVG for pictures. Wrap any localStorage use in try/catch. Keep it under 40 KB.`;
+- Keep explanations to one short sentence that teaches why.`;
 
-export function assistantSystem(game: Game | null): string {
+const CUSTOM_RULES = `- For "custom" games: one self-contained HTML document, inline CSS and JS only. No external files, fonts, images, CDNs or network requests (the network is switched off when it runs). No frameworks. Portrait phone first (360 px wide), big touch targets, readable on cheap Android phones, playable in 2-5 minutes, randomised each play, with a clear score and a "Play again" button. Use emoji or CSS/SVG for pictures. Wrap any localStorage use in try/catch. Keep it under 40 KB.`;
+
+/** `own`: the teacher asked for a game of their own ("Your own game"), the one time the assistant writes HTML. */
+export function assistantSystem(game: Game | null, own = false): string {
+  const custom = own || game?.template === "custom";
   return `You are the game designer inside DecentralSchool, a tool teachers use to make short, private, offline learning games that students play on cheap phones. Help the teacher try out their own teaching ideas.
 
 When you create or change a game, reply with one or two short sentences, then the COMPLETE game JSON (not a diff) in one fenced block that starts with \`\`\`game and ends with \`\`\`. Don't repeat the JSON outside the block. If the teacher only asks a question, answer briefly without a block. Ask a question back only if you truly can't make something sensible; otherwise make reasonable choices and say what they were.
 
-Pick the template that fits: quiz, math, balloon (maths as a cannon game), grammar, vocab or reading when the idea fits them (they randomise and track mistakes); "custom" when the teacher wants a different kind of game (a race, a puzzle, a simulation, a board game).
+${custom ? `This is the teacher's own game, written from scratch as "custom": one HTML document.` : CHOOSING}
 
-${SCHEMA}
+${schema(custom)}
 
-${RULES}
+${RULES}${custom ? `\n${CUSTOM_RULES}` : ""}
 ${getLang() === "fr" ? '- The teacher uses the studio in French. Reply in French. Unless they ask for another language, write games in French with "speech": "fr-FR" and "ui": "fr", using French typography.\n' : ""}${game ? `\nTHE CURRENT GAME (change this one unless the teacher asks for a new game):\n\`\`\`game\n${JSON.stringify(strip(game))}\n\`\`\`` : ""}`;
 }
 
@@ -102,9 +117,11 @@ export interface Reply {
   broken?: boolean;
   /** Still inside an unfinished block (while streaming). */
   writing?: boolean;
+  /** The block was a game written from scratch where a template was asked for. */
+  refused?: boolean;
 }
 
-export function readReply(raw: string, current: Game | null): Reply {
+export function readReply(raw: string, current: Game | null, own = false): Reply {
   let game: Game | undefined;
   let broken = false;
   let writing = false;
@@ -121,14 +138,31 @@ export function readReply(raw: string, current: Game | null): Reply {
       } else {
         const parsed = looseJson(body) as Record<string, unknown>;
         if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("not a game");
-        game = normalize({ ...parsed, settings: { ...(current?.settings || gameDefaults()), ...((parsed.settings as object) || {}) } }, keepOf(current));
+        // Smaller models sometimes nest the content under the template's name, or a balloon game's under "math".
+        const nested = [String(parsed.template), "math"].map((k) => parsed[k]).find((v) => v && typeof v === "object" && !Array.isArray(v)) as object | undefined;
+        game = normalize({ ...parsed, ...nested, settings: { ...(current?.settings || gameDefaults()), ...((parsed.settings as object) || {}) } }, keepOf(current));
+        if (isEmpty(game)) throw new Error("nothing to play");
       }
     } catch {
       broken = true;
     }
     return "";
   });
+  if (game?.template === "custom" && !own && current?.template !== "custom") return { text: text.trim(), refused: true, writing };
   return { text: text.trim(), game, broken, writing };
+}
+
+/** A game the student couldn't play: nothing to ask. */
+function isEmpty(g: Game): boolean {
+  switch (g.template) {
+    case "quiz": return !g.questions.length;
+    case "math":
+    case "balloon": return !g.sets.length && !g.questions.length;
+    case "grammar": return !g.items.length;
+    case "vocab": return !g.words.length;
+    case "reading": return !g.passages.length;
+    case "custom": return !g.html.trim();
+  }
 }
 
 const keepOf = (g: Game | null) => (g ? { id: g.id, created: g.created, app: g.app } : undefined);

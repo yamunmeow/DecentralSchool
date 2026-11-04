@@ -136,7 +136,7 @@ export function Editor({ id, tab }: { id: string; tab?: string }) {
                 flush();
               }}
               storageKey={`chat:${game.id}`}
-              suggestions={(game.template === "custom" ? ["Make it easier for younger students", "Add a timer and a high score"] : ["Add 10 more questions", "Make it harder", "Translate it into Hindi", "Turn this into a custom game with a race"]).map((s) => t(s))}
+              suggestions={(game.template === "custom" ? ["Make it easier for younger students", "Add a timer and a high score"] : ["Add 10 more questions", "Make it harder", "Translate it into Hindi", "Add a 10 second timer"]).map((s) => t(s))}
             />
           </aside>
         )}

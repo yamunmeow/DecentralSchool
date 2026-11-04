@@ -14,7 +14,7 @@ import { TEMPLATE_CRITTER } from "../palette";
 import { Critter } from "../Critter";
 import { getName, useRole } from "../role";
 import { go, useApp } from "../store";
-import { TEMPLATE_INFO } from "../templates";
+import { coverOf, TEMPLATE_INFO } from "../templates";
 import { Empty, Field, Icon, Modal } from "../ui";
 import { cleanGame, cleanProject, decide, fameGame, forReview, mine, send, wall, withdraw, type FameCard, type ForReview, type Kind, type Status, type Submission } from "./api";
 import { printCertificate } from "./certificate";
@@ -243,8 +243,7 @@ function FameGameCard({ g, onPlay, onKeep }: { g: FameCard; onPlay: () => void; 
       title={g.title}
       blurb={g.blurb}
       tags={[tag, t("by {name}", { name: g.credit }), ...(g.school ? [g.school] : [])]}
-      cover={g.kind === "lab" ? (g.thumb ? { img: g.thumb, framed: true } : { emoji: "🎮" }) : { emoji: g.emoji || "⭐" }}
-      tint={tint}
+      cover={g.kind === "lab" ? (g.thumb ? { img: g.thumb, framed: true } : { emoji: "🎮" }) : coverOf({ template: g.tag, emoji: g.emoji })}
       coverExtra={g.kind === "quick" && TEMPLATE_CRITTER[g.tag] ? <Critter kind={TEMPLATE_CRITTER[g.tag]} color={tint} size={56} className="play-critter" /> : undefined}
       onOpen={onPlay}
       actions={

@@ -16,7 +16,8 @@
     "auth:schema": "node scripts/auth-schema.ts",
     "library": "node scripts/import-games.mjs",
     "i18n": "node scripts/i18n-check.mjs",
-    "sprites": "node scripts/balloon-sprites.mjs"
+    "sprites": "node scripts/balloon-sprites.mjs",
+    "thumbs": "node scripts/thumbs.mjs"
   },
   "dependencies": {
     "@blockly/continuous-toolbox": "^13.4.0",

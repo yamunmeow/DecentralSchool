@@ -1,21 +1,17 @@
-import type { CSSProperties, ReactNode } from "react";
-import type { Tint } from "../../shared/types";
+import type { ReactNode } from "react";
 import { t } from "../i18n";
-import { PALETTE } from "../palette";
 import { Icon } from "../ui";
 
 type IconName = Parameters<typeof Icon>[0]["name"];
 
-/** What sits on the cover: an emoji or a thumbnail in a white square, or an app icon as it is. */
-export type Cover = { emoji: string } | { img: string; framed?: boolean };
+/** What sits on the cover: an emoji or a thumbnail in a white square, an app icon as it is, or a game's own picture (public/thumbs). */
+export type Cover = { emoji: string } | { img: string; framed?: boolean } | { art: string };
 
 interface CardProps {
   title: string;
   blurb?: ReactNode;
   tags?: string[];
   cover: Cover;
-  /** Cover colour; without one the cover is the brand yellow with doodles. */
-  tint?: Tint;
   /** Something extra on the cover, such as the game's critter. */
   coverExtra?: ReactNode;
   /** The cover's main action: a link, or a button. */
@@ -26,10 +22,9 @@ interface CardProps {
   className?: string;
 }
 
-/** The card every game on the site is shown in: a cover to open it, then title, blurb, tags and actions. */
-export function GameCard({ title, blurb, tags = [], cover, tint, coverExtra, href, onOpen, badge, actions, className = "" }: CardProps) {
+/** The card every game on the site is shown in: a brand-yellow cover with doodles to open it, then title, blurb, tags and actions. */
+export function GameCard({ title, blurb, tags = [], cover, coverExtra, href, onOpen, badge, actions, className = "" }: CardProps) {
   badge ??= { label: t("Play"), icon: "play" };
-  const style = tint ? ({ "--cover": PALETTE[tint].tint } as CSSProperties) : undefined;
   const inner = (
     <>
       <CoverPicture cover={cover} />
@@ -43,11 +38,11 @@ export function GameCard({ title, blurb, tags = [], cover, tint, coverExtra, hre
   return (
     <article className={`play-card${className ? ` ${className}` : ""}`}>
       {href ? (
-        <a className={`play-cover${tint ? " is-tinted" : ""}`} href={href} style={style} aria-label={label}>
+        <a className="play-cover" href={href} aria-label={label}>
           {inner}
         </a>
       ) : (
-        <button type="button" className={`play-cover${tint ? " is-tinted" : ""}`} onClick={onOpen} style={style} aria-label={label}>
+        <button type="button" className="play-cover" onClick={onOpen} aria-label={label}>
           {inner}
         </button>
       )}
@@ -69,7 +64,8 @@ export function GameCard({ title, blurb, tags = [], cover, tint, coverExtra, hre
   );
 }
 
-function CoverPicture({ cover }: { cover: Cover }) {
+export function CoverPicture({ cover }: { cover: Cover }) {
+  if ("art" in cover) return <img className="play-art" src={cover.art} alt="" width={252} height={173} />;
   if ("emoji" in cover)
     return (
       <span className="play-pic" aria-hidden>

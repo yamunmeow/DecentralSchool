@@ -1,6 +1,7 @@
 import { DEFAULT_SETTINGS, normalize } from "../shared/normalize";
 import type { Game, Template, Tint } from "../shared/types";
 import { getLang, t } from "./i18n";
+import type { Cover } from "./components/GameCard";
 import { STARTERS_FR } from "./templates.fr";
 
 export interface Starter {
@@ -15,6 +16,8 @@ export interface TemplateInfo {
   emoji: string;
   tint: Tint;
   blurb: string;
+  /** The picture on its games' cards (public/thumbs, made by scripts/thumbs.mjs); without one, the emoji. */
+  art?: string;
   starters: Starter[];
 }
 
@@ -140,6 +143,7 @@ export const TEMPLATE_INFO: TemplateInfo[] = [
     emoji: "🎈",
     tint: "sky",
     blurb: "Right answers load the cannon; fire to pop the balloons before they land.",
+    art: "/thumbs/balloon.webp",
     starters: [
       {
         title: "Add and subtract to 20",
@@ -314,6 +318,12 @@ export const TEMPLATE_INFO: TemplateInfo[] = [
 
 export const templateInfo = (id: Template) => TEMPLATE_INFO.find((t) => t.id === id)!;
 
+/** A game's card picture: its template's art, or else the game's own emoji. */
+export const coverOf = (game: { template: string; emoji?: string }): Cover => {
+  const art = TEMPLATE_INFO.find((t) => t.id === game.template)?.art;
+  return art ? { art } : { emoji: game.emoji || "⭐" };
+};
+
 /** Example games in the studio's language. */
 export const startersFor = (info: TemplateInfo): Starter[] => (getLang() === "fr" ? STARTERS_FR[info.id] : info.starters);
 
@@ -323,7 +333,7 @@ export function blankGame(template: Template): Game {
   const extra: Record<Template, object> = {
     quiz: { questions: [] },
     math: { sets: [{ kind: "add", min: 1, max: 20, weight: 1 }], answer: "type", questions: [] },
-    balloon: { sets: [{ kind: "add", min: 1, max: 20, weight: 1 }], answer: "type", questions: [], speed: 1 },
+    balloon: { sets: [{ kind: "add", min: 1, max: 20, weight: 1 }, { kind: "sub", min: 1, max: 20, weight: 1 }], answer: "type", questions: [], speed: 1 },
     grammar: { items: [] },
     vocab: { words: [], modes: ["meaning", "word", "gap", "spell"] },
     reading: { passages: [], activities: ["questions", "cloze", "sequence"] },

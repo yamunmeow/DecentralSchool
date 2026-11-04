@@ -6,7 +6,7 @@ import { GameCard } from "../components/GameCard";
 import { duplicate, forImport, gamesFromText, summary } from "../gameio";
 import { PALETTE, TEMPLATE_CRITTER } from "../palette";
 import { go, useApp } from "../store";
-import { TEMPLATE_INFO, templateInfo } from "../templates";
+import { coverOf, TEMPLATE_INFO, templateInfo } from "../templates";
 import { Empty, Field, Icon, Modal } from "../ui";
 import { useAi } from "../useAi";
 import { useRole } from "../role";
@@ -18,10 +18,12 @@ export const PROMPT_KEY = "ds-assistant-prompt";
  * Hand an idea to the assistant. Without an AI connection yet, the teacher signs in to
  * OpenRouter first and comes straight back to the assistant with the idea waiting.
  */
-export function askAssistant(idea: string, draft = false) {
+export function askAssistant(idea: string, draft = false, own = false) {
   sessionStorage.setItem(PROMPT_KEY, idea);
   if (draft) sessionStorage.setItem(`${PROMPT_KEY}-draft`, "1");
   else sessionStorage.removeItem(`${PROMPT_KEY}-draft`);
+  if (own) sessionStorage.setItem(`${PROMPT_KEY}-own`, "1");
+  else sessionStorage.removeItem(`${PROMPT_KEY}-own`);
   if (getKey()) return go("assistant");
   window.location.hash = "#/assistant";
   void signIn();
@@ -69,7 +71,7 @@ export function Home() {
       <section className="template-row" aria-label={t("Templates")}>
         {TEMPLATE_INFO.map((tpl) => (
           <a key={tpl.id} href={`#/new/${tpl.id}`} className="template-tile" style={{ "--tint": PALETTE[tpl.tint].tint, "--ink-t": PALETTE[tpl.tint].ink } as CSSProperties}>
-            <span className="template-emoji">{tpl.emoji}</span>
+            {tpl.art ? <img className="template-art" src={tpl.art} alt="" width={84} height={58} /> : <span className="template-emoji">{tpl.emoji}</span>}
             <strong>{t(tpl.name)}</strong>
           </a>
         ))}
@@ -111,8 +113,7 @@ function MyGameCard({ game }: { game: Game }) {
         title={game.title}
         blurb={summary(game)}
         tags={[t(info.name)]}
-        cover={{ emoji: game.emoji }}
-        tint={game.tint}
+        cover={coverOf(game)}
         coverExtra={<Critter kind={TEMPLATE_CRITTER[game.template]} color={game.tint} size={56} className="play-critter" />}
         href={`#/game/${game.id}`}
         badge={{ label: t("Edit"), icon: "edit" }}
