@@ -25,28 +25,28 @@ const moreThanARound = (g: Game) => {
   if (g.template === "quiz") return g.questions.length > n;
   if (g.template === "grammar") return g.items.length > n;
   if (g.template === "vocab") return g.words.length * g.modes.length > n;
-  return g.template === "math" || g.template === "reading";
+  return g.template === "math" || g.template === "balloon" || g.template === "reading";
 };
 
 export const progressKey = (id: string) => `ds:p:${id}`;
 export const loadProgress = (id: string): Progress => ({ best: 0, plays: 0, stars: 0, seen: [], wrong: [], ...store.get<Partial<Progress>>(progressKey(id), {}) });
 
-interface Result {
+export interface Result {
   task: Task;
   ok: boolean;
 }
 
-interface View {
+export interface View {
   el: HTMLElement;
   /** Shows the right answer and locks the question (time ran out). */
   reveal: () => void;
 }
 
-type Done = (ok: boolean) => void;
+export type Done = (ok: boolean) => void;
 
 /** Window-level listeners for the current question only. */
 let cleanups: (() => void)[] = [];
-const cleanup = () => {
+export const cleanup = () => {
   cleanups.forEach((f) => f());
   cleanups = [];
 };
@@ -368,6 +368,27 @@ function spotView(task: Extract<Task, { k: "spot" }>, t: Strings, done: Done): V
   return { el: h("div", { class: "spot" }, h("div", { class: "sentence" }, words), fixRow), reveal };
 }
 
+/** The question itself, with a read-aloud button where the device can speak. */
+export function promptView(task: Task, t: Strings, lang: string): HTMLElement | null {
+  if (task.k === "spot") return null;
+  if (task.listen) return h("div", { class: "prompt prompt-listen" }, speakBtn(task.speak || task.prompt, lang, t.listen, true));
+  if (task.prompt) return h("div", { class: `prompt${task.big ? " prompt-big" : ""}` }, task.emoji && h("span", { class: "prompt-emoji" }, task.emoji), h("p", null, lines(task.prompt)), canSpeak() && speakBtn(task.speak || task.prompt, lang, t.listen));
+  if (task.emoji) return h("div", { class: "prompt" }, h("span", { class: "prompt-emoji" }, task.emoji), task.speak && canSpeak() && speakBtn(task.speak, lang, t.listen));
+  return null;
+}
+
+/** The answer area for any task: choices, a number pad, tiles, pairs or a sentence. */
+export function taskView(task: Task, t: Strings, done: Done): View {
+  switch (task.k) {
+    case "choice": return choiceView(task, done);
+    case "tf": return tfView(task, t, done);
+    case "type": return typeView(task, t, done);
+    case "order": return orderView(task, t, done);
+    case "match": return matchView(task, done);
+    case "spot": return spotView(task, t, done);
+  }
+}
+
 /* ---------- reading ---------- */
 
 function passageBody(p: Passage, lang: string, t: Strings) {
@@ -399,7 +420,7 @@ function lookBack(p: Passage, lang: string, t: Strings) {
 }
 
 /** In-page yes/no: native confirm() shows the page's address, which means nothing to a student. */
-function confirmSheet(t: Strings, text: string, onYes: () => void) {
+export function confirmSheet(t: Strings, text: string, onYes: () => void) {
   const close = () => sheet.remove();
   const sheet = h(
     "div",
@@ -518,26 +539,9 @@ export function startRound(ctx: Ctx, only?: string[]) {
       listen("keydown", (e) => e.key === "Enter" && next());
     };
 
-    let view: View;
-    switch (task.k) {
-      case "choice": view = choiceView(task, done); break;
-      case "tf": view = tfView(task, t, done); break;
-      case "type": view = typeView(task, t, done); break;
-      case "order": view = orderView(task, t, done); break;
-      case "match": view = matchView(task, done); break;
-      case "spot": view = spotView(task, t, done); break;
-    }
+    const view = taskView(task, t, done);
 
-    const prompt =
-      task.k === "spot"
-        ? null
-        : task.listen
-          ? h("div", { class: "prompt prompt-listen" }, speakBtn(task.speak || task.prompt, s.speech, t.listen, true))
-          : task.prompt
-            ? h("div", { class: `prompt${task.big ? " prompt-big" : ""}` }, task.emoji && h("span", { class: "prompt-emoji" }, task.emoji), h("p", null, lines(task.prompt)), canSpeak() && speakBtn(task.speak || task.prompt, s.speech, t.listen))
-            : task.emoji
-              ? h("div", { class: "prompt" }, h("span", { class: "prompt-emoji" }, task.emoji), task.speak && canSpeak() && speakBtn(task.speak, s.speech, t.listen))
-              : null;
+    const prompt = promptView(task, t, s.speech);
 
     const timeBar = s.timer > 0 ? h("div", { class: "timer" }, h("span", { style: `animation-duration:${s.timer}s` })) : null;
     const p = task.passage !== undefined ? passages[task.passage] : undefined;
@@ -570,49 +574,77 @@ export function startRound(ctx: Ctx, only?: string[]) {
     cleanup();
     const right = results.filter((r) => r.ok).length;
     const pct = right / Math.max(1, total);
-    const stars = pct >= 0.9 ? 3 : pct >= 0.7 ? 2 : pct >= 0.4 ? 1 : 0;
-    const outOfLives = s.lives > 0 && lives <= 0;
-    const wrongKeys = results.filter((r) => !r.ok).map((r) => r.task.key);
-    const rightKeys = new Set(results.filter((r) => r.ok).map((r) => r.task.key));
-    const before = loadProgress(game.id);
-    const newBest = score > before.best;
-    const seen = Array.from(new Set([...before.seen, ...steps.map((x) => x.key)]));
-    store.set(progressKey(game.id), {
-      best: Math.max(before.best, score),
-      plays: before.plays + 1,
-      stars: Math.max(before.stars, stars),
-      // Rotate: once every question has been seen, start the cycle again.
-      seen: seen.length > 3000 ? seen.slice(-3000) : seen,
-      wrong: Array.from(new Set([...before.wrong.filter((k) => !rightKeys.has(k)), ...wrongKeys])).slice(-200),
-    } satisfies Progress);
-    beep(stars >= 2 ? "done" : "tap");
-
-    const missed = results.filter((r) => !r.ok);
-    mount(
-      root,
-      h(
-        "main",
-        { class: "screen center end" },
-        stars === 3 && confetti(),
-        h("div", { class: "stars", "aria-label": `${stars} / 3` }, [0, 1, 2].map((i) => h("span", { class: i < stars ? "star on" : "star", style: `animation-delay:${0.15 * i}s` }, "★"))),
-        h("h1", null, outOfLives ? t.outOfLives : `${right} ${t.of} ${total}`),
-        h("p", { class: "end-score" }, h("span", null, `${t.score} `), h("strong", null, score), newBest ? h("span", { class: "badge" }, `🏆 ${t.best}!`) : h("span", { class: "muted" }, ` · ${t.best} ${Math.max(before.best, score)}`)),
-        bestStreak >= 3 && h("p", { class: "muted" }, `🔥 ${bestStreak} ${t.streak}`),
-        h(
-          "div",
-          { class: "end-actions" },
-          h("button", { class: "btn btn-primary btn-big", onclick: () => startRound(ctx) }, `↻ ${moreThanARound(ctx.game) ? t.newSet : t.again}`),
-          missed.length > 0 && h("button", { class: "btn btn-soft btn-big", onclick: () => startRound(ctx, Array.from(new Set(missed.map((r) => r.task.key)))) }, `🎯 ${t.practise}`),
-          h("button", { class: "btn btn-ghost", onclick: ctx.home }, t.home),
-        ),
-        missed.length
-          ? h("section", { class: "review" }, h("h2", null, t.mistakes), h("ul", null, missed.map((r) => h("li", null, h("p", { class: "review-q" }, reviewPrompt(r.task, t)), h("p", { class: "review-a" }, "✓ ", rightAnswer(r.task, t)), r.task.explain && h("p", { class: "muted" }, lines(r.task.explain))))))
-          : h("p", { class: "lead" }, `🎉 ${t.allRight}`),
-      ),
-    );
+    endScreen(ctx, {
+      keys: steps.map((x) => x.key),
+      results,
+      score,
+      stars: pct >= 0.9 ? 3 : pct >= 0.7 ? 2 : pct >= 0.4 ? 1 : 0,
+      bestStreak,
+      heading: s.lives > 0 && lives <= 0 ? t.outOfLives : `${right} ${t.of} ${total}`,
+      again: (only) => startRound(ctx, only),
+    });
   };
 
   next();
+}
+
+export interface RoundEnd {
+  /** Every task the round brought, for "unseen questions first". */
+  keys: string[];
+  results: Result[];
+  score: number;
+  stars: number;
+  bestStreak: number;
+  heading: string;
+  /** A line under the heading. */
+  note?: string;
+  /** Starts another round; with keys, only those (practising mistakes). */
+  again: (only?: string[]) => void;
+}
+
+/** Saves the round on the phone and shows the stars, the score and the mistakes. */
+export function endScreen(ctx: Ctx, end: RoundEnd) {
+  const { game, t, root } = ctx;
+  const { results, score, stars, bestStreak } = end;
+  const wrongKeys = results.filter((r) => !r.ok).map((r) => r.task.key);
+  const rightKeys = new Set(results.filter((r) => r.ok).map((r) => r.task.key));
+  const before = loadProgress(game.id);
+  const newBest = score > before.best;
+  const seen = Array.from(new Set([...before.seen, ...end.keys]));
+  store.set(progressKey(game.id), {
+    best: Math.max(before.best, score),
+    plays: before.plays + 1,
+    stars: Math.max(before.stars, stars),
+    // Rotate: once every question has been seen, start the cycle again.
+    seen: seen.length > 3000 ? seen.slice(-3000) : seen,
+    wrong: Array.from(new Set([...before.wrong.filter((k) => !rightKeys.has(k)), ...wrongKeys])).slice(-200),
+  } satisfies Progress);
+  beep(stars >= 2 ? "done" : "tap");
+
+  const missed = results.filter((r) => !r.ok);
+  mount(
+    root,
+    h(
+      "main",
+      { class: "screen center end" },
+      stars === 3 && confetti(),
+      h("div", { class: "stars", "aria-label": `${stars} / 3` }, [0, 1, 2].map((i) => h("span", { class: i < stars ? "star on" : "star", style: `animation-delay:${0.15 * i}s` }, "★"))),
+      h("h1", null, end.heading),
+      h("p", { class: "end-score" }, h("span", null, `${t.score} `), h("strong", null, score), newBest ? h("span", { class: "badge" }, `🏆 ${t.best}!`) : h("span", { class: "muted" }, ` · ${t.best} ${Math.max(before.best, score)}`)),
+      end.note && h("p", { class: "lead" }, end.note),
+      bestStreak >= 3 && h("p", { class: "muted" }, `🔥 ${bestStreak} ${t.streak}`),
+      h(
+        "div",
+        { class: "end-actions" },
+        h("button", { class: "btn btn-primary btn-big", onclick: () => end.again() }, `↻ ${moreThanARound(game) ? t.newSet : t.again}`),
+        missed.length > 0 && h("button", { class: "btn btn-soft btn-big", onclick: () => end.again(Array.from(new Set(missed.map((r) => r.task.key)))) }, `🎯 ${t.practise}`),
+        h("button", { class: "btn btn-ghost", onclick: ctx.home }, t.home),
+      ),
+      missed.length
+        ? h("section", { class: "review" }, h("h2", null, t.mistakes), h("ul", null, missed.map((r) => h("li", null, h("p", { class: "review-q" }, reviewPrompt(r.task, t)), h("p", { class: "review-a" }, "✓ ", rightAnswer(r.task, t)), r.task.explain && h("p", { class: "muted" }, lines(r.task.explain))))))
+        : h("p", { class: "lead" }, `🎉 ${t.allRight}`),
+    ),
+  );
 }
 
 function reviewPrompt(task: Task, t: Strings): string {

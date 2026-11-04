@@ -16,7 +16,7 @@ const GRAMMAR_FORMAT = `         { "type": "fix", "text": "sentence with exactly
          { "type": "unscramble", "text": "a correct sentence (shown shuffled)" }`;
 
 const SCHEMA = `GAME FORMAT (JSON). Every game has:
-  "template": "quiz" | "math" | "grammar" | "vocab" | "reading" | "custom"
+  "template": "quiz" | "math" | "balloon" | "grammar" | "vocab" | "reading" | "custom"
   "title": short title; "subtitle": optional one line; "emoji": one emoji
   "tint": "lilac" | "sky" | "peach" | "mint" | "lemon" | "sage" | "rose" | "sand"
   "settings": { "round": questions per round (default 10), "timer": seconds per question, 0 = none,
@@ -32,6 +32,8 @@ math:    { "sets": [{ "kind": K, "min": n, "max": n, "weight": 1-5 }], "answer":
          Problems are generated fresh each round from "sets". K is one of:
          ${Object.entries(MATH_KINDS).map(([k, m]) => `${k} (${m.label}; min/max = ${m.range.join("/").toLowerCase()}; e.g. ${m.example})`).join("\n         ")}
          Use "questions" only for topic-specific word problems the generators can't make.
+balloon: the math fields plus "speed": 1 (gentle) | 2 | 3 (fast). A cannon game: each right answer loads a
+         cannonball, the student fires at balloons coming down, and "round" is the number of balloons.
 grammar: { "items": [item, ...] } where item is one of
 ${GRAMMAR_FORMAT}
 vocab:   { "words": [{ "word", "meaning", "example": "sentence containing the word exactly", "emoji", "opposite", "translation" }],
@@ -53,7 +55,7 @@ export function assistantSystem(game: Game | null): string {
 
 When you create or change a game, reply with one or two short sentences, then the COMPLETE game JSON (not a diff) in one fenced block that starts with \`\`\`game and ends with \`\`\`. Don't repeat the JSON outside the block. If the teacher only asks a question, answer briefly without a block. Ask a question back only if you truly can't make something sensible; otherwise make reasonable choices and say what they were.
 
-Pick the template that fits: quiz, math, grammar, vocab or reading when the idea fits them (they randomise and track mistakes); "custom" when the teacher wants a different kind of game (a race, a puzzle, a simulation, a board game).
+Pick the template that fits: quiz, math, balloon (maths as a cannon game), grammar, vocab or reading when the idea fits them (they randomise and track mistakes); "custom" when the teacher wants a different kind of game (a race, a puzzle, a simulation, a board game).
 
 ${SCHEMA}
 
@@ -135,7 +137,7 @@ const titleOf = (html: string) => html.match(/<title>([^<]*)<\/title>/i)?.[1]?.t
 /* ---------- one-shot generators used by the editors ---------- */
 
 export interface GenerateRequest {
-  template: Exclude<Template, "custom" | "math"> | "math-questions";
+  template: Exclude<Template, "custom" | "math" | "balloon"> | "math-questions";
   topic: string;
   level: string;
   count: number;

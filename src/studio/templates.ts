@@ -135,6 +135,54 @@ export const TEMPLATE_INFO: TemplateInfo[] = [
     ],
   },
   {
+    id: "balloon",
+    name: "Balloon Blast",
+    emoji: "🎈",
+    tint: "sky",
+    blurb: "Right answers load the cannon; fire to pop the balloons before they land.",
+    starters: [
+      {
+        title: "Add and subtract to 20",
+        make: () => ({
+          template: "balloon",
+          title: "Balloon Blast",
+          subtitle: "Load the cannon, pop the balloons",
+          emoji: "🎈",
+          tint: "sky",
+          settings: settings({ round: 10, lives: 3 }),
+          answer: "type",
+          speed: 1,
+          sets: [
+            { kind: "add", min: 1, max: 10, weight: 2 },
+            { kind: "sub", min: 1, max: 20, weight: 2 },
+            { kind: "missing", min: 1, max: 10, weight: 1 },
+          ],
+          questions: [
+            { type: "short", q: "A clown has 7 balloons and gets 5 more. How many balloons now?", accept: ["12"] },
+            { type: "mcq", q: "Which number is the biggest?", options: ["38", "83", "58", "35"], answer: 1 },
+          ],
+        }),
+      },
+      {
+        title: "Times tables",
+        make: () => ({
+          template: "balloon",
+          title: "Times Table Blast",
+          emoji: "💥",
+          tint: "peach",
+          settings: settings({ round: 15, lives: 3 }),
+          answer: "type",
+          speed: 2,
+          sets: [
+            { kind: "mul", min: 2, max: 10, weight: 3 },
+            { kind: "div", min: 2, max: 10, weight: 1 },
+          ],
+          questions: [],
+        }),
+      },
+    ],
+  },
+  {
     id: "grammar",
     name: "Grammar",
     emoji: "✏️",
@@ -271,10 +319,11 @@ export const startersFor = (info: TemplateInfo): Starter[] => (getLang() === "fr
 
 export function blankGame(template: Template): Game {
   const info = templateInfo(template);
-  const base = { template, title: template === "custom" ? t("New game") : t(`New ${info.name.toLowerCase()} game`), emoji: info.emoji, tint: info.tint, settings: settings() };
+  const base = { template, title: template === "custom" ? t("New game") : t(`New ${info.name.toLowerCase()} game`), emoji: info.emoji, tint: info.tint, settings: settings(template === "balloon" ? { lives: 3 } : {}) };
   const extra: Record<Template, object> = {
     quiz: { questions: [] },
     math: { sets: [{ kind: "add", min: 1, max: 20, weight: 1 }], answer: "type", questions: [] },
+    balloon: { sets: [{ kind: "add", min: 1, max: 20, weight: 1 }], answer: "type", questions: [], speed: 1 },
     grammar: { items: [] },
     vocab: { words: [], modes: ["meaning", "word", "gap", "spell"] },
     reading: { passages: [], activities: ["questions", "cloze", "sequence"] },

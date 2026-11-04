@@ -26,7 +26,7 @@ const MAX_PER_DAY = 10;
 const DAY = 24 * 60 * 60 * 1000;
 
 const TINTS = new Set(["lilac", "sky", "peach", "mint", "lemon", "sage", "rose", "sand"]);
-const TAGS = new Set(["quiz", "math", "grammar", "vocab", "reading", "custom"]);
+const TAGS = new Set(["quiz", "math", "balloon", "grammar", "vocab", "reading", "custom"]);
 
 type Row = {
   id: string;

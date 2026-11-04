@@ -4,7 +4,7 @@
  * inside a downloaded .html file, and inside an APK.
  */
 
-export type Template = "quiz" | "math" | "grammar" | "vocab" | "reading" | "custom";
+export type Template = "quiz" | "math" | "balloon" | "grammar" | "vocab" | "reading" | "custom";
 export type Tint = "lilac" | "sky" | "peach" | "mint" | "lemon" | "sage" | "rose" | "sand";
 export type UiLang = "en" | "hi" | "fr" | "es";
 
@@ -87,6 +87,17 @@ export interface MathGame extends Base {
   questions: Question[];
 }
 
+/* ---------- balloon blast: the maths content, played as a cannon game ---------- */
+
+export type BalloonSpeed = 1 | 2 | 3;
+
+/** Each right answer loads a cannonball; "round" is how many balloons come down. */
+export interface BalloonGame extends Omit<MathGame, "template"> {
+  template: "balloon";
+  /** How fast the balloons come down: 1 gentle, 2 steady, 3 fast. */
+  speed: BalloonSpeed;
+}
+
 /* ---------- grammar ---------- */
 
 export type GrammarItem =
@@ -150,4 +161,4 @@ export interface CustomGame extends Base {
   html: string;
 }
 
-export type Game = QuizGame | MathGame | GrammarGame | VocabGame | ReadingGame | CustomGame;
+export type Game = QuizGame | MathGame | BalloonGame | GrammarGame | VocabGame | ReadingGame | CustomGame;

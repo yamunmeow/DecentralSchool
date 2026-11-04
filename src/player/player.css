@@ -1,4 +1,4 @@
-/* The student player. System fonts only, no images: it has to open fast on cheap phones, offline. */
+/* The student player. System fonts only, no images (Balloon Blast brings its own): it has to open fast on cheap phones, offline. */
 
 :root {
   --bg: #fffaeb;
@@ -476,6 +476,115 @@ h2 { font-size: 1.25rem; }
 .lib-remove { width: 40px; height: 40px; border-radius: 50%; border: 0; background: transparent; color: var(--ink-3); }
 
 .custom-frame { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: var(--bg); }
+
+/* balloon blast: the stage on top (beside on wide screens), the question under it */
+body.is-balloon { overflow: hidden; }
+.bln { height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
+.bln .bar { width: 100%; box-sizing: border-box; flex: none; }
+.bln-body { flex: 1; min-height: 0; width: 100%; max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; }
+.bln-stage { position: relative; flex: 1; min-height: 190px; overflow: hidden; background: #2d62a8; }
+.bln-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+.bln-hint {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 32px);
+  padding: 8px 16px;
+  border-radius: 16px;
+  background: rgb(255 255 255 / 0.92);
+  color: #2b2414;
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-align: center;
+  box-shadow: 0 6px 18px -10px rgb(0 0 0 / 0.5);
+  animation: in 0.2s ease both;
+}
+
+.bln-fire {
+  position: absolute;
+  left: 52.5%;
+  bottom: max(10px, 1.6%);
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 10px 0 22px;
+  border: 0;
+  border-radius: 99px;
+  background: #e0573c;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  box-shadow: 0 5px 0 #a3361f, 0 10px 22px -10px rgb(0 0 0 / 0.6);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
+}
+.bln-fire:active { transform: translateX(-50%) translateY(3px); box-shadow: 0 2px 0 #a3361f, 0 6px 14px -10px rgb(0 0 0 / 0.6); }
+.bln-fire.is-empty { background: #8d8676; box-shadow: 0 5px 0 #5f5a4e, 0 10px 22px -10px rgb(0 0 0 / 0.6); }
+.bln-count {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  border-radius: 99px;
+  background: #1d1a14;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.bln-panel {
+  flex: none;
+  max-height: 62%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+  background: var(--bg);
+  border-top: 2px solid var(--line);
+}
+.bln-panel .prompt { min-height: 0; padding: 12px 56px 12px 16px; border-radius: 20px; }
+.bln-panel .prompt-big p { font-size: 1.9rem; }
+.bln-panel .say { top: 50%; transform: translateY(-50%); }
+.bln-panel .opt { min-height: 54px; padding: 8px 12px; }
+.bln-panel .opts-tf .opt { min-height: 72px; }
+.bln-panel.has-pad { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+.bln-panel.has-pad > * { grid-column: 1 / -1; }
+.bln-panel.has-pad .pad { display: contents; }
+.bln-panel.has-pad .prompt { grid-column: 1; }
+.bln-panel.has-pad .typed { grid-column: 2; min-height: 0; font-size: 1.8rem; border-radius: 20px; }
+.bln-panel.has-pad .prompt-big p { white-space: nowrap; font-size: 1.7rem; }
+.bln-panel .keys { grid-column: 1 / -1; gap: 6px; }
+.bln-panel .key { min-height: 48px; font-size: 1.35rem; border-radius: 14px; }
+.bln-panel .key-check { min-height: 48px; border-radius: 14px; }
+
+.bln-feedback:empty { display: none; }
+.bln-feedback { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; animation: in 0.15s ease both; }
+.bln-ok { font-weight: 800; color: var(--ok); }
+.bln-bad { font-weight: 800; color: var(--bad); }
+.bln-feedback .explain { flex-basis: 100%; }
+
+@media (max-height: 700px) and (max-aspect-ratio: 1/1) {
+  .bln-panel { gap: 8px; padding-top: 10px; }
+  .bln-panel .key, .bln-panel .key-check { min-height: 42px; }
+  .bln-panel .prompt { padding-top: 8px; padding-bottom: 8px; }
+}
+
+@media (min-width: 760px) and (min-aspect-ratio: 1/1) {
+  .bln-body { flex-direction: row; max-width: 1180px; gap: 0; }
+  .bln-stage { flex: none; height: 100%; aspect-ratio: 10 / 13; max-width: 60%; }
+  .bln .bar { max-width: 1180px; }
+  .bln-panel { flex: 1; max-height: none; justify-content: center; align-content: center; padding: 24px; border-top: 0; }
+  .bln-panel.has-pad .prompt-big p { font-size: 2.2rem; }
+  .bln-panel .key, .bln-panel .key-check { min-height: 56px; }
+}
 
 @media (min-width: 560px) {
   .screen { padding-top: 24px; }

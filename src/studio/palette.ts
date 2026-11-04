@@ -29,5 +29,5 @@ export const ICON_BG: Record<Color, string> = {
 
 /** Critter shown for each kind of game. */
 export const TEMPLATE_CRITTER: Record<string, CritterKind> = {
-  quiz: "owl", math: "fox", grammar: "cat", vocab: "bunny", reading: "turtle", custom: "octopus",
+  quiz: "owl", math: "fox", balloon: "chick", grammar: "cat", vocab: "bunny", reading: "turtle", custom: "octopus",
 };

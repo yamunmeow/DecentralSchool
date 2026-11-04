@@ -1,5 +1,5 @@
 import react from "@vitejs/plugin-react";
-import { readdirSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { build, defineConfig, type Plugin } from "vite";
 
@@ -82,6 +82,26 @@ function playerRuntime(): Plugin {
   };
 }
 
+/**
+ * `import sprites from "virtual:balloon-sprites"` gives the studio the Balloon Blast
+ * pictures as data: URLs, so a downloaded or installed balloon game carries them.
+ * The hosted player loads the same files from /p/balloon/.
+ */
+function balloonSprites(): Plugin {
+  const dir = resolve(import.meta.dirname, "public/p/balloon");
+  return {
+    name: "balloon-sprites",
+    resolveId: (id) => (id === "virtual:balloon-sprites" ? "\0virtual:balloon-sprites" : undefined),
+    load(id) {
+      if (id !== "\0virtual:balloon-sprites") return;
+      const files = readdirSync(dir).filter((f) => f.endsWith(".webp"));
+      for (const f of files) this.addWatchFile(join(dir, f));
+      const map = Object.fromEntries(files.map((f) => [f.slice(0, -5), `data:image/webp;base64,${readFileSync(join(dir, f)).toString("base64")}`]));
+      return `export default ${JSON.stringify(map)};`;
+    },
+  };
+}
+
 /** Every file under public/, as site paths (the library games, icons, the APK shell). */
 function publicFiles(dir = resolve(import.meta.dirname, "public")): string[] {
   return readdirSync(dir).flatMap((name) => {
@@ -148,7 +168,7 @@ self.addEventListener("fetch", (event) => {
 }
 
 export default defineConfig({
-  plugins: [react(), playerRuntime(), studioWorker()],
+  plugins: [react(), playerRuntime(), balloonSprites(), studioWorker()],
   build: { target: "es2022", chunkSizeWarningLimit: 1500 },
   // Sign-in runs in the Worker: `npm run dev:api` serves it on 8787.
   server: { proxy: { "/api": "http://localhost:8787" } },

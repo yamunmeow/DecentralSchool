@@ -1,6 +1,6 @@
 import { generate, inLowestTerms, sameTime, valueOf, withDistractors } from "./math";
 import { pick, sample, shuffle, weighted } from "./random";
-import type { Game, GrammarItem, Passage, Question, ReadingActivity, VocabMode, Word } from "./types";
+import type { BalloonGame, Game, GrammarItem, MathGame, Passage, Question, ReadingActivity, VocabMode, Word } from "./types";
 
 interface TaskBase {
   /** Stable id of the source question, used to rotate through the bank. */
@@ -312,6 +312,31 @@ function choose(cands: Candidate[], n: number, seen?: Set<string>): Task[] {
   return out;
 }
 
+function mathsRound(game: MathGame | BalloonGame, n: number, only?: string[], seen?: Set<string>): Task[] {
+  const own = quizCandidates(game.questions, "m").filter((c) => !only || only.includes(c.key));
+  // Practising mistakes regenerates fresh problems of the kinds that went wrong.
+  const sets = game.sets.filter((s) => s.weight > 0 && (!only || only.includes(`gen:${s.kind}`)));
+  const mine = !sets.length ? choose(own, n, seen) : choose(own, only ? own.length : Math.round(n / 3), seen);
+  const made: Task[] = [];
+  // Checking is by value, so a French decimal comma still counts.
+  const decimals = (x: string) => (game.settings.ui === "fr" ? x.replace(/(\d)\.(\d)/g, "$1,$2") : x);
+  const prompts = new Set<string>();
+  for (let tries = 0; sets.length && made.length < n - mine.length && tries < n * 20; tries++) {
+    const set = weighted(sets, (s) => s.weight)!;
+    const p = generate(set, game.settings.ui);
+    if (prompts.has(p.prompt)) continue;
+    prompts.add(p.prompt);
+    const key = `gen:${set.kind}`;
+    if (game.answer === "choose" || p.choices) {
+      const { options, answer } = withDistractors(p);
+      made.push({ key, k: "choice", prompt: p.prompt, big: p.prompt.length < 24, options: options.map(decimals), answer, explain: p.explain });
+    } else {
+      made.push({ key, k: "type", prompt: p.prompt, big: p.prompt.length < 24, accept: [decimals(p.answer)], pad: p.pad, lowest: p.lowest, explain: p.explain });
+    }
+  }
+  return shuffle([...mine, ...made]);
+}
+
 export function buildRound(game: Game, opts: RoundOptions = {}): Step[] {
   const n = Math.max(1, Math.min(100, game.settings.round || 10));
   const canSpeak = opts.canSpeak !== false;
@@ -325,30 +350,9 @@ export function buildRound(game: Game, opts: RoundOptions = {}): Step[] {
       return choose(filter(game.items.map((it, i) => ({ key: `g${i}:${it.text.slice(0, 40)}`, make: () => grammarTask(it, `g${i}:${it.text.slice(0, 40)}`) }))), n, seen);
     case "vocab":
       return choose(filter(vocabCandidates(game.words, game.modes.length ? game.modes : ["meaning", "word"], canSpeak)), n, seen);
-    case "math": {
-      const own = filter(quizCandidates(game.questions, "m"));
-      // Practising mistakes regenerates fresh problems of the kinds that went wrong.
-      const sets = game.sets.filter((s) => s.weight > 0 && (!opts.only || opts.only.includes(`gen:${s.kind}`)));
-      const mine = !sets.length ? choose(own, n, seen) : choose(own, opts.only ? own.length : Math.round(n / 3), seen);
-      const made: Task[] = [];
-      // Checking is by value, so a French decimal comma still counts.
-      const decimals = (x: string) => (game.settings.ui === "fr" ? x.replace(/(\d)\.(\d)/g, "$1,$2") : x);
-      const prompts = new Set<string>();
-      for (let tries = 0; sets.length && made.length < n - mine.length && tries < n * 20; tries++) {
-        const set = weighted(sets, (s) => s.weight)!;
-        const p = generate(set, game.settings.ui);
-        if (prompts.has(p.prompt)) continue;
-        prompts.add(p.prompt);
-        const key = `gen:${set.kind}`;
-        if (game.answer === "choose" || p.choices) {
-          const { options, answer } = withDistractors(p);
-          made.push({ key, k: "choice", prompt: p.prompt, big: p.prompt.length < 24, options: options.map(decimals), answer, explain: p.explain });
-        } else {
-          made.push({ key, k: "type", prompt: p.prompt, big: p.prompt.length < 24, accept: [decimals(p.answer)], pad: p.pad, lowest: p.lowest, explain: p.explain });
-        }
-      }
-      return shuffle([...mine, ...made]);
-    }
+    case "math":
+    case "balloon":
+      return mathsRound(game, n, opts.only, seen);
     case "reading": {
       const passages = game.passages.map((p, i) => ({ p, i })).filter(({ p }) => p.text.trim());
       if (!passages.length) return [];

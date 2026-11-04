@@ -4,6 +4,7 @@ import type { CustomGame, Game, UiLang } from "../shared/types";
 import { sound, store } from "./device";
 import { h, mount } from "./dom";
 import { STRINGS } from "./i18n";
+import { startBalloons } from "./balloon/game";
 import { loadProgress, startRound, type Ctx } from "./play";
 import css from "./player.css?inline";
 
@@ -87,6 +88,8 @@ function open(root: HTMLElement, game: Game, hosted: boolean) {
   home(ctx, hosted);
 }
 
+const play = (ctx: Ctx, only?: string[]) => (ctx.game.template === "balloon" ? startBalloons(ctx, only) : startRound(ctx, only));
+
 function home(ctx: Ctx, hosted: boolean) {
   const { game, t, root } = ctx;
   window.onShellBack = () => false;
@@ -113,8 +116,8 @@ function home(ctx: Ctx, hosted: boolean) {
       h(
         "div",
         { class: "end-actions" },
-        h("button", { class: "btn btn-primary btn-big", onclick: () => startRound(ctx) }, `▶ ${t.play}`),
-        p.wrong.length > 0 && h("button", { class: "btn btn-soft btn-big", onclick: () => startRound(ctx, p.wrong) }, `🎯 ${t.practise}`),
+        h("button", { class: "btn btn-primary btn-big", onclick: () => play(ctx) }, `▶ ${t.play}`),
+        p.wrong.length > 0 && h("button", { class: "btn btn-soft btn-big", onclick: () => play(ctx, p.wrong) }, `🎯 ${t.practise}`),
       ),
       h("div", { class: "home-foot" }, soundBtn, hosted && h("a", { class: "chip", href: "./" }, `☰ ${t.yourGames}`)),
     ),

@@ -7,7 +7,7 @@ import type { Game, Question } from "../shared/types";
  */
 
 export function questionsOf(game: Game): Question[] {
-  if (game.template === "quiz" || game.template === "math") return game.questions;
+  if (game.template === "quiz" || game.template === "math" || game.template === "balloon") return game.questions;
   if (game.template === "reading") return game.passages.flatMap((p) => p.questions);
   return [];
 }

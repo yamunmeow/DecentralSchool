@@ -1,3 +1,4 @@
+import sprites from "virtual:balloon-sprites";
 import runtime from "virtual:player-runtime";
 import { encodeGame, shareable } from "../shared/codec";
 import { buildPage } from "../shared/page";
@@ -5,7 +6,7 @@ import type { Game } from "../shared/types";
 import { locale, t } from "./i18n";
 
 /** The self-contained student page: what downloads, previews and APKs carry. */
-export const pageFor = (game: Game) => buildPage(runtime, shareable(game));
+export const pageFor = (game: Game) => buildPage(runtime, shareable(game), { sprites: game.template === "balloon" ? sprites : undefined });
 
 /** Student link. The game rides in the #fragment, which never reaches the server. */
 export const linkFor = (game: Game) => `${new URL("/p/", window.location.origin).href}#${encodeGame(game)}`;

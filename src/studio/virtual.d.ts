@@ -10,6 +10,12 @@ declare module "virtual:code-runtime" {
   export default code;
 }
 
+declare module "virtual:balloon-sprites" {
+  /** Balloon Blast pictures (public/p/balloon), name → data: URL. */
+  const sprites: Record<string, string>;
+  export default sprites;
+}
+
 declare module "*.js?raw" {
   const text: string;
   export default text;

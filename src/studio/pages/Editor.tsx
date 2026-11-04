@@ -85,6 +85,7 @@ export function Editor({ id, tab }: { id: string; tab?: string }) {
     switch (game.template) {
       case "quiz": body = <QuizEditor game={game} onChange={update} />; break;
       case "math": body = <MathEditor game={game} onChange={update} />; break;
+      case "balloon": body = <MathEditor game={game} onChange={update} />; break;
       case "grammar": body = <GrammarEditor game={game} onChange={update} />; break;
       case "vocab": body = <VocabEditor game={game} onChange={update} />; break;
       case "reading": body = <ReadingEditor game={game} onChange={update} />; break;

@@ -25,6 +25,7 @@ export default {
   Questions: "Questions",
   "{all} · {round} per round": "{all} · {round} par partie",
   "{n} per round": "{n} par partie",
+  "{n} balloons per round": "{n} ballons par partie",
   "Game code": "Code du jeu",
   "Ask the assistant": "Demander à l'assistant",
   "Multiple choice": "Choix multiple",

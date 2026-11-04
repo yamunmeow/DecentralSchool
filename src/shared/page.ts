@@ -10,6 +10,8 @@ interface PageGame {
  * file teachers download and the page inside the APK; without one it is the hosted
  * player at /p/, which reads the game from the link's #fragment.
  *
+ * Games that draw pictures (Balloon Blast) carry them as data: URLs in #sprites.
+ *
  * The Content-Security-Policy switches the network off: no request can leave the
  * page, so nothing a student does is sent anywhere.
  */
@@ -31,7 +33,7 @@ const escapeHtml = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "
 export const scriptJson = (value: unknown) =>
   JSON.stringify(value).replace(/</g, "\\u003c").replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
 
-export function buildPage(runtime: string, game: PageGame | null, opts: { hosted?: boolean } = {}): string {
+export function buildPage(runtime: string, game: PageGame | null, opts: { hosted?: boolean; sprites?: Record<string, string> } = {}): string {
   const title = game ? `${game.emoji} ${game.title}` : "DecentralSchool";
   const head = opts.hosted
     ? `<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png">`
@@ -49,7 +51,7 @@ ${head}<title>${escapeHtml(title)}</title>
 </head>
 <body>
 <div id="app"></div>
-${game ? `<script type="application/json" id="game">${scriptJson(game)}</script>\n` : ""}<script>${runtime.replace(/<\/script/gi, "<\\/script")}</script>
+${game ? `<script type="application/json" id="game">${scriptJson(game)}</script>\n` : ""}${opts.sprites ? `<script type="application/json" id="sprites">${scriptJson(opts.sprites)}</script>\n` : ""}<script>${runtime.replace(/<\/script/gi, "<\\/script")}</script>
 </body>
 </html>
 `;

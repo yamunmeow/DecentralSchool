@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { TINTS } from "../../shared/normalize";
-import type { Game, Settings, UiLang } from "../../shared/types";
+import type { BalloonSpeed, Game, Settings, UiLang } from "../../shared/types";
 import { PALETTE } from "../palette";
 import { t } from "../i18n";
 import { Field } from "../ui";
@@ -25,6 +25,12 @@ const VOICES: [string, string][] = [
   ["ar", "Arabic"],
   ["sw-KE", "Swahili"],
   ["zh-CN", "Chinese"],
+];
+
+const SPEEDS: [BalloonSpeed, string][] = [
+  [1, "Gentle"],
+  [2, "Steady"],
+  [3, "Fast"],
 ];
 
 const UI: [UiLang, string][] = [
@@ -68,19 +74,31 @@ export function GameSettings({ game, onChange }: { game: Game; onChange: (g: Gam
         <section className="card">
           <h2 className="section-title">{t("Rounds")}</h2>
           <div className="form-grid">
-            <Field label={t("Questions per round")}>
+            <Field label={game.template === "balloon" ? t("Balloons per round") : t("Questions per round")}>
               <input type="number" min={1} max={100} inputMode="numeric" value={s.round} onChange={(e) => set({ round: Math.max(1, Math.min(100, Number(e.target.value) || 1)) })} />
             </Field>
-            <Field label={t("Timer")}>
-              <select value={s.timer} onChange={(e) => set({ timer: Number(e.target.value) })}>
-                <option value={0}>{t("Off")}</option>
-                {[5, 10, 15, 20, 30, 45, 60, 90, 120].map((n) => (
-                  <option key={n} value={n}>
-                    {t("{n} seconds", { n })}
-                  </option>
-                ))}
-              </select>
-            </Field>
+            {game.template === "balloon" ? (
+              <Field label={t("Balloon speed")}>
+                <select value={game.speed} onChange={(e) => onChange({ ...game, speed: Number(e.target.value) as BalloonSpeed })}>
+                  {SPEEDS.map(([v, label]) => (
+                    <option key={v} value={v}>
+                      {t(label)}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            ) : (
+              <Field label={t("Timer")}>
+                <select value={s.timer} onChange={(e) => set({ timer: Number(e.target.value) })}>
+                  <option value={0}>{t("Off")}</option>
+                  {[5, 10, 15, 20, 30, 45, 60, 90, 120].map((n) => (
+                    <option key={n} value={n}>
+                      {t("{n} seconds", { n })}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            )}
             <Field label={t("Hearts")}>
               <select value={s.lives} onChange={(e) => set({ lives: Number(e.target.value) })}>
                 <option value={0}>{t("Unlimited")}</option>

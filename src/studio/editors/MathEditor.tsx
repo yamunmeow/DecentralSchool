@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { generate, MATH_KINDS } from "../../shared/math";
-import type { MathGame, MathKind, MathSet } from "../../shared/types";
+import type { BalloonGame, MathGame, MathKind, MathSet } from "../../shared/types";
 import { t, tc } from "../i18n";
 import { Icon } from "../ui";
 import { removeAt, replaceAt, Section } from "./common";
@@ -8,7 +8,8 @@ import { QuestionList } from "./QuestionList";
 
 const KINDS = Object.keys(MATH_KINDS) as MathKind[];
 
-export function MathEditor({ game, onChange }: { game: MathGame; onChange: (g: MathGame) => void }) {
+/** Problem types and the teacher's own problems: the Maths template and Balloon Blast share them. */
+export function MathEditor<G extends MathGame | BalloonGame>({ game, onChange }: { game: G; onChange: (g: G) => void }) {
   const [seed, setSeed] = useState(0);
   const setSets = (sets: MathSet[]) => onChange({ ...game, sets });
   const samples = useMemo(() => {
@@ -20,7 +21,7 @@ export function MathEditor({ game, onChange }: { game: MathGame; onChange: (g: M
     <>
       <Section
         title={t("Problem types")}
-        count={t("{n} per round", { n: game.settings.round })}
+        count={game.template === "balloon" ? t("{n} balloons per round", { n: game.settings.round }) : t("{n} per round", { n: game.settings.round })}
         actions={
           <div className="seg seg-small" role="radiogroup" aria-label={t("How students answer")}>
             <button type="button" className={game.answer === "type" ? "on" : ""} aria-pressed={game.answer === "type"} onClick={() => onChange({ ...game, answer: "type" })}>

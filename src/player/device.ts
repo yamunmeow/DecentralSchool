@@ -63,21 +63,21 @@ let audio: AudioContext | null = null;
 export const sound = { on: true };
 
 /** Short synthesised tones, so the game ships no audio files. */
-export function beep(kind: "right" | "wrong" | "done" | "tap") {
+export function beep(kind: "right" | "wrong" | "done" | "tap" | "fire" | "pop") {
   if (!sound.on) return;
   try {
     const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     if (!Ctx) return;
     audio = audio || new Ctx();
-    const notes = { right: [660, 880], wrong: [220, 175], done: [523, 659, 784, 1047], tap: [520] }[kind];
+    const notes = { right: [660, 880], wrong: [220, 175], done: [523, 659, 784, 1047], tap: [520], fire: [150, 70], pop: [1250, 1700] }[kind];
     const t0 = audio.currentTime;
     notes.forEach((f, i) => {
       const osc = audio!.createOscillator();
       const gain = audio!.createGain();
-      osc.type = kind === "wrong" ? "triangle" : "sine";
+      osc.type = kind === "wrong" || kind === "fire" ? "triangle" : "sine";
       osc.frequency.value = f;
-      const start = t0 + i * (kind === "done" ? 0.11 : 0.09);
-      const len = kind === "tap" ? 0.05 : 0.16;
+      const start = t0 + i * (kind === "done" ? 0.11 : kind === "pop" ? 0.03 : 0.09);
+      const len = kind === "tap" || kind === "pop" ? 0.05 : 0.16;
       gain.gain.setValueAtTime(0.0001, start);
       gain.gain.exponentialRampToValueAtTime(kind === "tap" ? 0.05 : 0.18, start + 0.015);
       gain.gain.exponentialRampToValueAtTime(0.0001, start + len);

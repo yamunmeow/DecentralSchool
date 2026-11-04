@@ -1,7 +1,7 @@
 import { MATH_KINDS } from "./math";
 import { uid } from "./random";
 import type {
-  Game, GrammarItem, MathKind, MathSet, Passage, Question, ReadingActivity, Settings, Template, Tint, UiLang, VocabMode, Word,
+  BalloonSpeed, Game, GrammarItem, MathKind, MathSet, Passage, Question, ReadingActivity, Settings, Template, Tint, UiLang, VocabMode, Word,
 } from "./types";
 
 /**
@@ -10,7 +10,7 @@ import type {
  * get defaults, and broken questions are skipped rather than failing the whole game.
  */
 
-export const TEMPLATES: Template[] = ["quiz", "math", "grammar", "vocab", "reading", "custom"];
+export const TEMPLATES: Template[] = ["quiz", "math", "balloon", "grammar", "vocab", "reading", "custom"];
 export const TINTS: Tint[] = ["lilac", "sky", "peach", "mint", "lemon", "sage", "rose", "sand"];
 export const UI_LANGS: UiLang[] = ["en", "hi", "fr", "es"];
 export const VOCAB_MODES: VocabMode[] = ["meaning", "word", "gap", "spell", "listen", "opposite", "translate", "pairs"];
@@ -154,13 +154,15 @@ export function normalize(input: unknown, keep?: Partial<Pick<Game, "id" | "crea
     case "quiz":
       return { ...base, template, questions: questions(x.questions) };
     case "math":
-      return {
-        ...base,
-        template,
+    case "balloon": {
+      const maths = {
         sets: arr(x.sets).map(mathSet).filter((s): s is MathSet => !!s),
-        answer: x.answer === "choose" ? "choose" : "type",
+        answer: x.answer === "choose" ? ("choose" as const) : ("type" as const),
         questions: questions(x.questions),
       };
+      if (template === "math") return { ...base, template, ...maths };
+      return { ...base, template, ...maths, speed: Math.round(num(x.speed, 1, 1, 3)) as BalloonSpeed };
+    }
     case "grammar":
       return { ...base, template, items: arr(x.items).map(grammarItem).filter((g): g is GrammarItem => !!g) };
     case "vocab": {

@@ -32,7 +32,8 @@ export function backup(games: Game[]): string {
 export function summary(game: Game): string {
   switch (game.template) {
     case "quiz": return tn(game.questions.length, "{n} question", "{n} questions");
-    case "math": return [tn(game.sets.length, "{n} problem type", "{n} problem types"), game.questions.length ? tn(game.questions.length, "{n} own problem", "{n} own problems") : ""].filter(Boolean).join(" · ");
+    case "math":
+    case "balloon": return [tn(game.sets.length, "{n} problem type", "{n} problem types"), game.questions.length ? tn(game.questions.length, "{n} own problem", "{n} own problems") : ""].filter(Boolean).join(" · ");
     case "grammar": return tn(game.items.length, "{n} sentence", "{n} sentences");
     case "vocab": return tn(game.words.length, "{n} word", "{n} words");
     case "reading": return tn(game.passages.length, "{n} text", "{n} texts");

@@ -111,6 +111,47 @@ const STARTERS: Record<Template, Starter[]> = {
       }),
     },
   ],
+  balloon: [
+    {
+      title: "Additions et soustractions jusqu'à 20",
+      make: () => ({
+        template: "balloon",
+        title: "Tir aux ballons",
+        subtitle: "Charge le canon, éclate les ballons",
+        emoji: "🎈",
+        tint: "sky",
+        settings: settings({ round: 10, lives: 3 }),
+        answer: "type",
+        speed: 1,
+        sets: [
+          { kind: "add", min: 1, max: 10, weight: 2 },
+          { kind: "sub", min: 1, max: 20, weight: 2 },
+          { kind: "missing", min: 1, max: 10, weight: 1 },
+        ],
+        questions: [
+          { type: "short", q: "Un clown a 7 ballons et en reçoit 5 de plus. Combien de ballons a-t-il maintenant ?", accept: ["12"] },
+          { type: "mcq", q: "Quel nombre est le plus grand ?", options: ["38", "83", "58", "35"], answer: 1 },
+        ],
+      }),
+    },
+    {
+      title: "Tables de multiplication",
+      make: () => ({
+        template: "balloon",
+        title: "Tables en rafale",
+        emoji: "💥",
+        tint: "peach",
+        settings: settings({ round: 15, lives: 3 }),
+        answer: "type",
+        speed: 2,
+        sets: [
+          { kind: "mul", min: 2, max: 10, weight: 3 },
+          { kind: "div", min: 2, max: 10, weight: 1 },
+        ],
+        questions: [],
+      }),
+    },
+  ],
   grammar: [
     {
       title: "Présent et passé composé",
