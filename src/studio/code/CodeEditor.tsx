@@ -20,7 +20,6 @@ import { Field, Icon, Modal } from "../ui";
 import { translate, type WebTranslation } from "../../code/web/translate";
 import { webZip } from "../../code/web/package";
 import { CostumesTab, LibraryModal, SoundsTab, backdropItems, spriteItems } from "./Assets";
-import { HandInModal, MissionCard } from "../class/MissionCard";
 import "./code.css";
 
 // CodeMirror (HTML, CSS, JavaScript) loads the first time JavaScript or the Web tab is opened.
@@ -86,7 +85,7 @@ function Editor({ initial }: { initial: CodeProject }) {
   const [running, setRunning] = useState(false);
   const [prefs, setPrefs] = useState<Prefs>(loadPrefs);
   const [dialog, setDialog] = useState<DialogRequest | null>(null);
-  const [modal, setModal] = useState<"sprite" | "backdrop" | "share" | "settings" | "handin" | null>(null);
+  const [modal, setModal] = useState<"sprite" | "backdrop" | "share" | "settings" | null>(null);
   const [live, setLive] = useState<{ x: number; y: number; direction: number; size: number } | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const [debug, setDebug] = useState<"off" | "slow" | "step">("off");
@@ -553,7 +552,6 @@ function Editor({ initial }: { initial: CodeProject }) {
         </section>
 
         <aside className="ce-right">
-          {project.mission && <MissionCard project={project} update={update} onHandIn={() => (blocks.current?.flush(), persist(), setModal("handin"))} />}
           <section className="scene-card" aria-label={t("Scene")}>
             <div className="scene-head">
               <strong>{t("Scene")}</strong>
@@ -702,7 +700,6 @@ function Editor({ initial }: { initial: CodeProject }) {
         />
       )}
       {modal === "settings" && <SettingsModal prefs={prefs} setPrefs={setPrefs} project={project} update={update} onClose={() => setModal(null)} />}
-      {modal === "handin" && <HandInModal project={rp.current ? absorb(project, rp.current) : project} update={update} onClose={() => setModal(null)} />}
       {modal === "share" && <ShareModal project={rp.current ? absorb(project, rp.current) : project} update={update} onClose={() => setModal(null)} />}
     </div>
   );

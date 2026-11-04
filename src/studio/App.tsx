@@ -22,15 +22,11 @@ const CodeEditor = lazy(() => import("./code/CodeEditor").then((m) => ({ default
 const CodeHome = lazy(() => import("./code/CodeHome").then((m) => ({ default: m.CodeHome })));
 const LearnHome = lazy(() => import("./learn/LearnHome").then((m) => ({ default: m.LearnHome })));
 const LearnPage = lazy(() => import("./learn/LearnPage").then((m) => ({ default: m.LearnPage })));
-const ClassPage = lazy(() => import("./class/ClassPage").then((m) => ({ default: m.ClassPage })));
-const JoinPage = lazy(() => import("./class/ClassPage").then((m) => ({ default: m.JoinPage })));
-const FeedbackPage = lazy(() => import("./class/ClassPage").then((m) => ({ default: m.FeedbackPage })));
 const PlayPage = lazy(() => import("./play/PlayPage").then((m) => ({ default: m.PlayPage })));
 const FamePage = lazy(() => import("./fame/FamePage").then((m) => ({ default: m.FamePage })));
 const MissionPage = lazy(() => import("./pages/MissionPage").then((m) => ({ default: m.MissionPage })));
 const PrivacyPage = lazy(() => import("./pages/PrivacyPage").then((m) => ({ default: m.PrivacyPage })));
 const TermsPage = lazy(() => import("./pages/TermsPage").then((m) => ({ default: m.TermsPage })));
-const ChallengeEditorPage = lazy(() => import("./class/ChallengeEditor").then((m) => ({ default: m.ChallengeEditorPage })));
 
 export function App() {
   // A new language remounts every page, so nothing keeps text from the old one.
@@ -86,10 +82,6 @@ function Shell() {
   else if (head === "code") page = <CodeHome />;
   else if (head === "learn" && id) page = <LearnPage key={id} id={id} step={tab} />;
   else if (head === "learn") page = <LearnHome />;
-  else if (head === "class" && id === "challenge" && tab) page = <ChallengeEditorPage key={tab} id={tab} />;
-  else if (head === "class") page = <ClassPage />;
-  else if (head === "join" && id) page = <JoinPage key={id} data={id} />;
-  else if (head === "feedback" && id) page = <FeedbackPage key={id} data={id} />;
   else if (head === "games") page = <Home />;
   else if (head === "play") page = <PlayPage id={id} />;
   else if (head === "fame") page = <FamePage sub={id} />;
@@ -186,8 +178,7 @@ function useNav(current: string[]) {
     { href: "fame", label: t("Wall of Fame"), icon: "star", on: head === "fame" },
     { href: "code", label: t("Game Lab"), icon: "code", on: head === "code" },
     { href: "learn", label: t("Zo Wants to Learn"), icon: "cap", on: head === "learn" },
-    { href: "games", label: t("Quick games"), icon: "game", on: head === "games" || head === "new" || head === "game" },
-    { href: "class", label: role === "teacher" ? t("Class") : t("My class"), icon: "book", on: head === "class" || head === "join" || head === "feedback" },
+    { href: "games", label: t("Game Templates"), icon: "game", on: head === "games" || head === "new" || head === "game" },
   ];
   if (role === "teacher") items.push({ href: "assistant", label: t("Assistant"), icon: "sparkle", on: head === "assistant" });
   items.push({ href: "mission", label: t("About"), icon: "heart", on: head === "mission" });
@@ -232,10 +223,8 @@ function HeadCta() {
 }
 
 function Drawer({ current, open, onClose }: { current: string[]; open: boolean; onClose: () => void }) {
-  const { games } = useApp();
   const ai = useAi();
   const { role, name } = useRole();
-  const recent = role === "teacher" ? games.slice(0, 6) : [];
 
   return (
     <nav className={`drawer${open ? " open" : ""}`} aria-label={t("Menu")} aria-hidden={!open} inert={!open}>
@@ -272,17 +261,6 @@ function Drawer({ current, open, onClose }: { current: string[]; open: boolean; 
         <div className="drawer-lang">
           <LangToggle />
         </div>
-        {recent.length > 0 && (
-          <>
-            <h2 className="nav-title">{t("Recent quick games")}</h2>
-            {recent.map((g) => (
-              <a key={g.id} href={`#/game/${g.id}`} className="drawer-link">
-                <span className="nav-icon nav-emoji">{g.emoji}</span>
-                <span className="nav-label">{g.title}</span>
-              </a>
-            ))}
-          </>
-        )}
       </div>
       <div className="drawer-foot">
         {role === "teacher" ? (
@@ -323,13 +301,12 @@ function SiteFoot({ locked }: { locked: boolean }) {
             <div className="foot-col">
               <h2>{t("Make")}</h2>
               <a href="#/code">{t("Game Lab")}</a>
-              <a href="#/games">{t("Quick games")}</a>
+              <a href="#/games">{t("Game Templates")}</a>
               <a href="#/learn">{t("Zo Wants to Learn")}</a>
             </div>
             <div className="foot-col">
               <h2>{t("Play")}</h2>
               <a href="#/play">{t("All games")}</a>
-              <a href="#/class">{t("Class")}</a>
               <a href="#/settings">{t("Settings")}</a>
             </div>
           </>

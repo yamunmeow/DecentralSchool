@@ -1,6 +1,5 @@
 import type { CodeProject } from "../code/types";
 import type { LearnProject } from "../learn/types";
-import type { Challenge, HandIn } from "./class/model";
 import type { Game } from "../shared/types";
 
 /** Everything the studio keeps lives in this browser's IndexedDB. There is no server. */
@@ -25,7 +24,7 @@ function db(): Promise<IDBDatabase> {
   }));
 }
 
-function run<T>(store: "games" | "kv" | "projects" | "models" | "challenges" | "handins", mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBRequest): Promise<T> {
+function run<T>(store: "games" | "kv" | "projects" | "models", mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBRequest): Promise<T> {
   return db().then(
     (d) =>
       new Promise<T>((resolve, reject) => {
@@ -57,20 +56,6 @@ export const models = {
   get: (id: string) => run<LearnProject | undefined>("models", "readonly", (s) => s.get(id)),
   put: (p: LearnProject) => run<IDBValidKey>("models", "readwrite", (s) => s.put(p)),
   remove: (id: string) => run<undefined>("models", "readwrite", (s) => s.delete(id)),
-};
-
-/** Teacher side: challenges made here, and hand-ins received. */
-export const challenges = {
-  all: () => run<Challenge[]>("challenges", "readonly", (s) => s.getAll()),
-  get: (id: string) => run<Challenge | undefined>("challenges", "readonly", (s) => s.get(id)),
-  put: (c: Challenge) => run<IDBValidKey>("challenges", "readwrite", (s) => s.put(c)),
-  remove: (id: string) => run<undefined>("challenges", "readwrite", (s) => s.delete(id)),
-};
-
-export const handins = {
-  all: () => run<HandIn[]>("handins", "readonly", (s) => s.getAll()),
-  put: (h: HandIn) => run<IDBValidKey>("handins", "readwrite", (s) => s.put(h)),
-  remove: (id: string) => run<undefined>("handins", "readwrite", (s) => s.delete(id)),
 };
 
 export const kv = {

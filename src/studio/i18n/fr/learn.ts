@@ -344,4 +344,5 @@ export default {
   "Type something new": "Saisissez quelque chose de nouveau",
   "Text to sort": "Texte à classer",
   "Right answers are on the diagonal.": "Les bonnes réponses sont sur la diagonale.",
+  Steps: "Étapes",
 } as Record<string, string>;

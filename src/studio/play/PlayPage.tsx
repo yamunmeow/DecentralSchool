@@ -10,14 +10,10 @@ import { download, pageFor, slug } from "../exporting";
 import { SourcePicker, DEFAULT_SOURCE } from "../random/Randomizer";
 import { describe, fetchQuestions, type Source } from "../random/sources";
 import { go, useApp } from "../store";
-import { coverOf, fromStarter, startersFor, TEMPLATE_INFO } from "../templates";
 import { getLang, t } from "../i18n";
 import { Icon, Modal } from "../ui";
 import { PlayerSheet, type Playing, type Show } from "../components/PlayerSheet";
 import { GameCard, GameTile } from "../components/GameCard";
-import { Critter } from "../Critter";
-import { summary } from "../gameio";
-import { TEMPLATE_CRITTER } from "../palette";
 import { asCustom, fromLibrary, LIBRARY, libraryUrl, pageFile, singleFile, type LibraryGame } from "./library";
 
 // Titles are English; shown through t().
@@ -86,18 +82,6 @@ export function PlayPage({ id }: { id?: string }) {
     }
   };
 
-  const playQuick = (game: Game) =>
-    setPlaying({
-      kind: "page",
-      title: game.title,
-      page: pageFor(game),
-      actions: (
-        <button className="btn btn-ghost btn-sm" onClick={() => keep({ ...game, id: uid() })}>
-          <Icon name="edit" size={16} /> {t("Make it mine")}
-        </button>
-      ),
-    });
-
   const openBlocks = async (p: CodeProject) => {
     const copy = { ...p, id: uid(), created: Date.now(), updated: Date.now() };
     await projects.put(copy);
@@ -123,17 +107,6 @@ export function PlayPage({ id }: { id?: string }) {
           <h1>{t("Play now")}</h1>
           <p className="hero-lede">{t("Free, with nothing to install and no sign-up. Every game here keeps working without the internet.")}</p>
         </div>
-        <ul className="hero-points" aria-label={t("What you can do here")}>
-          <li>
-            <Icon name="play" size={20} /> {t("Play in the browser")}
-          </li>
-          <li>
-            <Icon name="edit" size={20} /> {t("Make it your own")}
-          </li>
-          <li>
-            <Icon name="download" size={20} /> {t("Download for offline")}
-          </li>
-        </ul>
       </section>
 
       <section aria-labelledby="random">
@@ -163,35 +136,6 @@ export function PlayPage({ id }: { id?: string }) {
             badge={{ label: t("Choose"), icon: "dice" }}
             onOpen={() => setCustom(true)}
           />
-        </div>
-      </section>
-
-      <section aria-labelledby="quick">
-        <div className="page-head">
-          <h2 id="quick" className="section-title">
-            {t("Quick game examples")}
-          </h2>
-        </div>
-        <div className="play-grid">
-          {TEMPLATE_INFO.flatMap((tpl) => startersFor(tpl).map((s) => ({ tpl, s }))).map(({ tpl, s }) => {
-            const game = fromStarter(s);
-            return (
-              <GameCard
-                key={`${tpl.id}-${s.title}`}
-                title={game.title}
-                blurb={game.subtitle || summary(game)}
-                tags={[t(tpl.name)]}
-                cover={coverOf(game)}
-                coverExtra={<Critter kind={TEMPLATE_CRITTER[game.template]} color={game.tint} size={56} className="play-critter" />}
-                onOpen={() => playQuick(game)}
-                actions={
-                  <button className="btn btn-ghost btn-sm" onClick={() => keep({ ...game, id: uid() })}>
-                    <Icon name="edit" size={16} /> {t("Make it mine")}
-                  </button>
-                }
-              />
-            );
-          })}
         </div>
       </section>
 

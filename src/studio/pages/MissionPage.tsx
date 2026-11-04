@@ -8,7 +8,7 @@ import { Icon } from "../ui";
 const BELIEFS = [
   ["Works offline", "After the first visit, the games, the Game Lab, Zo and the Android app builder work without the internet."],
   ["Small models", "Zo's models are small. They train and run in the browser, on the student's own device."],
-  ["Work stays on your device", "Signing in with Google is free and keeps only your name and email. Games, class work and models are saved in your browser, not on our server."],
+  ["Work stays on your device", "Signing in with Google is free and keeps only your name and email. Games and models are saved in your browser, not on our server."],
   ["Free and open source", "The code is under the GNU AGPL-3.0. Anyone can run it, read it, change it and share it."],
 ] as const;
 
@@ -126,7 +126,6 @@ export function MissionPage() {
               "A mind map of the game that shows its characters, scripts, loops and decisions.",
               "Slow and step-by-step debugging.",
               "Export as an offline .html file, a web project or an Android app.",
-              "Teacher challenges, hand-ins and feedback, sent as files and links.",
             ].map((item) => (
               <li key={item}>
                 <Icon name="checkCircle" size={22} />

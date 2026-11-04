@@ -124,25 +124,8 @@ export function NewGame({ template }: { template?: string }) {
 
       {upload && <UploadResult upload={upload} onChange={setUpload} onAgain={() => file.current?.click()} />}
 
-      <section className="create-steps" aria-label={t("How it works")}>
-        {[
-          ["sparkle", "Describe or upload", "a lesson, a worksheet or an HTML game"],
-          ["edit", "Check and change", "every question stays editable"],
-          ["android", "Hand it out", "Android app, offline file or link"],
-        ].map(([icon, title, text], i) => (
-          <div key={title} className="create-step">
-            <span className="step-n">{i + 1}</span>
-            <Icon name={icon as "sparkle"} size={22} />
-            <span>
-              <strong>{t(title)}</strong>
-              <small>{t(text)}</small>
-            </span>
-          </div>
-        ))}
-      </section>
-
       <div className="page-head">
-        <h2 className="section-title">{t("Or start from a template")}</h2>
+        <h2 className="section-title">{t("Game Templates")}</h2>
       </div>
       <div className="template-grid">
         {TEMPLATE_INFO.map((tpl) => {

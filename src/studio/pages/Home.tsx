@@ -7,9 +7,7 @@ import { duplicate, forImport, gamesFromText, summary } from "../gameio";
 import { PALETTE, TEMPLATE_CRITTER } from "../palette";
 import { go, useApp } from "../store";
 import { coverOf, TEMPLATE_INFO, templateInfo } from "../templates";
-import { Empty, Field, Icon, Modal } from "../ui";
-import { useAi } from "../useAi";
-import { useRole } from "../role";
+import { Field, Icon, Modal } from "../ui";
 import { t, tn } from "../i18n";
 
 export const PROMPT_KEY = "ds-assistant-prompt";
@@ -31,74 +29,47 @@ export function askAssistant(idea: string, draft = false, own = false) {
 
 export function Home() {
   const { games } = useApp();
-  const ai = useAi();
-  const { role } = useRole();
-  const [idea, setIdea] = useState("");
   const [importing, setImporting] = useState(false);
-
-  const ask = () => {
-    if (!idea.trim()) return;
-    askAssistant(idea.trim());
-  };
 
   return (
     <div className="page">
-      <section className="hero">
-        <div className="hero-critters" aria-hidden>
-          <Critter kind="owl" color="lilac" size={92} mood="joy" />
-          <Critter kind="fox" color="peach" size={70} mood="wink" />
-        </div>
-        <div className="hero-text">
-          <h1>{t("Quick games")}</h1>
-          {role === "teacher" && (
-          <form
-            className="idea"
-            onSubmit={(e) => {
-              e.preventDefault();
-              ask();
-            }}
-          >
-            <Icon name="sparkle" />
-            <input value={idea} onChange={(e) => setIdea(e.target.value)} placeholder={t("A fractions race for class 5, in Hindi…")} aria-label={t("Describe a game")} />
-            <button className="btn btn-primary" disabled={!idea.trim()}>
-              {ai.connected ? t("Create") : t("Next")}
-            </button>
-          </form>
-          )}
-        </div>
-      </section>
-
-      <section className="template-row" aria-label={t("Templates")}>
-        {TEMPLATE_INFO.map((tpl) => (
-          <a key={tpl.id} href={`#/new/${tpl.id}`} className="template-tile" style={{ "--tint": PALETTE[tpl.tint].tint, "--ink-t": PALETTE[tpl.tint].ink } as CSSProperties}>
-            {tpl.art ? <img className="template-art" src={tpl.art} alt="" width={84} height={58} /> : <span className="template-emoji">{tpl.emoji}</span>}
-            <strong>{t(tpl.name)}</strong>
-          </a>
-        ))}
-      </section>
-
       <div className="page-head">
-        <h2 className="section-title">{t("My quick games")}</h2>
+        <h1 className="section-title">{t("Game Templates")}</h1>
         <span className="spacer" />
         <button className="btn btn-ghost btn-sm" onClick={() => setImporting(true)}>
           <Icon name="upload" size={18} /> {t("Import")}
         </button>
       </div>
+      <TemplateRow />
 
-      {games.length ? (
-        <div className="play-grid">
-          {games.map((g) => (
-            <MyGameCard key={g.id} game={g} />
-          ))}
-        </div>
-      ) : (
-        <div className="card is-quiet">
-          <Empty critter={<Critter kind="turtle" color="sage" size={84} mood="sleepy" />}>{t("No games yet. Pick a template above, or describe one.")}</Empty>
-        </div>
+      {games.length > 0 && (
+        <>
+          <div className="page-head">
+            <h2 className="section-title">{t("My games")}</h2>
+          </div>
+          <div className="play-grid">
+            {games.map((g) => (
+              <MyGameCard key={g.id} game={g} />
+            ))}
+          </div>
+        </>
       )}
 
       {importing && <ImportModal onClose={() => setImporting(false)} />}
     </div>
+  );
+}
+
+export function TemplateRow() {
+  return (
+    <section className="template-row" aria-label={t("Game Templates")}>
+      {TEMPLATE_INFO.map((tpl) => (
+        <a key={tpl.id} href={`#/new/${tpl.id}`} className="template-tile" style={{ "--tint": PALETTE[tpl.tint].tint, "--ink-t": PALETTE[tpl.tint].ink } as CSSProperties}>
+          {tpl.art ? <img className="template-art" src={tpl.art} alt="" width={84} height={58} /> : <span className="template-emoji">{tpl.emoji}</span>}
+          <strong>{t(tpl.name)}</strong>
+        </a>
+      ))}
+    </section>
   );
 }
 

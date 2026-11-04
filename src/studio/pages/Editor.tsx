@@ -63,7 +63,7 @@ export function Editor({ id, tab }: { id: string; tab?: string }) {
       <div className="page">
         <Empty critter={<Critter kind="owl" color="lilac" size={84} mood="worried" />}>{t("This game isn't in this browser.")}</Empty>
         <a className="btn btn-primary" href="#/games" style={{ alignSelf: "center" }}>
-          {t("Quick games")}
+          {t("Game Templates")}
         </a>
       </div>
     );

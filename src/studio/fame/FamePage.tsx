@@ -23,7 +23,7 @@ import { dateText, t } from "../i18n";
 
 // English; shown through t().
 const STATUS: Record<Status, string> = { waiting: "Waiting for review", featured: "On the Wall of Fame", declined: "Not chosen this time" };
-const kindName = (g: FameCard) => t(g.kind === "lab" ? "Game Lab" : TEMPLATE_INFO.find((x) => x.id === g.tag)?.name || "Quick game");
+const kindName = (g: FameCard) => t(g.kind === "lab" ? "Game Lab" : TEMPLATE_INFO.find((x) => x.id === g.tag)?.name || "Game");
 const day = (ms: number) => dateText(ms, { day: "numeric", month: "short", year: "numeric" });
 
 /** A game that came back from the server, ready to play and to copy into the studio. */
@@ -321,7 +321,7 @@ function SubmitModal({ onClose, onSent }: { onClose: () => void; onSent: () => v
       }
     >
       {picks.length === 0 ? (
-        <Empty critter={<ZoPic outfit="teacher" size={64} />}>{t("Make a quick game or a Game Lab game first.")}</Empty>
+        <Empty critter={<ZoPic outfit="teacher" size={64} />}>{t("Make a game from a template or in the Game Lab first.")}</Empty>
       ) : (
         <>
           <Field label={t("Game")}>
@@ -337,7 +337,7 @@ function SubmitModal({ onClose, onSent }: { onClose: () => void; onSent: () => v
                 {t("Choose one of your games")}
               </option>
               {games.length > 0 && (
-                <optgroup label={t("Quick games")}>
+                <optgroup label={t("Game Templates")}>
                   {picks.filter((p) => p.kind === "quick").map((p) => (
                     <option key={p.key} value={p.key}>
                       {p.title}

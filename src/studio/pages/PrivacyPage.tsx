@@ -64,7 +64,7 @@ export function PrivacyPage() {
           </h2>
         </div>
         <div className="prose">
-          <p>{t("Your games, Game Lab projects, Zo's models, challenges, hand-ins and feedback are saved in this browser, on your device. So are your settings: student or teacher, your name, the theme, the AI key and the app signing key. We never see any of it, except a game you choose to submit to the Wall of Fame (see below).")}</p>
+          <p>{t("Your games, Game Lab projects and Zo's models are saved in this browser, on your device. So are your settings: student or teacher, your name, the theme, the AI key and the app signing key. We never see any of it, except a game you choose to submit to the Wall of Fame (see below).")}</p>
           <p>{tj("Game links carry the game after the {hash} in the address. Browsers never send that part to a server, so a shared game doesn't pass through us either.", { hash: <code>#</code> })}</p>
         </div>
       </section>
