@@ -7,7 +7,7 @@ import { GenerateButton, ItemCard, ListInput, move, PasteButton, removeAt, repla
 type Kind = GrammarItem["type"];
 
 // English; shown through t().
-const KIND_LABEL: Record<Kind, string> = {
+export const KIND_LABEL: Record<Kind, string> = {
   fix: "Spot the mistake",
   gap: "Fill the gap",
   judge: "Right or wrong?",

@@ -6,7 +6,7 @@ import { Icon } from "../ui";
 import { GenerateButton, PasteButton, removeAt, replaceAt, Section, splitBars } from "./common";
 
 // English; shown through t().
-const MODE_LABEL: Record<VocabMode, string> = {
+export const MODE_LABEL: Record<VocabMode, string> = {
   meaning: "Meaning → word",
   word: "Word → meaning",
   gap: "Complete the sentence",

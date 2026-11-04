@@ -8,8 +8,11 @@ import { QuestionList } from "./QuestionList";
 
 const KINDS = Object.keys(MATH_KINDS) as MathKind[];
 
-/** Problem types and the teacher's own problems: the Maths template and Balloon Blast share them. */
-export function MathEditor<G extends MathGame | BalloonGame>({ game, onChange }: { game: G; onChange: (g: G) => void }) {
+/**
+ * Problem types and the teacher's own problems: the Maths template and Balloon Blast share them.
+ * `own` off leaves out the own problems (Play straight from a template has none).
+ */
+export function MathEditor<G extends MathGame | BalloonGame>({ game, onChange, own = true }: { game: G; onChange: (g: G) => void; own?: boolean }) {
   const [seed, setSeed] = useState(0);
   const setSets = (sets: MathSet[]) => onChange({ ...game, sets });
   const samples = useMemo(() => {
@@ -99,9 +102,11 @@ export function MathEditor<G extends MathGame | BalloonGame>({ game, onChange }:
           </div>
         )}
       </Section>
-      <Section title={t("Your own problems")} count={game.questions.length ? String(game.questions.length) : undefined}>
-        <QuestionList questions={game.questions} onChange={(questions) => onChange({ ...game, questions })} generate={{ template: "math-questions" }} />
-      </Section>
+      {own && (
+        <Section title={t("Your own problems")} count={game.questions.length ? String(game.questions.length) : undefined}>
+          <QuestionList questions={game.questions} onChange={(questions) => onChange({ ...game, questions })} generate={{ template: "math-questions" }} />
+        </Section>
+      )}
     </>
   );
 }

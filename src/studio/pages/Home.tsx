@@ -1,8 +1,9 @@
 import { useRef, useState, type CSSProperties } from "react";
 import { getKey, signIn } from "../ai/openrouter";
-import type { Game } from "../../shared/types";
+import type { Game, Template } from "../../shared/types";
 import { Critter } from "../Critter";
 import { GameCard } from "../components/GameCard";
+import { QuickPlay } from "../components/QuickPlay";
 import { duplicate, forImport, gamesFromText, summary } from "../gameio";
 import { PALETTE, TEMPLATE_CRITTER } from "../palette";
 import { go, useApp } from "../store";
@@ -60,15 +61,26 @@ export function Home() {
   );
 }
 
+/** Each template: play a random set straight away, or make a game from it. */
 export function TemplateRow() {
+  const [playing, setPlaying] = useState<Template | null>(null);
   return (
     <section className="template-row" aria-label={t("Game Templates")}>
       {TEMPLATE_INFO.map((tpl) => (
-        <a key={tpl.id} href={`#/new/${tpl.id}`} className="template-tile" style={{ "--tint": PALETTE[tpl.tint].tint, "--ink-t": PALETTE[tpl.tint].ink } as CSSProperties}>
+        <div key={tpl.id} className="template-tile" style={{ "--tint": PALETTE[tpl.tint].tint, "--ink-t": PALETTE[tpl.tint].ink } as CSSProperties}>
           {tpl.art ? <img className="template-art" src={tpl.art} alt="" width={84} height={58} /> : <span className="template-emoji">{tpl.emoji}</span>}
           <strong>{t(tpl.name)}</strong>
-        </a>
+          <div className="template-tile-actions">
+            <button className="btn btn-primary btn-sm" onClick={() => setPlaying(tpl.id)} aria-label={t("Play {name}", { name: t(tpl.name) })}>
+              <Icon name="play" size={16} /> {t("Play")}
+            </button>
+            <a className="btn btn-ghost btn-sm" href={`#/new/${tpl.id}`} aria-label={t("Make a {name} game", { name: t(tpl.name) })}>
+              <Icon name="edit" size={16} /> {t("Make")}
+            </a>
+          </div>
+        </div>
       ))}
+      {playing && <QuickPlay template={playing} onClose={() => setPlaying(null)} />}
     </section>
   );
 }

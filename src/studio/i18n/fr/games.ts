@@ -55,4 +55,10 @@ export default {
   "{n} texts": "{n} textes",
   "{n} KB of HTML": "{n} Ko de HTML",
   "Not built yet": "Pas encore créé",
+  "Play {name}": "Jouer : {name}",
+  "Make a {name} game": "Créer un jeu : {name}",
+  Options: "Options",
+  Reset: "Réinitialiser",
+  "Word lists": "Listes de mots",
+  "A topic": "Un sujet",
 } as Record<string, string>;

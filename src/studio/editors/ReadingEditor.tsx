@@ -9,7 +9,7 @@ import { GenerateButton, move, removeAt, replaceAt, Section } from "./common";
 import { QuestionList } from "./QuestionList";
 
 // English; shown through t().
-const ACTIVITY_LABEL: Record<ReadingActivity, string> = {
+export const ACTIVITY_LABEL: Record<ReadingActivity, string> = {
   questions: "Your questions",
   cloze: "Fill the gaps",
   sequence: "Order the sentences",
